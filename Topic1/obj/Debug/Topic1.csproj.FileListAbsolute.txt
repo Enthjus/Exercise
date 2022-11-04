@@ -1,0 +1,12 @@
+D:\c#\ATC\AddinLearning\Topic1\bin\Debug\start.scr
+D:\c#\ATC\AddinLearning\Topic1\bin\Debug\Topic1.dll
+D:\c#\ATC\AddinLearning\Topic1\bin\Debug\Topic1.pdb
+D:\c#\ATC\AddinLearning\Topic1\bin\Debug\LibraryCad.dll
+D:\c#\ATC\AddinLearning\Topic1\bin\Debug\LibraryCad.pdb
+D:\c#\ATC\AddinLearning\Topic1\obj\Debug\Topic1.csproj.AssemblyReference.cache
+D:\c#\ATC\AddinLearning\Topic1\obj\Debug\Topic1.Form1.resources
+D:\c#\ATC\AddinLearning\Topic1\obj\Debug\Topic1.csproj.GenerateResource.cache
+D:\c#\ATC\AddinLearning\Topic1\obj\Debug\Topic1.csproj.CoreCompileInputs.cache
+D:\c#\ATC\AddinLearning\Topic1\obj\Debug\Topic1.csproj.CopyComplete
+D:\c#\ATC\AddinLearning\Topic1\obj\Debug\Topic1.dll
+D:\c#\ATC\AddinLearning\Topic1\obj\Debug\Topic1.pdb
