@@ -150,14 +150,26 @@ namespace LibraryCad
         }
 
         /// <summary>
-        /// Hàm lấy các đối tượng được chọn
+        /// Hàm lấy các đối tượng được chọn theo filter truyển vào
         /// </summary>
         /// <param name="doc">Document</param>
+        /// <param name="msg">Chuỗi hiển thị cho người dùng</param>
+        /// <param name="slft">Đối tượng muốn lọc</param>
         /// <returns>Set các đối tượng</returns>
-        public static SelectionSet GetListSelection(Document doc)
+        public static SelectionSet GetListSelection(Document doc, string msg, SelectionFilter slft = null)
         {
+            PromptSelectionOptions options = new PromptSelectionOptions();
+            options.MessageForAdding = $"\n{msg}";
+            PromptSelectionResult acSSPrompt;
             // Request for objects to be selected in the drawing area
-            PromptSelectionResult acSSPrompt = doc.Editor.GetSelection();
+            if (slft == null)
+            {
+                acSSPrompt = doc.Editor.GetSelection();
+            }
+            else
+            {
+                acSSPrompt = doc.Editor.GetSelection(slft);
+            }
 
             // If the prompt status is OK, objects were selected
             if (acSSPrompt.Status == PromptStatus.OK)
@@ -174,24 +186,23 @@ namespace LibraryCad
         /// <param name="selectSet">Các đối tượng được chọn</param>
         /// <param name="doc">Document</param>
         /// <returns>List Line</returns>
-        public static List<Line> ParseSelectionToListLine(SelectionSet selectSet, Document doc)
+        public static List<Line> SelectionSetToListLine(Document doc)
         {
             using (var trans = doc.Database.TransactionManager.StartOpenCloseTransaction())
             {
                 var lines = new List<Line>();
-                // Step through the objects in the selection set
-                foreach (SelectedObject select in selectSet)
+                var typeValue = new TypedValue[]
                 {
-                    // Check object có null hay không và có phải là line không
-                    if (select != null && trans.GetObject(select.ObjectId, OpenMode.ForRead).GetType() == typeof(Line))
+                    new TypedValue((int)DxfCode.Start, "LINE")
+                };
+                var slft = new SelectionFilter(typeValue);
+                var selectSet = GetListSelection(doc, "- Chọn các đoạn thẳng muốn tính tổng", slft);
+                // Step through the objects in the selection set
+                foreach (Line sel in selectSet)
+                {
+                    if (sel.Length != 0)
                     {
-                        // Open the selected object for write
-                        Line acText = trans.GetObject(select.ObjectId, OpenMode.ForRead) as Line;
-
-                        if (acText.Length != 0)
-                        {
-                            lines.Add(acText);
-                        }
+                        lines.Add(sel);
                     }
                 }
                 return lines;
@@ -267,16 +278,21 @@ namespace LibraryCad
         {
             using (var trans = doc.Database.TransactionManager.StartOpenCloseTransaction())
             {
-                var selSet = GetListSelection(doc);
+                var typeVal = new TypedValue[]
+                {
+                    new TypedValue((int)DxfCode.Start, "CIRCLE")
+                };
+                var slft = new SelectionFilter(typeVal);
+                var selSet = GetListSelection(doc, "- Chọn các đường tròn: ", slft);
 
-                if(selSet == null) return null;
+                if (selSet == null) return null;
 
                 var lines = new List<Circle>();
                 // Step through the objects in the selection set
                 foreach (SelectedObject select in selSet)
                 {
                     // Check object có null hay không và có phải là line không
-                    if (select != null && trans.GetObject(select.ObjectId, OpenMode.ForRead).GetType() == typeof(Circle))
+                    if (select != null)
                     {
                         // Open the selected object for write
                         Circle acText = trans.GetObject(select.ObjectId, OpenMode.ForRead) as Circle;
@@ -297,7 +313,7 @@ namespace LibraryCad
         /// <param name="doc"></param>
         public static void DrawCircle(Document doc)
         {
-            using(var trans = doc.Database.TransactionManager.StartTransaction())
+            using (var trans = doc.Database.TransactionManager.StartTransaction())
             {
                 try
                 {
@@ -322,7 +338,7 @@ namespace LibraryCad
 
                     trans.Commit();
                 }
-                catch(System.Exception ex)
+                catch (System.Exception ex)
                 {
                     doc.Editor.WriteMessage(ex.Message);
                     trans.Abort();
@@ -393,51 +409,83 @@ namespace LibraryCad
             }
         }
 
-        // Check SelectionSet có số 0 hay không nếu có trả về true
-        public static bool CheckIfHasZero(SelectionSet sSet, Transaction trans)
+
+        /// <summary>
+        /// Hàm lọc các đối tượng được chọn chỉ lấy text
+        /// </summary>
+        /// <param name="doc">Document</param>
+        /// <param name="msg">Chuỗi thông báo</param>
+        /// <returns></returns>
+        public static List<double> SelectionSetToNumList(Document doc, string msg)
         {
-            foreach (SelectedObject acSSObj in sSet)
+            using (var trans = doc.Database.TransactionManager.StartOpenCloseTransaction())
+            {
+                var typeValue = new TypedValue[]
+                {
+                    new TypedValue((int)DxfCode.Start, "TEXT"),
+                    new TypedValue((int)DxfCode.Start, "MTEXT"),
+                    new TypedValue((int)DxfCode.Start, "DTEXT")
+                };
+                var slft = new SelectionFilter(typeValue);
+                var selSet = GetListSelection(doc, msg, slft);
+                var nums = new List<double>();
+                foreach (SelectedObject sel in selSet)
+                {
+                    if(sel != null)
+                    {
+                        DBText s = trans.GetObject(sel.ObjectId, OpenMode.ForRead) as DBText;
+                        if (CheckIfNumber(s.TextString))
+                        {
+                            nums.Add(double.Parse(s.TextString));
+                        }
+                    }
+                }
+                return nums;
+            }
+        }
+
+        /// <summary>
+        /// Hàm check dãy số có tồn tại số không hay không
+        /// </summary>
+        /// <param name="nums">dãy số truyền vào</param>
+        /// <returns></returns>
+        public static bool CheckIfHasZero(List<double> nums)
+        {
+            foreach (double num in nums)
             {
                 // Check to make sure a valid SelectedObject object was returned
-                if (acSSObj != null)
+                if (num != null && num == 0)
                 {
-                    // Open the selected object for write
-                    DBText acText = trans.GetObject(acSSObj.ObjectId,
-                                                        OpenMode.ForRead) as DBText;
-                    // Nếu không phải số thì trả về false
-                    if (CheckIfNumber(acText.TextString) && double.Parse(acText.TextString) == 0)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
             return false;
         }
 
-        // Check SelectionSet nếu số đầu là 0 thì trả về true
-        public static bool CheckIfFirstNumIsZero(SelectionSet sSet, Transaction trans)
+        /// <summary>
+        /// Hàm check số đầu tiên của dãy số nếu là 0 thì trả về true
+        /// </summary>
+        /// <param name="nums">Dãy số muốn check</param>
+        /// <returns></returns>
+        public static bool CheckIfFirstNumIsZero(List<double> nums)
         {
-            // Open the selected object for write
-            DBText acText = trans.GetObject(sSet[0].ObjectId,
-                                                OpenMode.ForRead) as DBText;
-            // Nếu không phải số thì trả về false
-            if (CheckIfNumber(acText.TextString) && double.Parse(acText.TextString) == 0)
+            if (nums[0] == 0)
             {
                 return true;
             }
             return false;
         }
 
-        // Check SelectionSet từ số thứ 2 trở đi nếu có số 0 thì trả về true
-        public static bool CheckIfOtherNumIsZero(SelectionSet sSet, Transaction trans)
+        /// <summary>
+        /// Hàm check các số của dãy từ số thứ 2 trở đi nếu có số 0 trả về true
+        /// </summary>
+        /// <param name="nums">dãy số muốn check</param>
+        /// <returns></returns>
+        public static bool CheckIfOtherNumIsZero(List<double> nums)
         {
-            for (int i = 1; i < sSet.Count; i++)
+            for (int i = 1; i < nums.Count; i++)
             {
-                // Open the selected object for write
-                DBText acText = trans.GetObject(sSet[i].ObjectId,
-                                                    OpenMode.ForRead) as DBText;
-                // Nếu không phải số thì trả về false
-                if (CheckIfNumber(acText.TextString) && double.Parse(acText.TextString) == 0)
+                if (nums[i] == 0)
                 {
                     return true;
                 }

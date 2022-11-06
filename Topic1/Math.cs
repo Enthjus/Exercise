@@ -31,36 +31,16 @@ namespace Topic1
 
                     if (pointInf == null || pointInf.status == false) return;
 
-                    SelectionSet acSSet;
-
                     // Check nếu chọn toàn số thì tiếp tục
-                    while (1 == 1)
-                    {
-                        doc.Editor.WriteMessage("\nChọn các giá trị muốn cộng: ");
-                        acSSet = LibraryCad.Functions.GetListSelection(doc);
-                        if (acSSet == null) return;
-                        if (LibraryCad.Functions.CheckIfSelectionSetIsNumber(acSSet, doc)) break;
-                        else doc.Editor.WriteMessage("\nGiá trị được chọn phải là số");
-                    }
+                    var nums = LibraryCad.Functions.SelectionSetToNumList(doc, "Chọn các số muốn cộng");
+                    if (nums == null) return;
 
                     var sum = 0.0;
 
                     // Step through the objects in the selection set
-                    foreach (SelectedObject acSSObj in acSSet)
+                    foreach (double num in nums)
                     {
-                        // Check to make sure a valid SelectedObject object was returned
-                        if (acSSObj != null)
-                        {
-                            // Open the selected object for write
-                            DBText acText = trans.GetObject(acSSObj.ObjectId,
-                                                                OpenMode.ForRead) as DBText;
-
-                            if (acText != null)
-                            {
-                                // Merge text
-                                sum += double.Parse(acText.TextString);
-                            }
-                        }
+                        sum += num;
                     }
 
                     // Create text
@@ -101,27 +81,17 @@ namespace Topic1
                     SelectionSet acSSet;
 
                     // Lấy các giá trị được chọn
-                    doc.Editor.WriteMessage("\nChọn các giá trị muốn cộng: ");
-                    acSSet = LibraryCad.Functions.GetListSelection(doc);
-                    if (acSSet == null) return;
+                    var nums = LibraryCad.Functions.SelectionSetToNumList(doc, "- Chọn các giá trị muốn cộng: ");
+                    if (nums == null) return;
 
                     var sum = 0.0;
 
                     // Step through the objects in the selection set
-                    foreach (SelectedObject acSSObj in acSSet)
+                    foreach (double num in nums)
                     {
-                        // Check to make sure a valid SelectedObject object was returned
-                        if (acSSObj != null)
+                        if (num != null)
                         {
-                            // Open the selected object for write
-                            DBText acText = trans.GetObject(acSSObj.ObjectId,
-                                                                OpenMode.ForRead) as DBText;
-
-                            if (acText != null && LibraryCad.Functions.CheckIfNumber(acText.TextString))
-                            {
-                                // Merge text
-                                sum += double.Parse(acText.TextString);
-                            }
+                            sum += num;
                         }
                     }
 
@@ -160,30 +130,18 @@ namespace Topic1
 
                     if (pointInf == null || pointInf.status == false) return;
 
-                    SelectionSet acSSet;
-
                     // Lấy các giá trị được chọn
-                    doc.Editor.WriteMessage("\nChọn các giá trị muốn cộng: ");
-                    acSSet = LibraryCad.Functions.GetListSelection(doc);
-                    if (acSSet == null) return;
+                    var nums = LibraryCad.Functions.SelectionSetToNumList(doc, "Chọn các giá trị muốn tính hiệu: ");
+                    if (nums == null) return;
 
                     var subtraction = 0.0;
 
                     // Step through the objects in the selection set
-                    foreach (SelectedObject acSSObj in acSSet)
+                    foreach (double num in nums)
                     {
-                        // Check to make sure a valid SelectedObject object was returned
-                        if (acSSObj != null)
+                        if (num != null)
                         {
-                            // Open the selected object for write
-                            DBText acText = trans.GetObject(acSSObj.ObjectId,
-                                                                OpenMode.ForRead) as DBText;
-
-                            if (acText != null && LibraryCad.Functions.CheckIfNumber(acText.TextString))
-                            {
-                                // Merge text
-                                subtraction -= double.Parse(acText.TextString);
-                            }
+                            subtraction -= num;
                         }
                     }
 
@@ -222,47 +180,30 @@ namespace Topic1
 
                     if (pointInf == null || pointInf.status == false) return;
 
-                    SelectionSet acSSet;
-
                     // Lấy các giá trị được chọn
-                    doc.Editor.WriteMessage("\nChọn các giá trị muốn cộng: ");
-                    acSSet = LibraryCad.Functions.GetListSelection(doc);
-                    if (acSSet == null) return;
+                    var nums = LibraryCad.Functions.SelectionSetToNumList(doc, "- Chọn các số muốn tính tích: ");
+                    if (nums == null) return;
 
                     // Check nếu có số 0 thì in ra 0 luôn
-                    if (LibraryCad.Functions.CheckIfHasZero(acSSet, trans))
+                    if (LibraryCad.Functions.CheckIfHasZero(nums))
                     {
                         LibraryCad.Functions.CreateText(doc, "0", point);
-
-                        // Save the new object to the database
                         trans.Commit();
-
                         return;
                     }
 
                     var multiplication = 0.0;
 
                     // Step through the objects in the selection set
-                    foreach (SelectedObject acSSObj in acSSet)
+                    foreach (double num in nums)
                     {
-                        // Check to make sure a valid SelectedObject object was returned
-                        if (acSSObj != null)
+                        if (multiplication == 0)
                         {
-                            // Open the selected object for write
-                            DBText acText = trans.GetObject(acSSObj.ObjectId,
-                                                                OpenMode.ForRead) as DBText;
-
-                            if (acText != null && LibraryCad.Functions.CheckIfNumber(acText.TextString))
-                            {
-                                if (multiplication == 0)
-                                {
-                                    multiplication = double.Parse(acText.TextString);
-                                }
-                                else
-                                {
-                                    multiplication *= double.Parse(acText.TextString);
-                                }
-                            }
+                            multiplication = num;
+                        }
+                        else
+                        {
+                            multiplication *= num;
                         }
                     }
 
@@ -293,7 +234,6 @@ namespace Topic1
                 try
                 {
                     PromptPointOptions pPtOpts = new PromptPointOptions("");
-                    SelectionSet acSSet;
                     var division = 0.0;
 
                     // Chọn điểm
@@ -303,45 +243,35 @@ namespace Topic1
                     if (pointInf == null || pointInf.status == false) return;
 
                     // Lấy các giá trị được chọn
-                    doc.Editor.WriteMessage("\nChọn các giá trị muốn cộng: ");
-                    acSSet = LibraryCad.Functions.GetListSelection(doc);
-                    if (acSSet == null) return;
+                    var nums = LibraryCad.Functions.SelectionSetToNumList(doc, "- Chọn các số muốn chia: ");
+                    if (nums == null) return;
 
                     // Check nếu từ số thứ 2 trở đi nếu có 0 thì trả về luôn
-                    if (LibraryCad.Functions.CheckIfOtherNumIsZero(acSSet, trans)) return;
+                    if (LibraryCad.Functions.CheckIfOtherNumIsZero(nums)) 
+                    {
+                        doc.Editor.WriteMessage("Không thể chia cho số 0!");
+                        return; 
+                    }
 
                     // Check nếu số đầu là 0 thì trả về 0
-                    if (LibraryCad.Functions.CheckIfFirstNumIsZero(acSSet, trans))
+                    if (LibraryCad.Functions.CheckIfFirstNumIsZero(nums))
                     {
                         LibraryCad.Functions.CreateText(doc, "0", point);
-
-                        // Save the new object to the database
                         trans.Commit();
-
                         return;
                     }
 
                     // Step through the objects in the selection set
-                    foreach (SelectedObject acSSObj in acSSet)
+                    foreach (double num in nums)
                     {
                         // Check to make sure a valid SelectedObject object was returned
-                        if (acSSObj != null)
+                        if (division == 0)
                         {
-                            // Open the selected object for write
-                            DBText acText = trans.GetObject(acSSObj.ObjectId,
-                                                                OpenMode.ForRead) as DBText;
-
-                            if (acText != null && LibraryCad.Functions.CheckIfNumber(acText.TextString))
-                            {
-                                if (division == 0)
-                                {
-                                    division = double.Parse(acText.TextString);
-                                }
-                                else
-                                {
-                                    division /= double.Parse(acText.TextString);
-                                }
-                            }
+                            division = num;
+                        }
+                        else
+                        {
+                            division /= num;
                         }
                     }
 

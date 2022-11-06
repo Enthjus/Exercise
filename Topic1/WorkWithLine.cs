@@ -22,13 +22,10 @@ namespace Topic1
                 {
                     try
                     {
-                        SelectionSet acSSet = LibraryCad.Functions.GetListSelection(doc);
-                        if (acSSet == null) return;
-
                         var sumLine = 0.0;
 
                         // Parse selection set thành list line
-                        var lines = LibraryCad.Functions.ParseSelectionToListLine(acSSet, doc);
+                        var lines = LibraryCad.Functions.SelectionSetToListLine(doc);
 
                         // Cộng độ dài các đoạn thẳng
                         if (lines != null)
