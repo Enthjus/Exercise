@@ -3,7 +3,6 @@ using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.EditorInput;
-using Topic1.Models;
 
 namespace Topic1
 {
@@ -23,15 +22,15 @@ namespace Topic1
                 while (1 == 1)
                 {
                     // Lấy chuỗi từ editor
-                    var text = LibraryCad.Functions.GetString(doc).Trim();
+                    var text = LibraryCad.SubFunc.GetString(doc).Trim();
 
                     // Chọn điểm
-                    var pointInf = LibraryCad.Functions.PickPoint(doc);
+                    var pointInf = LibraryCad.SubFunc.PickPoint(doc);
 
                     if (pointInf == null || pointInf.status == false) return;
 
                     // Tạo chuỗi
-                    LibraryCad.Functions.CreateText(doc, text, pointInf.point);
+                    LibraryCad.TextFunc.CreateText(doc, text, pointInf.point);
                 }
             }
 
@@ -102,18 +101,18 @@ namespace Topic1
                     try
                     {
                         // Chọn điểm
-                        var pointInf = LibraryCad.Functions.PickPoint(doc);
+                        var pointInf = LibraryCad.SubFunc.PickPoint(doc);
                         Point3d point = pointInf.point;
 
                         if (pointInf == null || pointInf.status == false) return;
 
                         // Chọn Set đối tượng
-                        string mergeText = LibraryCad.Functions.MergeString(doc);
+                        string mergeText = LibraryCad.TextFunc.MergeString(doc);
 
                         if (mergeText == "") return;
 
                         // Create text
-                        LibraryCad.Functions.CreateText(doc, mergeText, point);
+                        LibraryCad.TextFunc.CreateText(doc, mergeText, point);
 
                         // Save the new object to the database
                         trans.Commit();

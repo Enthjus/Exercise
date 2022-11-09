@@ -1,12 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Autodesk.AutoCAD.Runtime;
+using Autodesk.AutoCAD.ApplicationServices;
+using Autodesk.AutoCAD.DatabaseServices;
+using Autodesk.AutoCAD.Geometry;
+using Autodesk.AutoCAD.EditorInput;
+using LibraryCad;
+using acad = Autodesk.AutoCAD.ApplicationServices.Application;
 using System.Windows.Forms;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Topic1
 {
@@ -17,20 +19,140 @@ namespace Topic1
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        [CommandMethod("OpenForm")]
+        public static void OpenForm()
         {
-
+            Form1 form = new Form1();
+            acad.ShowModelessDialog(form);
         }
 
-        private void dataGridView1_Click(object sender, EventArgs e)
+        private void btn_PickDimension_Click(object sender, EventArgs e)
         {
+            this.Hide();
+            // Lấy document, database và editor
+            Document doc = acad.DocumentManager.CurrentDocument;
+            Database db = doc.Database;
+            Editor ed = doc.Editor;
 
+            using (doc.LockDocument())
+            {
+                // Tạo filter
+                var typeValues = new TypedValue[]
+                    {
+                        new TypedValue((int)DxfCode.Start, "DIMENSION")
+                    };
+                var slft = new SelectionFilter(typeValues);
+                // Bắt đầu transaction
+                using (var trans = db.TransactionManager.StartTransaction())
+                {
+                    Variable.sumDim = 0.0;
+                    // Lấy list dimension
+                    var dimensions = new List<Dimension>();
+                    var objectIds = SubFunc.GetListSelection(doc, "", slft);
+                    if (objectIds == null) return;
+                    foreach (var objectId in objectIds)
+                    {
+                        var dimension = trans.GetObject(objectId, OpenMode.ForRead) as Dimension;
+                        if (dimension != null)
+                        {
+                            dimensions.Add(dimension);
+                        }
+                    }
+                    //var lyrTblRec = LibraryCad.DimensionFunc.GetLayer(dimensions[0], doc);
+                    dimensions.Where(dim => dim.Measurement > 0).ToList().ForEach(dimension => Variable.sumDim += dimension.Measurement);
+                    Variable.sumDim = System.Math.Round(Variable.sumDim);
+                    txb_DimSum.Text = Variable.sumDim.ToString();
+                    trans.Commit();
+                }
+            }
+            this.Show();
         }
 
-        private void button1_Click_1(object sender, EventArgs e)
+        private void btn_PrintDS_Click(object sender, EventArgs e)
         {
-            // Lọc và chọn đối tượng cần thao tác
-            txt_dem.Text = "bao nhieu";
+            this.Hide();
+            Document doc = acad.DocumentManager.CurrentDocument;
+            Database db = doc.Database;
+            using (doc.LockDocument())
+            {
+                using (var trans = db.TransactionManager.StartTransaction())
+                {
+                    var layer = db.Clayer;
+                    var ptn = LibraryCad.SubFunc.PickPoint(doc);
+                    if (ptn.status == false) return;
+                    LibraryCad.TextFunc.CreateText(doc, Variable.sumDim.ToString(), ptn.point, layer);
+                    trans.Commit();
+                }
+            }
+        }
+
+        private void btn_PickLine_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            // Get the current document and database
+            Document doc = acad.DocumentManager.CurrentDocument;
+            Database db = doc.Database;
+            Editor ed = doc.Editor;
+            using (doc.LockDocument())
+            {
+                // Bắt đầu transaction
+                using (var trans = db.TransactionManager.StartTransaction())
+                {
+                    try
+                    {
+                        Variable.sumLine = 0.0;
+
+                        // Parse selection set thành list line
+                        var lines = LibraryCad.LineFunc.SelectionSetToListLine(doc);
+
+                        // Cộng độ dài các đoạn thẳng
+                        if (lines != null)
+                        {
+                            foreach (var line in lines)
+                            {
+                                Variable.sumLine += line.Length;
+                            }
+                        }
+                        Variable.sumLine = System.Math.Round(Variable.sumLine);
+                        txb_LineSum.Text = Variable.sumLine.ToString();
+                    }
+                    catch (System.Exception ex)
+                    {
+                        doc.Editor.WriteMessage(ex.Message);
+                        trans.Abort();
+                    }
+                }
+            }
+            this.Show();
+        }
+
+        private void btn_PrintLS_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            // Get the current document and database
+            Document doc = acad.DocumentManager.CurrentDocument;
+            Database db = doc.Database;
+            Editor ed = doc.Editor;
+            using (doc.LockDocument())
+            {
+                // Bắt đầu transaction
+                using (var trans = db.TransactionManager.StartTransaction())
+                {
+                    try
+                    {
+                        var layer = db.Clayer;
+                        var ptn = LibraryCad.SubFunc.PickPoint(doc);
+                        if (ptn.status == false) return;
+                        LibraryCad.TextFunc.CreateText(doc, Variable.sumLine.ToString(), ptn.point, layer);
+                        trans.Commit();
+                    }
+                    catch (System.Exception ex)
+                    {
+                        doc.Editor.WriteMessage(ex.Message);
+                        trans.Abort();
+                    }
+                }
+            }
         }
     }
 }

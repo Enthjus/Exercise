@@ -10,3 +10,7 @@ D:\c#\ATC\AddinLearning\Topic1\obj\Debug\Topic1.csproj.CoreCompileInputs.cache
 D:\c#\ATC\AddinLearning\Topic1\obj\Debug\Topic1.csproj.CopyComplete
 D:\c#\ATC\AddinLearning\Topic1\obj\Debug\Topic1.dll
 D:\c#\ATC\AddinLearning\Topic1\obj\Debug\Topic1.pdb
+D:\c#\ATC\AddinLearning\Topic1\bin\Debug\DevComponents.DotNetBar2.dll
+D:\c#\ATC\AddinLearning\Topic1\bin\Debug\DevComponents.DotNetBar2.xml
+D:\c#\ATC\AddinLearning\Topic1\obj\Debug\Topic1.AddForm.resources
+D:\c#\ATC\AddinLearning\Topic1\obj\Debug\Topic1.LayersForm.resources

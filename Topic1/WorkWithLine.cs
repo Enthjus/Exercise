@@ -25,7 +25,7 @@ namespace Topic1
                         var sumLine = 0.0;
 
                         // Parse selection set thành list line
-                        var lines = LibraryCad.Functions.SelectionSetToListLine(doc);
+                        var lines = LibraryCad.LineFunc.SelectionSetToListLine(doc);
 
                         // Cộng độ dài các đoạn thẳng
                         if (lines != null)

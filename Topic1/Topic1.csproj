@@ -47,6 +47,7 @@
       <HintPath>E:\Autodesk\AutoCAD 2021\acmgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="DevComponents.DotNetBar2, Version=14.1.0.37, Culture=neutral, PublicKeyToken=7eb7c3a35b91de04, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -59,6 +60,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddForm.Designer.cs">
+      <DependentUpon>AddForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -66,9 +73,16 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Init.cs" />
+    <Compile Include="LayersForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LayersForm.Designer.cs">
+      <DependentUpon>LayersForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Math.cs" />
-    <Compile Include="Models\PointInf.cs" />
+    <Compile Include="Variable.cs" />
     <Compile Include="WorkWithCircle.cs" />
+    <Compile Include="WorkWithDimension.cs" />
     <Compile Include="WorkWithLine.cs" />
     <Compile Include="WorkWithString.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -85,8 +99,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="AddForm.resx">
+      <DependentUpon>AddForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LayersForm.resx">
+      <DependentUpon>LayersForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
