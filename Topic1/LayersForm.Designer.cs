@@ -100,7 +100,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(538, 450);
+            this.ClientSize = new System.Drawing.Size(512, 450);
             this.Controls.Add(this.dtgv_Layers);
             this.Controls.Add(this.btn_NhapFile);
             this.Controls.Add(this.btn_XuatFile);

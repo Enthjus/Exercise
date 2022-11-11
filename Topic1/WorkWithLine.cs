@@ -14,7 +14,7 @@ namespace Topic1
             // Get the current document and database
             Document doc = Application.DocumentManager.CurrentDocument;
             Database db = doc.Database;
-            Editor ed = doc.Editor;
+
             using (doc.LockDocument())
             {
                 // Bắt đầu transaction
@@ -55,6 +55,7 @@ namespace Topic1
             Document doc = Application.DocumentManager.CurrentDocument;
             Database db = doc.Database;
             Editor ed = doc.Editor;
+
             using (doc.LockDocument())
             {
                 // Start a transaction
@@ -74,10 +75,6 @@ namespace Topic1
                     using (Line acLine = new Line(new Point3d(5, 5, 0),
                                                   new Point3d(12, 3, 0)))
                     {
-                        var angle = acLine.Angle;
-                        doc.Editor.WriteMessage("angle: " + angle);
-                        doc.Editor.WriteMessage("\nvector: " + acLine.Delta);
-                        acLine.EndPoint.RotateBy(angle, new Vector3d(0, 2, 0), acLine.StartPoint);
                         // Add the new object to the block table record and the transaction
                         acBlkTblRec.AppendEntity(acLine);
                         acTrans.AddNewlyCreatedDBObject(acLine, true);

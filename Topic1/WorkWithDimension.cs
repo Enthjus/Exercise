@@ -21,16 +21,19 @@ namespace Topic1
 
             using (doc.LockDocument())
             {
+                // Tạo filter
                 var typeValues = new TypedValue[]
                     {
                         new TypedValue((int)DxfCode.Start, "DIMENSION")
                     };
                 var slft = new SelectionFilter(typeValues);
+                
                 using (var trans = db.TransactionManager.StartTransaction())
                 {
                     var sum = 0.0;
-                    //var dimensions = LibraryCad.DimensionFunc.GetDimensions(doc);
                     var dimensions = new List<Dimension>();
+
+                    // Lấy đối tượng theo filter
                     var objectIds = SubFunc.GetListSelection(doc, "", slft);
                     if (objectIds == null) return;
                     foreach (var objectId in objectIds)
@@ -41,19 +44,18 @@ namespace Topic1
                             dimensions.Add(dimension);
                         }
                     }
-                    //var lyrTblRec = LibraryCad.DimensionFunc.GetLayer(dimensions[0], doc);
+
+                    // Cộng tổng các kích thước dim lại
                     dimensions.Where(dim => dim.Measurement > 0).ToList().ForEach(dimension => sum += dimension.Measurement);
-                    //foreach (var dimension in dimensions)
-                    //{
-                    //    if (LibraryCad.MathFunc.CheckIfNumber(dimension.Measurement.ToString()) && dimension.Measurement > 0)
-                    //    {
-                    //        sum += dimension.Measurement;
-                    //    }
-                    //}
+
+                    // Set layer hiện tại
                     var layer = db.Clayer;
+
+                    // Lấy và tạo point đặt kết quả
                     var ptn = LibraryCad.SubFunc.PickPoint(doc);
                     if (ptn.status == false) return;
                     LibraryCad.TextFunc.CreateText(doc, System.Math.Round(sum).ToString(), ptn.point, layer);
+
                     trans.Commit();
                 }
             }

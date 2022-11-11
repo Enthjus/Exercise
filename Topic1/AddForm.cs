@@ -1,16 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using Autodesk.AutoCAD.Runtime;
-using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.Geometry;
-using Autodesk.AutoCAD.EditorInput;
-using LibraryCad;
-using acad = Autodesk.AutoCAD.ApplicationServices.Application;
 using System.Windows.Forms;
-using Autodesk.AutoCAD.Colors;
 
 namespace Topic1
 {
@@ -32,24 +22,31 @@ namespace Topic1
 
         private void btn_Add_Click(object sender, EventArgs e)
         {
+            // Điều kiện màu phải lớn hơn 0
             if (short.Parse(txb_ColorId.Text) <= 0)
             {
                 MessageBox.Show("Thêm thất bại, color id phải lớn hơn 0");
                 return;
             }
+
+            // Lấy thông tin layer người dùng nhập vào
             var layerInfo = new LibraryCad.Models.LayerInfo();
             layerInfo.Name = txb_LayerName.Text;
             layerInfo.ColorId = short.Parse(txb_ColorId.Text);
+            layerInfo.Des = "tool create layer";
+
+            // Check có thêm thành công hay không
             isSave = LibraryCad.LayerFunc.CreateLayer(layerInfo);
             if (isSave)
             {
                 MessageBox.Show("Thêm thành công");
-                Variable.layerInfos.Add(layerInfo);
             }
             else
             {
                 MessageBox.Show("Thêm thất bại");
             }
+
+            // Tắt form
             this.Close();
         }
 

@@ -13,12 +13,13 @@ namespace Topic1
         {
             // Get the current document and database
             Document doc = Application.DocumentManager.CurrentDocument;
-            Database db = doc.Database;
-            Editor ed = doc.Editor;
 
             using (doc.LockDocument())
             {
+                // Chọn các đối tượng chỉ lấy circle
                 var circles = LibraryCad.CircleFunc.ParseSelectionToListCircle(doc);
+
+                // Vẽ đường tròn nội tiếp
                 foreach (var circle in circles)
                 {
                     LibraryCad.CircleFunc.TriangleInscribedInCircle(doc, circle);
@@ -31,15 +32,15 @@ namespace Topic1
         {
             // Get the current document and database
             Document doc = Application.DocumentManager.CurrentDocument;
-            Database db = doc.Database;
             Editor ed = doc.Editor;
 
             using (doc.LockDocument())
             {
+                // Chọn các đối tượng chỉ lấy circle
                 var circles = LibraryCad.CircleFunc.ParseSelectionToListCircle(doc);
                 if (circles == null) return;
-                var topP = circles[0].Center + new Line(new Point3d(circles[0].Center.X, circles[0].Center.Y, 0), new Point3d(circles[0].Center.X, circles[0].Center.Y + circles[0].Radius, 0)).Delta * 2;
-                ed.WriteMessage("point: " + topP.ToString());
+
+                // Vẽ đường tròn ngoại tiếp
                 foreach (var circle in circles)
                 {
                     LibraryCad.CircleFunc.TriangleCircumscribedAboutCircle(doc, circle);
@@ -52,11 +53,10 @@ namespace Topic1
         {
             // Get the current document and database
             Document doc = Application.DocumentManager.CurrentDocument;
-            Database db = doc.Database;
-            Editor ed = doc.Editor;
 
             using (doc.LockDocument())
             {
+                // Vẽ đường tròn
                 LibraryCad.CircleFunc.DrawCircle(doc);
             }
         }

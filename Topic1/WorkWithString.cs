@@ -13,8 +13,6 @@ namespace Topic1
         {
             // Get the current document and database
             Document doc = Application.DocumentManager.CurrentDocument;
-            Database db = doc.Database;
-            Editor ed = doc.Editor;
 
             using (doc.LockDocument())
             {
@@ -42,14 +40,9 @@ namespace Topic1
             // Get the current document and database
             Document doc = Application.DocumentManager.CurrentDocument;
             Database db = doc.Database;
-            Editor ed = doc.Editor;
+
             using (doc.LockDocument())
             {
-                //TypedValue[] tv = new TypedValue[]
-                //{
-                //    new TypedValue(,)
-                //};
-
                 // Start a transaction
                 using (var trans = db.TransactionManager.StartTransaction())
                 {
@@ -79,8 +72,8 @@ namespace Topic1
                             }
                         }
 
-                        //// Save the new object to the database
-                        //trans.Commit();
+                        // Save the new object to the database
+                        trans.Commit();
                     }
                 }
             }
@@ -92,7 +85,7 @@ namespace Topic1
             // Get the current document and database
             Document doc = Application.DocumentManager.CurrentDocument;
             Database db = doc.Database;
-            Editor ed = doc.Editor;
+            
             // Start a transaction
             using (doc.LockDocument())
             {
@@ -130,21 +123,3 @@ namespace Topic1
 
 
 
-//// Bien Layer
-//using (Transaction trrr = db.TransactionManager.StartTransaction())
-//{
-//    // Tạo layer
-
-//}
-
-//using (Transaction trrr2 = db.TransactionManager.StartTransaction())
-//{
-//    // Tạo Cir
-//    // Dung Bien Layer
-
-//}
-
-//using (OpenCloseTransaction tr = db.TransactionManager.StartOpenCloseTransaction())
-//{
-//    tr.Commit();
-//}

@@ -1,16 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using Autodesk.AutoCAD.Runtime;
-using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.Geometry;
-using Autodesk.AutoCAD.EditorInput;
-using LibraryCad;
 using acad = Autodesk.AutoCAD.ApplicationServices.Application;
 using System.Windows.Forms;
-using System.Linq;
 using System.IO;
 
 namespace Topic1
@@ -22,8 +13,8 @@ namespace Topic1
         public static void LayerController()
         {
             LayersForm form = new LayersForm();
-            //acad.ShowModalDialog(Form);
-            acad.ShowModelessDialog(form);
+            acad.ShowModalDialog(form);
+            //acad.ShowModelessDialog(form);
         }
 
         public LayersForm()
@@ -33,8 +24,11 @@ namespace Topic1
 
         private void btn_Add_Click(object sender, EventArgs e)
         {
+            // Mở form add
             AddForm addForm = new AddForm(this);
             acad.ShowModalDialog(addForm);
+
+            // Nếu thêm thành công thì load lại data
             if (addForm.isSave) LoadData();
         }
 
@@ -45,28 +39,31 @@ namespace Topic1
 
         public void LoadData()
         {
+            var doc = acad.DocumentManager.MdiActiveDocument;
+            dtgv_Layers.DataSource = null;
             dtgv_Layers.MultiSelect = false;
-            // Load layers lưu
-            if (Variable.layerInfos.Count > 0)
-            {
-                dtgv_Layers.DataSource = null;
-                dtgv_Layers.DataSource = Variable.layerInfos;
-            }
-            else dtgv_Layers.DataSource = null;
+
+            // Load layers được tạo do tool
+            dtgv_Layers.DataSource = LibraryCad.LayerFunc.GetLayer(doc);
         }
 
         private void btn_Delete_Click(object sender, EventArgs e)
         {
-            var doc = acad.DocumentManager.CurrentDocument;
-            var db = doc.Database;
+            var doc = acad.DocumentManager.MdiActiveDocument;
+
+            // Lấy tên layer của hàng được người dùng chọn
             string layerName = dtgv_Layers.SelectedCells[0].OwningRow.Cells["Name"].Value.ToString();
+
+            // Xóa layer
             var msg = LibraryCad.LayerFunc.LayerDelete(doc, layerName);
+
+            // Nếu xóa thành công load lại data
             if(msg.Contains("have been deleted"))
             {
-                var layer = Variable.layerInfos.SingleOrDefault(ly => ly.Name == layerName);
-                Variable.layerInfos.Remove(layer);
                 LoadData();
             }
+
+            //Còn không thì in lỗi
             if (msg != null) MessageBox.Show(msg);
         }
 
@@ -74,13 +71,22 @@ namespace Topic1
         {
             if (dtgv_Layers.Rows.Count != 0)
             {
+                // Mở dialog lưu file
                 FileDialog savef = new SaveFileDialog();
-                string fname = null;
+
+                string fname = "";
+
+                // Filter chỉ hiện file text 
                 savef.Filter = "Text File (*.txt)|*.txt";
+
                 var res = savef.ShowDialog();
                 if (res == DialogResult.Cancel) { return; }
+
+                // Nếu tên file đã tồn tại thì update file còn nếu không tạo file mới
                 fname = savef.FileName;
                 StreamWriter write = new StreamWriter(fname, false);
+
+                // Ghi từng dòng lên file text
                 int yy = dtgv_Layers.RowCount;
                 for (int i = 0; i < yy; i++)
                 {
@@ -102,19 +108,15 @@ namespace Topic1
                 DialogResult kq = MessageBox.Show(" - Bạn Có Muốn Xóa Dữ Liệu Cũ Không!", "Thông Báo!!!", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                 if (kq == DialogResult.Yes)
                 {
-                    var doc = acad.DocumentManager.CurrentDocument;
-                    var db = doc.Database;
+                    var doc = acad.DocumentManager.MdiActiveDocument;
+                    
                     //Xóa dữ liệu cũ
                     for (int ii = dtgv_Layers.Rows.Count - 1; ii >= 0; ii--)
                     {
                         string layerName = dtgv_Layers.Rows[ii].Cells["Name"].Value.ToString();
-                        var msg = LibraryCad.LayerFunc.LayerDelete(doc, layerName) + "\n";
-                        if (msg.Contains("have been deleted"))
-                        {
-                            var layer = Variable.layerInfos.SingleOrDefault(ly => ly.Name == layerName);
-                            Variable.layerInfos.Remove(layer);
-                        }
+                        LibraryCad.LayerFunc.LayerDelete(doc, layerName);
                     }
+
                     //Thêm dữ liệu mới
                     int i = 0;
                     Variable.Import_txt(i);
