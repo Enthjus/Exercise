@@ -16,10 +16,10 @@ namespace Topic1
 
         public static double sumLine = 0;
 
-        public static List<LibraryCad.Models.LayerInfo> layerInfos = new List<LibraryCad.Models.LayerInfo>();
-
-        public static List<LibraryCad.Models.LayerObject> layerObjects = new List<LibraryCad.Models.LayerObject>();
-
+        /// <summary>
+        /// Hàm nhập file txt
+        /// </summary>
+        /// <param name="i"></param>
         public static void Import_txt(int i)
         {
             //Thêm dữ liệu mới
@@ -32,11 +32,11 @@ namespace Topic1
                 string path = Path.GetExtension(name_txt);
                 Stream s = File.Open(name_txt, FileMode.Open);
                 StreamReader r = new StreamReader(s);
-                //i = 0;
                 while (!r.EndOfStream)
                 {
                     try
                     {
+                        // Đọc từng dòng
                         string line = r.ReadLine();
                         if (line.Length > 0)
                         {
@@ -45,10 +45,6 @@ namespace Topic1
                             layerInfo.ColorId = short.Parse(line.Split('|')[1]);
                             layerInfo.Des = "tool create layer";
                             var status = LibraryCad.LayerFunc.CreateLayer(layerInfo);
-                            if (status)
-                            {
-                                layerInfos.Add(layerInfo);
-                            }
                             i++;
                         }
                     }
@@ -58,6 +54,10 @@ namespace Topic1
             }
         }
 
+        /// <summary>
+        /// Hàm xuất file excel
+        /// </summary>
+        /// <param name="layerObjects">List thông tin các đối tượng</param>
         public static void Export_csv(List<LibraryCad.Models.LayerObject> layerObjects)
         {
             string filePath = "";
@@ -85,7 +85,6 @@ namespace Topic1
                 ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
                 using (ExcelPackage package = new ExcelPackage())
                 {
-                    //ExcelPackage package = new ExcelPackage();
                     //đặt tên người tạo file
                     package.Workbook.Properties.Author = "Phúc";
 
@@ -127,6 +126,7 @@ namespace Topic1
                     //int colIndex = 1;
                     //int rowIndex = 2;
 
+                    // Tạo table theo list truyền vào
                     var range = ws.Cells["A2"].LoadFromCollection(layerObjects, true);
                     range.AutoFitColumns();
 
@@ -176,7 +176,7 @@ namespace Topic1
                 }
                 MessageBox.Show("Xuất excel thành công");
             }
-            catch (System.Exception ex)
+            catch 
             {
                 MessageBox.Show("Có lỗi khi lưu file");
             }

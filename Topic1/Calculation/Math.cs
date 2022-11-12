@@ -16,7 +16,7 @@ namespace Topic1
             // Get the current document and database
             Document doc = Application.DocumentManager.CurrentDocument;
             Database db = doc.Database;
-            Editor ed = doc.Editor;
+            
             using (doc.LockDocument())
             {
                 // Start a transaction
@@ -66,7 +66,7 @@ namespace Topic1
             // Get the current document and database
             Document doc = Application.DocumentManager.CurrentDocument;
             Database db = doc.Database;
-            Editor ed = doc.Editor;
+            
             using (doc.LockDocument())
             {
                 // Start a transaction
@@ -76,25 +76,23 @@ namespace Topic1
                     {
                         PromptPointOptions pPtOpts = new PromptPointOptions("");
 
-                        // Chọn điểm
+                        // Chọn điểm để ghi kết quả
                         pPtOpts.Message = "\nChọn điểm muốn đặt kết quả: ";
                         PointInf pointInf = LibraryCad.SubFunc.PickPoint(doc);
                         Point3d point = pointInf.point;
 
                         if (pointInf == null || pointInf.status == false) return;
 
-                        SelectionSet acSSet;
-
                         // Lấy các giá trị được chọn
                         var nums = LibraryCad.MathFunc.SelectionSetToNumList(doc, "- Chọn các giá trị muốn cộng: ");
-                        if (nums == null) return;
+                        if (nums.Count == 0) return;
 
                         var sum = 0.0;
 
                         // Step through the objects in the selection set
                         foreach (double num in nums)
                         {
-                            if (num != null)
+                            if (num != 0)
                             {
                                 sum += num;
                             }
@@ -147,7 +145,7 @@ namespace Topic1
                         // Step through the objects in the selection set
                         foreach (double num in nums)
                         {
-                            if (num != null)
+                            if (num != 0)
                             {
                                 subtraction -= num;
                             }

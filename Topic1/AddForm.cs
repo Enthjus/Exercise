@@ -22,7 +22,14 @@ namespace Topic1
 
         private void btn_Add_Click(object sender, EventArgs e)
         {
-            // Điều kiện màu phải lớn hơn 0
+            // color index không được để null
+            if (txb_ColorId.Text == "")
+            {
+                MessageBox.Show("Thêm thất bại, color id không được để trống");
+                return;
+            }
+
+            // color index phải lớn hơn 0
             if (short.Parse(txb_ColorId.Text) <= 0)
             {
                 MessageBox.Show("Thêm thất bại, color id phải lớn hơn 0");
@@ -35,11 +42,16 @@ namespace Topic1
             layerInfo.ColorId = short.Parse(txb_ColorId.Text);
             layerInfo.Des = "tool create layer";
 
-            // Check có thêm thành công hay không
-            isSave = LibraryCad.LayerFunc.CreateLayer(layerInfo);
-            if (isSave)
+            // Check xem có thêm thành công hay không
+            var msg = LibraryCad.LayerFunc.CreateLayer(layerInfo);
+            if (msg != null)
             {
-                MessageBox.Show("Thêm thành công");
+                if (msg.Contains("đã tồn tại"))
+                {
+                    MessageBox.Show(msg);
+                    return;
+                }
+                MessageBox.Show(msg);
             }
             else
             {
@@ -67,16 +79,16 @@ namespace Topic1
 
         private void txb_ColorId_Validating(object sender, CancelEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txb_ColorId.Text))
+            if (txb_ColorId.Text == "")
             {
                 e.Cancel = true;
                 txb_ColorId.Focus();
-                errorProviderColor.SetError(txb_ColorId, "ColorId can't be null!");
+                errorProviderColor.SetError(txb_ColorId, "Color id should not be null!");
             }
             else
             {
                 e.Cancel = false;
-                errorProviderColor.SetError(txb_ColorId, "");
+                errorProviderName.SetError(txb_LayerName, "");
             }
         }
     }

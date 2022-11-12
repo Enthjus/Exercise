@@ -101,12 +101,12 @@
     <Compile Include="LayersForm.Designer.cs">
       <DependentUpon>LayersForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Math.cs" />
+    <Compile Include="Calculation\Math.cs" />
     <Compile Include="Variable.cs" />
-    <Compile Include="WorkWithCircle.cs" />
-    <Compile Include="WorkWithDimension.cs" />
-    <Compile Include="WorkWithLine.cs" />
-    <Compile Include="WorkWithString.cs" />
+    <Compile Include="WorkWithObject\WorkWithCircle.cs" />
+    <Compile Include="WorkWithObject\WorkWithDimension.cs" />
+    <Compile Include="WorkWithObject\WorkWithLine.cs" />
+    <Compile Include="WorkWithObject\WorkWithString.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

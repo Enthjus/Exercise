@@ -28,8 +28,8 @@ namespace Topic1
             AddForm addForm = new AddForm(this);
             acad.ShowModalDialog(addForm);
 
-            // Nếu thêm thành công thì load lại data
-            if (addForm.isSave) LoadData();
+            // Load lại data
+            LoadData();
         }
 
         private void Layers_Load(object sender, EventArgs e)
@@ -55,7 +55,7 @@ namespace Topic1
             string layerName = dtgv_Layers.SelectedCells[0].OwningRow.Cells["Name"].Value.ToString();
 
             // Xóa layer
-            var msg = LibraryCad.LayerFunc.LayerDelete(doc, layerName);
+            var msg = LibraryCad.LayerFunc.DeleteLayer(doc, layerName);
 
             // Nếu xóa thành công load lại data
             if(msg.Contains("have been deleted"))
@@ -114,7 +114,7 @@ namespace Topic1
                     for (int ii = dtgv_Layers.Rows.Count - 1; ii >= 0; ii--)
                     {
                         string layerName = dtgv_Layers.Rows[ii].Cells["Name"].Value.ToString();
-                        LibraryCad.LayerFunc.LayerDelete(doc, layerName);
+                        LibraryCad.LayerFunc.DeleteLayer(doc, layerName);
                     }
 
                     //Thêm dữ liệu mới

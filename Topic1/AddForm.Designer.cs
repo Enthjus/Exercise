@@ -33,12 +33,12 @@
             this.labelX1 = new DevComponents.DotNetBar.LabelX();
             this.labelX2 = new DevComponents.DotNetBar.LabelX();
             this.btn_Add = new DevComponents.DotNetBar.ButtonX();
-            this.txb_ColorId = new DevComponents.Editors.IntegerInput();
             this.errorProviderName = new System.Windows.Forms.ErrorProvider(this.components);
             this.errorProviderColor = new System.Windows.Forms.ErrorProvider(this.components);
-            ((System.ComponentModel.ISupportInitialize)(this.txb_ColorId)).BeginInit();
+            this.txb_ColorId = new DevComponents.Editors.IntegerInput();
             ((System.ComponentModel.ISupportInitialize)(this.errorProviderName)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProviderColor)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txb_ColorId)).BeginInit();
             this.SuspendLayout();
             // 
             // txb_LayerName
@@ -91,6 +91,14 @@
             this.btn_Add.Text = "Add";
             this.btn_Add.Click += new System.EventHandler(this.btn_Add_Click);
             // 
+            // errorProviderName
+            // 
+            this.errorProviderName.ContainerControl = this;
+            // 
+            // errorProviderColor
+            // 
+            this.errorProviderColor.ContainerControl = this;
+            // 
             // txb_ColorId
             // 
             // 
@@ -106,14 +114,6 @@
             this.txb_ColorId.TabIndex = 5;
             this.txb_ColorId.Validating += new System.ComponentModel.CancelEventHandler(this.txb_ColorId_Validating);
             // 
-            // errorProviderName
-            // 
-            this.errorProviderName.ContainerControl = this;
-            // 
-            // errorProviderColor
-            // 
-            this.errorProviderColor.ContainerControl = this;
-            // 
             // AddForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -126,9 +126,9 @@
             this.Controls.Add(this.txb_LayerName);
             this.Name = "AddForm";
             this.Text = "AddForm";
-            ((System.ComponentModel.ISupportInitialize)(this.txb_ColorId)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProviderName)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProviderColor)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txb_ColorId)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -139,8 +139,8 @@
         private DevComponents.DotNetBar.LabelX labelX1;
         private DevComponents.DotNetBar.LabelX labelX2;
         private DevComponents.DotNetBar.ButtonX btn_Add;
-        private DevComponents.Editors.IntegerInput txb_ColorId;
         private System.Windows.Forms.ErrorProvider errorProviderName;
         private System.Windows.Forms.ErrorProvider errorProviderColor;
+        private DevComponents.Editors.IntegerInput txb_ColorId;
     }
 }

@@ -34,7 +34,7 @@ namespace Topic1
             var layerInfos = LibraryCad.LayerFunc.GetLayer(doc);
             
             // Lấy chiều dài và diện tích của các đối tượng thuộc từng layer
-            var layerObjs = LibraryCad.LayerFunc.GetProperties(doc, layerInfos);
+            var layerObjs = LibraryCad.LayerFunc.GetObjectPropertiesByLayer(doc, layerInfos);
 
             dtgv_Area.DataSource = layerObjs;
         }
@@ -42,15 +42,15 @@ namespace Topic1
         private void btn_Export_Click(object sender, EventArgs e)
         {
             var doc = acad.DocumentManager.MdiActiveDocument;
-
+            
             // Lấy layer được tạo bởi tool
             var layerInfos = LibraryCad.LayerFunc.GetLayer(doc);
 
             // Lấy chiều dài và diện tích của các đối tượng thuộc từng layer
-            var layerObjs = LibraryCad.LayerFunc.GetProperties(doc, layerInfos);
+            var layerObjs = LibraryCad.LayerFunc.GetObjectPropertiesByLayer(doc, layerInfos);
 
             // Xuất file excel
-            Variable.Export_csv(layerObjs);
+            Variable.Export_csv(layerObjs);`
         }
     }
 }
