@@ -50,7 +50,7 @@ namespace Topic1
             var layerObjs = LibraryCad.LayerFunc.GetObjectPropertiesByLayer(doc, layerInfos);
 
             // Xuất file excel
-            Variable.Export_csv(layerObjs);`
+            Variable.Export_csv(layerObjs);
         }
     }
 }

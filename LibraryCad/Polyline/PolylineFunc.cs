@@ -33,7 +33,7 @@ namespace LibraryCad.Polyline
                     {
                         var pline = trans.GetObject(plineEt.ObjectId, OpenMode.ForRead) as Autodesk.AutoCAD.DatabaseServices.Polyline;
                         perimeter += pline.Length;
-                        if (pline.IsReallyClosing) area += pline.Area;
+                        if (pline.Closed) area += pline.Area;
                     }
                     lyObj.LayerName = layerInfo.Name;
                     lyObj.Perimeter = perimeter;

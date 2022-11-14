@@ -37,8 +37,8 @@ namespace LibraryCad
                     if (acSSObj != null)
                     {
                         // Open the selected object for write
-                        DBText acText = trans.GetObject(acSSObj.ObjectId,
-                                                            OpenMode.ForRead) as DBText;
+                        DBText acText = trans.GetObject(acSSObj.ObjectId, OpenMode.ForRead) as DBText;
+
                         // Nếu không phải số thì trả về false
                         if (!CheckIfNumber(acText.TextString)) return false;
                     }
@@ -61,6 +61,8 @@ namespace LibraryCad
                 pStrOpts = new PromptStringOptions("\nNhập số: ");
                 pStrOpts.AllowSpaces = false;
                 PromptResult pStrRes = doc.Editor.GetString(pStrOpts);
+
+                // Chạy vòng lặp đến khi người dùng nhập số
                 while (1 == 1)
                 {
                     if (CheckIfNumber(pStrRes.StringResult))
@@ -83,6 +85,7 @@ namespace LibraryCad
         {
             using (var trans = doc.Database.TransactionManager.StartOpenCloseTransaction())
             {
+                // Tạo filter để lọc các đối tượng được chọn
                 var typeValue = new TypedValue[]
                 {
                     new TypedValue((int)DxfCode.Start, "TEXT"),
@@ -92,6 +95,8 @@ namespace LibraryCad
                 var slft = new SelectionFilter(typeValue);
                 var objectIds = SubFunc.GetListSelection(doc, msg, slft);
                 if (objectIds == null) return null;
+
+                // Check nếu là số thì add vào list
                 var nums = new List<double>();
                 foreach (ObjectId obj in objectIds)
                 {

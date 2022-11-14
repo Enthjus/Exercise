@@ -18,6 +18,7 @@ namespace LibraryCad
             {
                 try
                 {
+                    // Tạo filter để lọc các đối tượng truyền vào
                     List<Dimension> dimensions = new List<Dimension>();
                     var typeValues = new TypedValue[]
                     {
@@ -26,6 +27,8 @@ namespace LibraryCad
                     var slft = new SelectionFilter(typeValues);
                     var selSet = SubFunc.GetListSelection(doc, "- Chọn các dimension mà bạn muốn tính tồng: ", slft);
                     if (selSet == null) return null;
+
+                    // Chuyển sang dạnh dimension rồi add vào list
                     foreach (ObjectId sel in selSet)
                     {
                         Dimension dimension = trans.GetObject(sel, OpenMode.ForRead) as Dimension;
@@ -44,7 +47,6 @@ namespace LibraryCad
                     return null;
                 }
             }
-            return null;
         }
     }
 }
