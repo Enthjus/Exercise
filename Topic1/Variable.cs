@@ -94,9 +94,6 @@ namespace Topic1
                     //tạo 1 sheet để làm việc trên đó
                     ExcelWorksheet ws = package.Workbook.Worksheets.Add("Kích thước sheet");
 
-                    //lấy sheet vừa add để thao tác
-                    //ExcelWorksheet ws = package.Workbook.Worksheets[1];
-
                     //đặt tên cho sheet
                     ws.Name = "Area";
                     //font size mặc định cho cả sheet

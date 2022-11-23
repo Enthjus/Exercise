@@ -183,7 +183,7 @@ namespace LibraryCad
                         var circle = trans.GetObject(circleEt.ObjectId, OpenMode.ForRead) as Circle;
 
                         // Chu vi đường tròn
-                        perimeter += (2 * System.Math.PI * circle.Radius);
+                        perimeter += circle.Circumference;
 
                         // Diện tích đường tròn
                         area += circle.Area;

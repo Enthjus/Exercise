@@ -157,10 +157,13 @@ namespace LibraryCad
                             }
 
                             LayerTableRecord layerTblRec = new LayerTableRecord();
+                            LibraryCad.SubFunc.AddRegAppTableRecord("Phuc");
+                            ResultBuffer rb = new ResultBuffer(new TypedValue(1001, "Phuc"), new TypedValue(1000, "Layer create by tool"));
                             layerTblRec.Name = layerName;
+                            layerTblRec.XData = rb;
 
-                            // Chuyển layertable từ for read sang for write
-                            layerTbl.UpgradeOpen();
+                                // Chuyển layertable từ for read sang for write
+                                layerTbl.UpgradeOpen();
 
                             // Append the new layer to the Layer table and the transaction
                             id = layerTbl.Add(layerTblRec);
@@ -168,10 +171,12 @@ namespace LibraryCad
                             msg = "Thêm thành công";
                         }
 
-                        //Tới đối tượng mới tạo để sửa thuộc tính
+                        //Tới đối tượng mới tạo hoặc đối tượng đã có để sửa thuộc tính
                         LayerTableRecord layerTblRecNew = trans.GetObject(id, OpenMode.ForWrite) as LayerTableRecord;
                         layerTblRecNew.Color = Color.FromColorIndex(ColorMethod.ByAci, layerInfo.ColorId);
                         layerTblRecNew.Description = layerInfo.Des;
+
+                        //LibraryCad.SubFunc.SetXdata(layerTblRecNew.ObjectId, "Phuc", "Layer create by tool");
 
                         trans.Commit();
                     }
@@ -245,13 +250,21 @@ namespace LibraryCad
                         foreach (var layerId in layerTable)
                         {
                             var layer = trans.GetObject(layerId, OpenMode.ForRead) as LayerTableRecord;
-                            if (layer.Description == "tool create layer")
+                            try
                             {
-                                var ly = new LayerInfo();
-                                ly.Name = layer.Name;
-                                ly.ColorId = layer.Color.ColorIndex;
-                                ly.Des = layer.Description;
-                                layerInfos.Add(ly);
+                                var data = layer.XData.AsArray();
+                                if ((string)data[0].Value == "Phuc" && (string)data[1].Value == "Layer create by tool")
+                                {
+                                    var ly = new LayerInfo();
+                                    ly.Name = layer.Name;
+                                    ly.ColorId = layer.Color.ColorIndex;
+                                    ly.Des = layer.Description;
+                                    layerInfos.Add(ly);
+                                }
+                            }
+                            catch
+                            {
+                                continue;
                             }
                         }
                         trans.Commit();
@@ -294,6 +307,9 @@ namespace LibraryCad
                         {
                             //Chiều dài các line cùng layer
                             perimeter += LibraryCad.LineFunc.LineProperties(layer, doc);
+
+                            //Chiều dài các đường cong cùng layer
+                            perimeter += LibraryCad.Arc.ArcFunc.ArcProperties(layer, doc);
 
                             //Chiều dài và diện tích các pline cùng layer
                             var plineProp = LibraryCad.Polyline.PolylineFunc.PlineProperties(layer, doc);

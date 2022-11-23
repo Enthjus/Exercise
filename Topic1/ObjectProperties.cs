@@ -30,7 +30,7 @@ namespace Topic1
             dtgv_Area.DataSource = null;
             var doc = acad.DocumentManager.MdiActiveDocument;
 
-            // Lấy layer được tạo bởi tool
+            // Lấy layer được tạo bởi winform
             var layerInfos = LibraryCad.LayerFunc.GetLayer(doc);
             
             // Lấy chiều dài và diện tích của các đối tượng thuộc từng layer

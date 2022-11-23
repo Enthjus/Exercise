@@ -82,6 +82,7 @@
     <Compile Include="AddForm.Designer.cs">
       <DependentUpon>AddForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="EventHandler\EventHandler.cs" />
     <Compile Include="ObjectProperties.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -103,9 +104,12 @@
     </Compile>
     <Compile Include="Calculation\Math.cs" />
     <Compile Include="Variable.cs" />
+    <Compile Include="WorkWithObject\WorkWithArc.cs" />
+    <Compile Include="WorkWithObject\WorkWithBlock.cs" />
     <Compile Include="WorkWithObject\WorkWithCircle.cs" />
     <Compile Include="WorkWithObject\WorkWithDimension.cs" />
     <Compile Include="WorkWithObject\WorkWithLine.cs" />
+    <Compile Include="WorkWithObject\WorkWithPolyline.cs" />
     <Compile Include="WorkWithObject\WorkWithString.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

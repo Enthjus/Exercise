@@ -11,7 +11,6 @@ namespace Topic1
         [CommandMethod("TriangleInscribedWithCircle")]
         public static void TriangleInscribedWithCircle()
         {
-            // Get the current document and database
             Document doc = Application.DocumentManager.CurrentDocument;
 
             using (doc.LockDocument())
@@ -30,9 +29,7 @@ namespace Topic1
         [CommandMethod("TriangleCircumscribedAboutCircle")]
         public static void TriangleCircumscribedAboutCircle()
         {
-            // Get the current document and database
             Document doc = Application.DocumentManager.CurrentDocument;
-            Editor ed = doc.Editor;
 
             using (doc.LockDocument())
             {
@@ -51,7 +48,6 @@ namespace Topic1
         [CommandMethod("DrawCircle")]
         public static void DrawCircle()
         {
-            // Get the current document and database
             Document doc = Application.DocumentManager.CurrentDocument;
 
             using (doc.LockDocument())

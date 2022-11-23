@@ -84,5 +84,73 @@ namespace LibraryCad
             }
             return null;
         }
+
+        /// <summary>
+        /// Hàm set xdata cho object
+        /// </summary>
+        /// <param name="objId">object id</param>
+        /// <param name="nameApp">name app của xdata</param>
+        /// <param name="xStr">string của xdata</param>
+        public static void SetXdata(ObjectId objId, string nameApp, string xStr)
+            {
+                Document doc = Application.DocumentManager.MdiActiveDocument;
+                Database db = doc.Database;
+
+                using (Transaction trans = db.TransactionManager.StartOpenCloseTransaction())
+                {
+                    DBObject obj = trans.GetObject(objId, OpenMode.ForWrite);
+
+                    AddRegAppTableRecord(nameApp);
+
+                    ResultBuffer rb = new ResultBuffer(new TypedValue(1001, nameApp), new TypedValue(1000, xStr));
+
+                    obj.XData = rb;
+
+                    rb.Dispose();
+
+                    trans.Commit();
+                }
+            }
+
+        /// <summary>
+        /// Hàm thêm RegAppTable
+        /// </summary>
+        /// <param name="regAppName">tên RegAppTable</param>
+        public static void AddRegAppTableRecord(string regAppName)
+        {
+
+            Document doc = Application.DocumentManager.MdiActiveDocument;
+
+            Editor ed = doc.Editor;
+
+            Database db = doc.Database;
+
+            Transaction tr = doc.TransactionManager.StartTransaction();
+
+            using (tr)
+            {
+                RegAppTable rat = (RegAppTable)tr.GetObject(db.RegAppTableId, OpenMode.ForRead, false);
+
+                if (!rat.Has(regAppName))
+
+                {
+
+                    rat.UpgradeOpen();
+
+                    RegAppTableRecord ratr = new RegAppTableRecord();
+
+                    ratr.Name = regAppName;
+
+                    rat.Add(ratr);
+
+                    tr.AddNewlyCreatedDBObject(ratr, true);
+
+                }
+
+                tr.Commit();
+
+            }
+
+        }
     }
 }

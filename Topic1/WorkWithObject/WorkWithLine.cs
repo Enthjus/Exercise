@@ -11,20 +11,18 @@ namespace Topic1
         [CommandMethod("SumMultiLine")]
         public static void SumMultiLine()
         {
-            // Get the current document and database
             Document doc = Application.DocumentManager.CurrentDocument;
             Database db = doc.Database;
 
             using (doc.LockDocument())
             {
-                // Bắt đầu transaction
                 using (var trans = db.TransactionManager.StartTransaction())
                 {
                     try
                     {
                         var sumLine = 0.0;
 
-                        // Parse selection set thành list line
+                        // Parse các đối tượng được chọn thành list đoạn thẳng
                         var lines = LibraryCad.LineFunc.SelectionSetToListLine(doc);
 
                         // Cộng độ dài các đoạn thẳng
@@ -51,39 +49,37 @@ namespace Topic1
         [CommandMethod("AddLine")]
         public static void AddLine()
         {
-            // Get the current document and database
             Document doc = Application.DocumentManager.CurrentDocument;
             Database db = doc.Database;
-            Editor ed = doc.Editor;
 
             using (doc.LockDocument())
             {
-                // Start a transaction
-                using (Transaction acTrans = db.TransactionManager.StartTransaction())
+                using (Transaction trans = db.TransactionManager.StartTransaction())
                 {
-                    // Open the Block table for read
-                    BlockTable acBlkTbl;
-                    acBlkTbl = acTrans.GetObject(db.BlockTableId,
-                                                    OpenMode.ForRead) as BlockTable;
+                    BlockTable blockTable = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
 
-                    // Open the Block table record Model space for write
-                    BlockTableRecord acBlkTblRec;
-                    acBlkTblRec = acTrans.GetObject(acBlkTbl[BlockTableRecord.ModelSpace],
-                                                    OpenMode.ForWrite) as BlockTableRecord;
+                    BlockTableRecord tableRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
 
-                    // Create a line that starts at 5,5 and ends at 12,3
-                    using (Line acLine = new Line(new Point3d(5, 5, 0),
-                                                  new Point3d(12, 3, 0)))
+                    // tạo 1 đoạn thẳng bắt đầu ở 5,5 và kết thúc ở 12,3
+                    using (Line acLine = new Line(new Point3d(5, 5, 0), new Point3d(12, 3, 0)))
                     {
-                        // Add the new object to the block table record and the transaction
-                        acBlkTblRec.AppendEntity(acLine);
-                        acTrans.AddNewlyCreatedDBObject(acLine, true);
+                        tableRec.AppendEntity(acLine);
+                        trans.AddNewlyCreatedDBObject(acLine, true);
                     }
 
-                    // Save the new object to the database
-                    acTrans.Commit();
+                    trans.Commit();
                 }
             }
+        }
+
+        [CommandMethod("DimMLine")]
+        public static void DimMLine()
+        {
+            Document doc = Application.DocumentManager.MdiActiveDocument;
+            
+            var lines = LibraryCad.LineFunc.SelectionSetToListLine(doc);
+
+            LibraryCad.DimensionFunc.DimMultiLine(lines, doc);
         }
     }
 }

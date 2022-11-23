@@ -48,7 +48,7 @@
             // 
             this.txb_LayerName.Border.Class = "TextBoxBorder";
             this.txb_LayerName.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.txb_LayerName.Location = new System.Drawing.Point(120, 36);
+            this.txb_LayerName.Location = new System.Drawing.Point(93, 14);
             this.txb_LayerName.Name = "txb_LayerName";
             this.txb_LayerName.PreventEnterBeep = true;
             this.txb_LayerName.Size = new System.Drawing.Size(172, 22);
@@ -61,7 +61,7 @@
             // 
             // 
             this.labelX1.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX1.Location = new System.Drawing.Point(39, 34);
+            this.labelX1.Location = new System.Drawing.Point(12, 12);
             this.labelX1.Name = "labelX1";
             this.labelX1.Size = new System.Drawing.Size(75, 23);
             this.labelX1.TabIndex = 1;
@@ -73,7 +73,7 @@
             // 
             // 
             this.labelX2.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX2.Location = new System.Drawing.Point(39, 65);
+            this.labelX2.Location = new System.Drawing.Point(12, 43);
             this.labelX2.Name = "labelX2";
             this.labelX2.Size = new System.Drawing.Size(75, 23);
             this.labelX2.TabIndex = 3;
@@ -83,7 +83,7 @@
             // 
             this.btn_Add.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
             this.btn_Add.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btn_Add.Location = new System.Drawing.Point(120, 93);
+            this.btn_Add.Location = new System.Drawing.Point(93, 71);
             this.btn_Add.Name = "btn_Add";
             this.btn_Add.Size = new System.Drawing.Size(75, 23);
             this.btn_Add.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -107,7 +107,7 @@
             this.txb_ColorId.BackgroundStyle.Class = "DateTimeInputBackground";
             this.txb_ColorId.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
             this.txb_ColorId.ButtonFreeText.Shortcut = DevComponents.DotNetBar.eShortcut.F2;
-            this.txb_ColorId.Location = new System.Drawing.Point(120, 65);
+            this.txb_ColorId.Location = new System.Drawing.Point(93, 43);
             this.txb_ColorId.Name = "txb_ColorId";
             this.txb_ColorId.ShowUpDown = true;
             this.txb_ColorId.Size = new System.Drawing.Size(172, 22);
@@ -118,13 +118,15 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(364, 208);
+            this.ClientSize = new System.Drawing.Size(353, 107);
             this.Controls.Add(this.txb_ColorId);
             this.Controls.Add(this.btn_Add);
             this.Controls.Add(this.labelX2);
             this.Controls.Add(this.labelX1);
             this.Controls.Add(this.txb_LayerName);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "AddForm";
+            this.ShowInTaskbar = false;
             this.Text = "AddForm";
             ((System.ComponentModel.ISupportInitialize)(this.errorProviderName)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProviderColor)).EndInit();

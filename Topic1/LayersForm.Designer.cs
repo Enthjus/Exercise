@@ -40,7 +40,7 @@
             // 
             this.btn_Add.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
             this.btn_Add.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btn_Add.Location = new System.Drawing.Point(384, 33);
+            this.btn_Add.Location = new System.Drawing.Point(383, 12);
             this.btn_Add.Name = "btn_Add";
             this.btn_Add.Size = new System.Drawing.Size(89, 47);
             this.btn_Add.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -52,7 +52,7 @@
             // 
             this.btn_Delete.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
             this.btn_Delete.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btn_Delete.Location = new System.Drawing.Point(384, 86);
+            this.btn_Delete.Location = new System.Drawing.Point(383, 65);
             this.btn_Delete.Name = "btn_Delete";
             this.btn_Delete.Size = new System.Drawing.Size(89, 47);
             this.btn_Delete.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -64,7 +64,7 @@
             // 
             this.btn_XuatFile.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
             this.btn_XuatFile.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btn_XuatFile.Location = new System.Drawing.Point(384, 139);
+            this.btn_XuatFile.Location = new System.Drawing.Point(383, 118);
             this.btn_XuatFile.Name = "btn_XuatFile";
             this.btn_XuatFile.Size = new System.Drawing.Size(89, 47);
             this.btn_XuatFile.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -76,7 +76,7 @@
             // 
             this.btn_NhapFile.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
             this.btn_NhapFile.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btn_NhapFile.Location = new System.Drawing.Point(384, 192);
+            this.btn_NhapFile.Location = new System.Drawing.Point(383, 171);
             this.btn_NhapFile.Name = "btn_NhapFile";
             this.btn_NhapFile.Size = new System.Drawing.Size(89, 47);
             this.btn_NhapFile.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -87,7 +87,7 @@
             // dtgv_Layers
             // 
             this.dtgv_Layers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dtgv_Layers.Location = new System.Drawing.Point(13, 33);
+            this.dtgv_Layers.Location = new System.Drawing.Point(12, 12);
             this.dtgv_Layers.MultiSelect = false;
             this.dtgv_Layers.Name = "dtgv_Layers";
             this.dtgv_Layers.ReadOnly = true;
@@ -100,13 +100,14 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(512, 450);
+            this.ClientSize = new System.Drawing.Size(484, 336);
             this.Controls.Add(this.dtgv_Layers);
             this.Controls.Add(this.btn_NhapFile);
             this.Controls.Add(this.btn_XuatFile);
             this.Controls.Add(this.btn_Delete);
             this.Controls.Add(this.btn_Add);
             this.Name = "LayersForm";
+            this.ShowInTaskbar = false;
             this.Text = "Layers";
             this.Load += new System.EventHandler(this.Layers_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dtgv_Layers)).EndInit();

@@ -3,6 +3,7 @@ using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.EditorInput;
+using System;
 
 namespace Topic1
 {
@@ -11,12 +12,11 @@ namespace Topic1
         [CommandMethod("CreateMText")]
         public static void CreateMText()
         {
-            // Get the current document and database
             Document doc = Application.DocumentManager.CurrentDocument;
 
             using (doc.LockDocument())
             {
-                // Repeat create text method
+                // Cho tạo nhiều chuỗi đến khi người dùng nhấn esc hoặc hủy lệnh
                 while (1 == 1)
                 {
                     // Lấy chuỗi từ editor
@@ -37,42 +37,32 @@ namespace Topic1
         [CommandMethod("ReadText")]
         public static void ReadText()
         {
-            // Get the current document and database
             Document doc = Application.DocumentManager.CurrentDocument;
             Database db = doc.Database;
 
             using (doc.LockDocument())
             {
-                // Start a transaction
                 using (var trans = db.TransactionManager.StartTransaction())
                 {
-                    // Request for objects to be selected in the drawing area
                     PromptSelectionResult acSSPrompt = doc.Editor.GetSelection();
 
-                    // If the prompt status is OK, objects were selected
                     if (acSSPrompt.Status == PromptStatus.OK)
                     {
                         SelectionSet acSSet = acSSPrompt.Value;
 
-                        // Step through the objects in the selection set
                         foreach (SelectedObject acSSObj in acSSet)
                         {
-                            // Check to make sure a valid SelectedObject object was returned
                             if (acSSObj != null)
                             {
-                                // Open the selected object for write
-                                DBText acText = trans.GetObject(acSSObj.ObjectId,
-                                                                    OpenMode.ForRead) as DBText;
+                                DBText acText = trans.GetObject(acSSObj.ObjectId, OpenMode.ForRead) as DBText;
 
                                 if (acText != null)
                                 {
-                                    // Get text of object
                                     doc.Editor.WriteMessage("text: " + acText.TextString);
                                 }
                             }
                         }
 
-                        // Save the new object to the database
                         trans.Commit();
                     }
                 }
@@ -82,11 +72,9 @@ namespace Topic1
         [CommandMethod("MergeString")]
         public static void MergeString()
         {
-            // Get the current document and database
             Document doc = Application.DocumentManager.CurrentDocument;
             Database db = doc.Database;
             
-            // Start a transaction
             using (doc.LockDocument())
             {
                 using (var trans = db.TransactionManager.StartTransaction())

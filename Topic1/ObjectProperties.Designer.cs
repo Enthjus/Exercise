@@ -37,7 +37,7 @@
             // 
             this.dtgv_Area.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dtgv_Area.Enabled = false;
-            this.dtgv_Area.Location = new System.Drawing.Point(29, 36);
+            this.dtgv_Area.Location = new System.Drawing.Point(12, 12);
             this.dtgv_Area.MultiSelect = false;
             this.dtgv_Area.Name = "dtgv_Area";
             this.dtgv_Area.RowHeadersWidth = 51;
@@ -47,7 +47,7 @@
             // 
             // btn_Export
             // 
-            this.btn_Export.Location = new System.Drawing.Point(378, 36);
+            this.btn_Export.Location = new System.Drawing.Point(361, 12);
             this.btn_Export.Name = "btn_Export";
             this.btn_Export.Size = new System.Drawing.Size(101, 59);
             this.btn_Export.TabIndex = 2;
@@ -55,14 +55,15 @@
             this.btn_Export.UseVisualStyleBackColor = true;
             this.btn_Export.Click += new System.EventHandler(this.btn_Export_Click);
             // 
-            // Area
+            // ObjectProperties
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(665, 450);
+            this.ClientSize = new System.Drawing.Size(469, 386);
             this.Controls.Add(this.btn_Export);
             this.Controls.Add(this.dtgv_Area);
-            this.Name = "Area";
+            this.Name = "ObjectProperties";
+            this.ShowInTaskbar = false;
             this.Text = "Area";
             this.Load += new System.EventHandler(this.Area_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dtgv_Area)).EndInit();
