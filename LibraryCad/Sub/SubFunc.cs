@@ -18,17 +18,17 @@ namespace LibraryCad
             {
                 try
                 {
-                    PointInf pInf = new PointInf();
-                    PromptPointOptions pPtOpts = new PromptPointOptions("");
-                    PromptPointResult pPtRes;
-                    pPtOpts.Message = "\nChọn điểm: ";
-                    pPtRes = doc.Editor.GetPoint(pPtOpts);
-                    Point3d point = pPtRes.Value;
-                    if (pPtRes.Status == PromptStatus.Cancel) pInf.status = false;
-                    else pInf.status = true;
-                    pInf.point = point;
+                    PointInf pointInf = new PointInf();
+                    PromptPointOptions options = new PromptPointOptions("");
+                    PromptPointResult result;
+                    options.Message = "\nChọn điểm: ";
+                    result = doc.Editor.GetPoint(options);
+                    Point3d point = result.Value;
+                    if (result.Status == PromptStatus.Cancel) pointInf.status = false;
+                    else pointInf.status = true;
+                    pointInf.point = point;
                     trans.Commit();
-                    return pInf;
+                    return pointInf;
                 }
                 catch (System.Exception ex)
                 {
@@ -44,14 +44,22 @@ namespace LibraryCad
         /// </summary>
         /// <param name="doc">Document</param>
         /// <returns></returns>
-        public static string GetString(Document doc)
+        public static string GetString(Document doc, string str)
         {
-            // Get string from editor
-            PromptStringOptions pStrOpts;
-            pStrOpts = new PromptStringOptions("\nNhập chuỗi: ");
-            pStrOpts.AllowSpaces = true;
-            PromptResult pStrRes = doc.Editor.GetString(pStrOpts);
-            return pStrRes.StringResult;
+            try
+            {
+                // Lấy chuỗi người dùng nhập vào
+                PromptStringOptions options;
+                options = new PromptStringOptions("\n" + str);
+                options.AllowSpaces = false;
+                PromptResult result = doc.Editor.GetString(options);
+                return result.StringResult;
+            }
+            catch (System.Exception ex)
+            {
+                doc.Editor.WriteMessage(ex.Message + "\n");
+                return null;
+            }
         }
 
         /// <summary>
@@ -63,26 +71,32 @@ namespace LibraryCad
         /// <returns>Set các đối tượng</returns>
         public static ObjectId[] GetListSelection(Document doc, string msg, SelectionFilter slft = null)
         {
-            PromptSelectionOptions options = new PromptSelectionOptions();
-            options.MessageForAdding = $"\n{msg}";
-            PromptSelectionResult acSSPrompt;
-            // Request for objects to be selected in the drawing area
-            if (slft == null)
+            try
             {
-                acSSPrompt = doc.Editor.GetSelection();
+                PromptSelectionOptions options = new PromptSelectionOptions();
+                options.MessageForAdding = $"\n{msg}";
+                PromptSelectionResult selResult;
+                // Nếu không có filter thì lấy hết
+                if (slft == null)
+                {
+                    selResult = doc.Editor.GetSelection();
+                }
+                // Nếu có filter thì lấy theo filter
+                else
+                {
+                    selResult = doc.Editor.GetSelection(options, slft);
+                }
+                // Nếu prompt status là OK, thì trả về object id
+                if (selResult.Status == PromptStatus.OK)
+                {
+                    return selResult.Value.GetObjectIds();
+                }
+                return null;
             }
-            else
+            catch
             {
-                acSSPrompt = doc.Editor.GetSelection(options, slft);
+                return null;
             }
-            // If the prompt status is OK, objects were selected
-            if (acSSPrompt.Status == PromptStatus.OK)
-            {
-                //acSSPrompt.Value.GetObjectIds();
-                //SelectionSet acSSet = acSSPrompt.Value;
-                return acSSPrompt.Value.GetObjectIds(); 
-            }
-            return null;
         }
 
         /// <summary>
@@ -92,25 +106,27 @@ namespace LibraryCad
         /// <param name="nameApp">name app của xdata</param>
         /// <param name="xStr">string của xdata</param>
         public static void SetXdata(ObjectId objId, string nameApp, string xStr)
+        {
+            Document doc = Application.DocumentManager.MdiActiveDocument;
+            Database db = doc.Database;
+            using (Transaction trans = db.TransactionManager.StartOpenCloseTransaction())
             {
-                Document doc = Application.DocumentManager.MdiActiveDocument;
-                Database db = doc.Database;
-
-                using (Transaction trans = db.TransactionManager.StartOpenCloseTransaction())
+                try
                 {
                     DBObject obj = trans.GetObject(objId, OpenMode.ForWrite);
-
                     AddRegAppTableRecord(nameApp);
-
                     ResultBuffer rb = new ResultBuffer(new TypedValue(1001, nameApp), new TypedValue(1000, xStr));
-
                     obj.XData = rb;
-
                     rb.Dispose();
-
                     trans.Commit();
                 }
+                catch (System.Exception ex)
+                {
+                    doc.Editor.WriteMessage(ex.Message);
+                    trans.Abort();
+                }
             }
+        }
 
         /// <summary>
         /// Hàm thêm RegAppTable
@@ -118,39 +134,50 @@ namespace LibraryCad
         /// <param name="regAppName">tên RegAppTable</param>
         public static void AddRegAppTableRecord(string regAppName)
         {
-
             Document doc = Application.DocumentManager.MdiActiveDocument;
-
-            Editor ed = doc.Editor;
-
             Database db = doc.Database;
-
-            Transaction tr = doc.TransactionManager.StartTransaction();
-
-            using (tr)
+            using (var trans = doc.TransactionManager.StartTransaction())
             {
-                RegAppTable rat = (RegAppTable)tr.GetObject(db.RegAppTableId, OpenMode.ForRead, false);
-
-                if (!rat.Has(regAppName))
-
+                try
                 {
-
-                    rat.UpgradeOpen();
-
-                    RegAppTableRecord ratr = new RegAppTableRecord();
-
-                    ratr.Name = regAppName;
-
-                    rat.Add(ratr);
-
-                    tr.AddNewlyCreatedDBObject(ratr, true);
-
+                    RegAppTable rat = (RegAppTable)trans.GetObject(db.RegAppTableId, OpenMode.ForRead, false);
+                    if (!rat.Has(regAppName))
+                    {
+                        rat.UpgradeOpen();
+                        RegAppTableRecord ratr = new RegAppTableRecord();
+                        ratr.Name = regAppName;
+                        rat.Add(ratr);
+                        trans.AddNewlyCreatedDBObject(ratr, true);
+                    }
+                    trans.Commit();
                 }
-
-                tr.Commit();
-
+                catch (System.Exception ex)
+                {
+                    doc.Editor.WriteMessage(ex.Message);
+                    trans.Abort();
+                }
             }
+        }
 
+        /// <summary>
+        /// Check vị trí dim người dùng muốn chọn
+        /// </summary>
+        /// <param name="str">chuỗi người dùng nhập</param>
+        /// <returns>số nguyên</returns>
+        public static int ChooseDimPosition(string str)
+        {
+            if (str == "in" || str == "i")
+            {
+                return 1;
+            }
+            else if (str == "out" || str == "o" || str == "")
+            {
+                return 0;
+            }
+            else
+            {
+                return -1;
+            }
         }
     }
 }

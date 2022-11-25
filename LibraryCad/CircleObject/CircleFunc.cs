@@ -21,20 +21,18 @@ namespace LibraryCad
                 try
                 {
                     // Tạo filter để lọc các đối tượng được chọn
-                    var typeVal = new TypedValue[]
+                    var tvCircle = new TypedValue[]
                     {
-                    new TypedValue((int)DxfCode.Start, "CIRCLE")
+                        new TypedValue((int)DxfCode.Start, "CIRCLE")
                     };
-                    var slft = new SelectionFilter(typeVal);
+                    var slft = new SelectionFilter(tvCircle);
                     var objectIds = SubFunc.GetListSelection(doc, "- Chọn các đường tròn: ", slft);
                     if (objectIds == null) return null;
-
                     // Parse sang dạng line rồi thêm vào list
                     var circles = new List<Circle>();
                     foreach (ObjectId objectId in objectIds)
                     {
                         Circle circle = trans.GetObject(objectId, OpenMode.ForRead) as Circle;
-
                         if (circle != null)
                         {
                             circles.Add(circle);
@@ -63,26 +61,21 @@ namespace LibraryCad
                 try
                 {
                     doc.Editor.WriteMessage("Vẽ đường tròn!");
-                    BlockTable bt = trans.GetObject(doc.Database.BlockTableId, OpenMode.ForRead) as BlockTable;
-
-                    BlockTableRecord btr = trans.GetObject(bt[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
-
+                    BlockTable blockTable = trans.GetObject(doc.Database.BlockTableId, OpenMode.ForRead) as BlockTable;
+                    BlockTableRecord tableRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
                     // Lấy bán kính nhập vào
                     var circleRad = MathFunc.GetNum(doc);
                     // Lấy tâm nhập vào
                     var centerPoint = SubFunc.PickPoint(doc);
                     if (!centerPoint.status) return;
-
                     // Tạo đường tròn
                     using (var circle = new Circle())
                     {
                         circle.Radius = circleRad;
                         circle.Center = centerPoint.point;
-
-                        btr.AppendEntity(circle);
+                        tableRec.AppendEntity(circle);
                         trans.AddNewlyCreatedDBObject(circle, true);
                     }
-
                     trans.Commit();
                 }
                 catch (System.Exception ex)
@@ -94,7 +87,7 @@ namespace LibraryCad
         }
 
         /// <summary>
-        /// Hàm vẽ tam giác cân nội tiếp đường tròn
+        /// Hàm vẽ tam giác đều nội tiếp đường tròn
         /// </summary>
         /// <param name="doc">Document</param>
         /// <param name="circle">Đường tròn</param>
@@ -103,10 +96,8 @@ namespace LibraryCad
             using (var trans = doc.Database.TransactionManager.StartTransaction())
             {
                 doc.Editor.WriteMessage("Vẽ tam giác nội tiếp đường tròn!");
-                BlockTable bt = trans.GetObject(doc.Database.BlockTableId, OpenMode.ForRead) as BlockTable;
-
-                BlockTableRecord btr = trans.GetObject(bt[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
-
+                BlockTable blockTable = trans.GetObject(doc.Database.BlockTableId, OpenMode.ForRead) as BlockTable;
+                BlockTableRecord tableRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
                 // Vẽ tam giác đều nội tiếp đường tròn
                 using (var pline = new Autodesk.AutoCAD.DatabaseServices.Polyline())
                 {
@@ -114,18 +105,16 @@ namespace LibraryCad
                     pline.AddVertexAt(0, new Point2d(circle.Center.X, circle.Center.Y + circle.Radius), 0, 0, 0);
                     pline.AddVertexAt(1, new Point2d(circle.Center.X + (circle.Radius * MathFunc.squareRoot(3) / 2), circle.Center.Y - (circle.Radius / 2)), 0, 0, 0);
                     pline.AddVertexAt(2, new Point2d(circle.Center.X - (circle.Radius * MathFunc.squareRoot(3) / 2), circle.Center.Y - (circle.Radius / 2)), 0, 0, 0);
-                    //pline.AddVertexAt(3, new Point2d(circle.Center.X, circle.Center.Y + circle.Radius), 0, 0, 0);
                     pline.Closed = true;
-                    btr.AppendEntity(pline);
+                    tableRec.AppendEntity(pline);
                     trans.AddNewlyCreatedDBObject(pline, true);
                 }
-
                 trans.Commit();
             }
         }
 
         /// <summary>
-        /// Hàm vẽ tam giác cân ngoại tiếp đường tròn
+        /// Hàm vẽ tam giác đều ngoại tiếp đường tròn
         /// </summary>
         /// <param name="doc">Document</param>
         /// <param name="circle">Đường tròn</param>
@@ -134,9 +123,8 @@ namespace LibraryCad
             using (var trans = doc.Database.TransactionManager.StartTransaction())
             {
                 doc.Editor.WriteMessage("Vẽ tam giác nội tiếp đường tròn!");
-                BlockTable bt = trans.GetObject(doc.Database.BlockTableId, OpenMode.ForRead) as BlockTable;
-                BlockTableRecord btr = trans.GetObject(bt[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
-
+                BlockTable blockTable = trans.GetObject(doc.Database.BlockTableId, OpenMode.ForRead) as BlockTable;
+                BlockTableRecord tableRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
                 // Vẽ tam giác đều nội tiếp đường tròn
                 using (var pline = new Autodesk.AutoCAD.DatabaseServices.Polyline())
                 {
@@ -145,11 +133,9 @@ namespace LibraryCad
                     pline.AddVertexAt(1, new Point2d(circle.Center.X + (circle.Radius * MathFunc.squareRoot(3)), circle.Center.Y - circle.Radius), 0, 0, 0);
                     pline.AddVertexAt(2, new Point2d(circle.Center.X, circle.Center.Y + (circle.Radius * 2)), 0, 0, 0);
                     pline.Closed = true;
-
-                    btr.AppendEntity(pline);
+                    tableRec.AppendEntity(pline);
                     trans.AddNewlyCreatedDBObject(pline, true);
                 }
-
                 trans.Commit();
             }
         }
@@ -164,8 +150,7 @@ namespace LibraryCad
         {
             var perimeter = 0.0;
             var area = 0.0;
-            var lyObj = new LayerObject();
-
+            var layerObj = new LayerObject();
             using (var trans = doc.Database.TransactionManager.StartOpenCloseTransaction())
             {
                 // Tạo filter lấy đường tròn
@@ -174,24 +159,21 @@ namespace LibraryCad
                     new TypedValue((int)DxfCode.Start, "CIRCLE")
                 };
                 SelectionFilter slftCircle = new SelectionFilter(tvCircle);
-
                 try
                 {
-                    var circleEts = LibraryCad.LayerFunc.GetEntityByFilterAndLayer(slftCircle, layerInfo.Name, doc);
-                    foreach (var circleEt in circleEts)
+                    var circles = LibraryCad.LayerFunc.GetEntityByFilterAndLayer(slftCircle, layerInfo.Name, doc);
+                    foreach (var circleId in circles)
                     {
-                        var circle = trans.GetObject(circleEt.ObjectId, OpenMode.ForRead) as Circle;
-
+                        var circle = trans.GetObject(circleId.ObjectId, OpenMode.ForRead) as Circle;
                         // Chu vi đường tròn
                         perimeter += circle.Circumference;
-
                         // Diện tích đường tròn
                         area += circle.Area;
                     }
-                    lyObj.LayerName = layerInfo.Name;
-                    lyObj.Perimeter = perimeter;
-                    lyObj.Area = area;
-                    return lyObj;
+                    layerObj.LayerName = layerInfo.Name;
+                    layerObj.Perimeter = perimeter;
+                    layerObj.Area = area;
+                    return layerObj;
                 }
                 catch (System.Exception ex)
                 {

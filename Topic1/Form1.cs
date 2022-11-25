@@ -28,11 +28,9 @@ namespace Topic1
         private void btn_PickDimension_Click(object sender, EventArgs e)
         {
             this.Hide();
-            // Lấy document, database và editor
             Document doc = acad.DocumentManager.CurrentDocument;
             Database db = doc.Database;
             Editor ed = doc.Editor;
-
             using (doc.LockDocument())
             {
                 // Tạo filter
@@ -41,12 +39,10 @@ namespace Topic1
                         new TypedValue((int)DxfCode.Start, "DIMENSION")
                     };
                 var slft = new SelectionFilter(typeValues);
-
                 // Bắt đầu transaction
                 using (var trans = db.TransactionManager.StartTransaction())
                 {
                     Variable.sumDim = 0.0;
-
                     // Lấy list dimension
                     var dimensions = new List<Dimension>();
                     var objectIds = SubFunc.GetListSelection(doc, "", slft);
@@ -59,13 +55,10 @@ namespace Topic1
                             dimensions.Add(dimension);
                         }
                     }
-
                     // Cộng giá trị các dim lại với nhau
                     dimensions.Where(dim => dim.Measurement > 0).ToList().ForEach(dimension => Variable.sumDim += dimension.Measurement);
-
                     // Làm tròn
                     Variable.sumDim = System.Math.Round(Variable.sumDim);
-
                     txb_DimSum.Text = Variable.sumDim.ToString();
                     trans.Commit();
                 }
@@ -78,18 +71,15 @@ namespace Topic1
             this.Hide();
             Document doc = acad.DocumentManager.CurrentDocument;
             Database db = doc.Database;
-
             using (doc.LockDocument())
             {
                 using (var trans = db.TransactionManager.StartTransaction())
                 {
                     // Set layer
                     var layer = db.Clayer;
-
                     // Lấy điểm vừa pick
                     var ptn = LibraryCad.SubFunc.PickPoint(doc);
                     if (ptn.status == false) return;
-
                     // Tạo text
                     LibraryCad.TextFunc.CreateText(doc, Variable.sumDim.ToString(), ptn.point, layer);
                     trans.Commit();
@@ -100,10 +90,8 @@ namespace Topic1
         private void btn_PickLine_Click(object sender, EventArgs e)
         {
             this.Hide();
-            // Get the current document and database
             Document doc = acad.DocumentManager.CurrentDocument;
             Database db = doc.Database;
-            
             using (doc.LockDocument())
             {
                 // Bắt đầu transaction
@@ -112,10 +100,8 @@ namespace Topic1
                     try
                     {
                         Variable.sumLine = 0.0;
-
                         // Parse selection set thành list line
                         var lines = LibraryCad.LineFunc.SelectionSetToListLine(doc);
-
                         // Cộng độ dài các đoạn thẳng
                         if (lines != null)
                         {
@@ -140,10 +126,8 @@ namespace Topic1
         private void btn_PrintLS_Click(object sender, EventArgs e)
         {
             this.Hide();
-            // Get the current document and database
             Document doc = acad.DocumentManager.CurrentDocument;
             Database db = doc.Database;
-            
             using (doc.LockDocument())
             {
                 // Bắt đầu transaction
@@ -153,11 +137,9 @@ namespace Topic1
                     {
                         // Set layer
                         var layer = db.Clayer;
-
                         // Lấy điểm vừa pick
                         var ptn = LibraryCad.SubFunc.PickPoint(doc);
                         if (ptn.status == false) return;
-
                         // Tạo text
                         LibraryCad.TextFunc.CreateText(doc, Variable.sumLine.ToString(), ptn.point, layer);
                         trans.Commit();

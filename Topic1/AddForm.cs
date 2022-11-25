@@ -28,20 +28,17 @@ namespace Topic1
                 MessageBox.Show("Thêm thất bại, color id không được để trống");
                 return;
             }
-
             // color index phải lớn hơn 0
             if (short.Parse(txb_ColorId.Text) <= 0)
             {
                 MessageBox.Show("Thêm thất bại, color id phải lớn hơn 0");
                 return;
             }
-
             // Lấy thông tin layer người dùng nhập vào
             var layerInfo = new LibraryCad.Models.LayerInfo();
             layerInfo.Name = txb_LayerName.Text;
             layerInfo.ColorId = short.Parse(txb_ColorId.Text);
             layerInfo.Des = "tool create layer";
-
             // Check xem có thêm thành công hay không
             var msg = LibraryCad.LayerFunc.CreateLayer(layerInfo);
             if (msg != null)
@@ -57,11 +54,10 @@ namespace Topic1
             {
                 MessageBox.Show("Thêm thất bại");
             }
-
             // Tắt form
             this.Close();
         }
-
+        // Validate tên không được để trống
         private void txb_LayerName_Validating(object sender, CancelEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txb_LayerName.Text))
@@ -76,7 +72,7 @@ namespace Topic1
                 errorProviderName.SetError(txb_LayerName, "");
             }
         }
-
+        // Validate màu không được để trống
         private void txb_ColorId_Validating(object sender, CancelEventArgs e)
         {
             if (txb_ColorId.Text == "")

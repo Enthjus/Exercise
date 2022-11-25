@@ -24,12 +24,12 @@ namespace LibraryCad
                     var lines = new List<Line>();
                     var typeValue = new TypedValue[]
                     {
-                    new TypedValue((int)DxfCode.Start, "LINE")
+                        new TypedValue((int)DxfCode.Start, "LINE")
                     };
                     var slft = new SelectionFilter(typeValue);
                     var objectIds = SubFunc.GetListSelection(doc, "- Chọn các đoạn thẳng: ", slft);
                     if (objectIds == null) return null;
-                    // Step through the objects in the selection set
+                    // Lấy đoạn thẳng từ list object id 
                     foreach (ObjectId objId in objectIds)
                     {
                         var line = trans.GetObject(objId, OpenMode.ForRead) as Line;
@@ -54,14 +54,16 @@ namespace LibraryCad
             var perimeter = 0.0;
             using (var trans = doc.Database.TransactionManager.StartOpenCloseTransaction())
             {
+                // Tạo filter để lọc đối tượng theo dạng mong muốn
                 TypedValue[] tvLine = new TypedValue[]
                 {
-                            new TypedValue((int)DxfCode.Start, "LINE")
+                    new TypedValue((int)DxfCode.Start, "LINE")
                 };
                 SelectionFilter slftLine = new SelectionFilter(tvLine);
                 try
                 {
                     var lineEts = LibraryCad.LayerFunc.GetEntityByFilterAndLayer(slftLine, layerInfo.Name, doc);
+                    // Cộng tổng độ dài các đoạn thẳng lấy được
                     foreach (var lineEt in lineEts)
                     {
                         var line = trans.GetObject(lineEt.ObjectId, OpenMode.ForRead) as Line;
@@ -78,7 +80,7 @@ namespace LibraryCad
         }
 
         /// <summary>
-        /// Hàm tạo hình vuông theo size truyền vào
+        /// Hàm nối 4 điểm thành hình vuông theo tham số truyền vào
         /// </summary>
         /// <param name="size">kích thước</param>
         /// <returns></returns>
@@ -100,6 +102,16 @@ namespace LibraryCad
                 entities.Add(line);
             }
             return entities;
+        }
+
+        /// <summary>
+        /// Hàm tìm trung điểm của đoạn thẳng 
+        /// </summary>
+        /// <param name="line">đường thẳng</param>
+        /// <returns></returns>
+        public static Point3d GetMidpoint(Line line)
+        {
+            return line.GetPointAtDist(line.Length / 2.0);
         }
     }
 }

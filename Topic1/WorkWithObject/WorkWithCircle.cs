@@ -12,13 +12,12 @@ namespace Topic1
         public static void TriangleInscribedWithCircle()
         {
             Document doc = Application.DocumentManager.CurrentDocument;
-
             using (doc.LockDocument())
             {
                 // Chọn các đối tượng chỉ lấy circle
                 var circles = LibraryCad.CircleFunc.ParseSelectionToListCircle(doc);
-
-                // Vẽ đường tròn nội tiếp
+                if (circles == null) return;
+                // Gọi hàm vẽ đường tròn nội tiếp
                 foreach (var circle in circles)
                 {
                     LibraryCad.CircleFunc.TriangleInscribedInCircle(doc, circle);
@@ -30,14 +29,12 @@ namespace Topic1
         public static void TriangleCircumscribedAboutCircle()
         {
             Document doc = Application.DocumentManager.CurrentDocument;
-
             using (doc.LockDocument())
             {
                 // Chọn các đối tượng chỉ lấy circle
                 var circles = LibraryCad.CircleFunc.ParseSelectionToListCircle(doc);
                 if (circles == null) return;
-
-                // Vẽ đường tròn ngoại tiếp
+                // Gọi hàm vẽ đường tròn ngoại tiếp
                 foreach (var circle in circles)
                 {
                     LibraryCad.CircleFunc.TriangleCircumscribedAboutCircle(doc, circle);
@@ -49,7 +46,6 @@ namespace Topic1
         public static void DrawCircle()
         {
             Document doc = Application.DocumentManager.CurrentDocument;
-
             using (doc.LockDocument())
             {
                 // Vẽ đường tròn

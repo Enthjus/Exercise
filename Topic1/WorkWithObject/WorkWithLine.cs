@@ -13,7 +13,6 @@ namespace Topic1
         {
             Document doc = Application.DocumentManager.CurrentDocument;
             Database db = doc.Database;
-
             using (doc.LockDocument())
             {
                 using (var trans = db.TransactionManager.StartTransaction())
@@ -21,10 +20,8 @@ namespace Topic1
                     try
                     {
                         var sumLine = 0.0;
-
                         // Parse các đối tượng được chọn thành list đoạn thẳng
                         var lines = LibraryCad.LineFunc.SelectionSetToListLine(doc);
-
                         // Cộng độ dài các đoạn thẳng
                         if (lines != null)
                         {
@@ -33,7 +30,6 @@ namespace Topic1
                                 sumLine += line.Length;
                             }
                         }
-
                         // In ra editor
                         doc.Editor.WriteMessage("Tổng độ dài các đoạn thẳng = " + sumLine);
                     }
@@ -51,22 +47,18 @@ namespace Topic1
         {
             Document doc = Application.DocumentManager.CurrentDocument;
             Database db = doc.Database;
-
             using (doc.LockDocument())
             {
                 using (Transaction trans = db.TransactionManager.StartTransaction())
                 {
                     BlockTable blockTable = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
-
                     BlockTableRecord tableRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
-
                     // tạo 1 đoạn thẳng bắt đầu ở 5,5 và kết thúc ở 12,3
                     using (Line acLine = new Line(new Point3d(5, 5, 0), new Point3d(12, 3, 0)))
                     {
                         tableRec.AppendEntity(acLine);
                         trans.AddNewlyCreatedDBObject(acLine, true);
                     }
-
                     trans.Commit();
                 }
             }
@@ -76,9 +68,10 @@ namespace Topic1
         public static void DimMLine()
         {
             Document doc = Application.DocumentManager.MdiActiveDocument;
-            
+            // Lấy list đoạn thẳng từ các đối tượng được chọn
             var lines = LibraryCad.LineFunc.SelectionSetToListLine(doc);
-
+            if (lines.Count == 0) return;
+            // Tạo dim trên list đoạn thẳng vừa nhận được
             LibraryCad.DimensionFunc.DimMultiLine(lines, doc);
         }
     }

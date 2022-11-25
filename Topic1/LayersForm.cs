@@ -27,7 +27,6 @@ namespace Topic1
             // Mở form add
             AddForm addForm = new AddForm(this);
             acad.ShowModalDialog(addForm);
-
             // Load lại data
             LoadData();
         }
@@ -42,7 +41,6 @@ namespace Topic1
             var doc = acad.DocumentManager.MdiActiveDocument;
             dtgv_Layers.DataSource = null;
             dtgv_Layers.MultiSelect = false;
-
             // Load layers được tạo do tool
             dtgv_Layers.DataSource = LibraryCad.LayerFunc.GetLayer(doc);
         }
@@ -50,19 +48,15 @@ namespace Topic1
         private void btn_Delete_Click(object sender, EventArgs e)
         {
             var doc = acad.DocumentManager.MdiActiveDocument;
-
             // Lấy tên layer của hàng được người dùng chọn
             string layerName = dtgv_Layers.SelectedCells[0].OwningRow.Cells["Name"].Value.ToString();
-
             // Xóa layer
             var msg = LibraryCad.LayerFunc.DeleteLayer(doc, layerName);
-
             // Nếu xóa thành công load lại data
             if(msg.Contains("have been deleted"))
             {
                 LoadData();
             }
-
             //Còn không thì in lỗi
             if (msg != null) MessageBox.Show(msg);
         }
@@ -73,19 +67,14 @@ namespace Topic1
             {
                 // Mở dialog lưu file
                 FileDialog savef = new SaveFileDialog();
-
                 string fname = "";
-
                 // Filter chỉ hiện file text 
                 savef.Filter = "Text File (*.txt)|*.txt";
-
                 var res = savef.ShowDialog();
                 if (res == DialogResult.Cancel) { return; }
-
                 // Nếu tên file đã tồn tại thì update file còn nếu không tạo file mới
                 fname = savef.FileName;
                 StreamWriter write = new StreamWriter(fname, false);
-
                 // Ghi từng dòng lên file text
                 int yy = dtgv_Layers.RowCount;
                 for (int i = 0; i < yy; i++)
@@ -109,14 +98,12 @@ namespace Topic1
                 if (kq == DialogResult.Yes)
                 {
                     var doc = acad.DocumentManager.MdiActiveDocument;
-                    
                     //Xóa dữ liệu cũ
                     for (int ii = dtgv_Layers.Rows.Count - 1; ii >= 0; ii--)
                     {
                         string layerName = dtgv_Layers.Rows[ii].Cells["Name"].Value.ToString();
                         LibraryCad.LayerFunc.DeleteLayer(doc, layerName);
                     }
-
                     //Thêm dữ liệu mới
                     int i = 0;
                     Variable.Import_txt(i);

@@ -22,23 +22,20 @@ namespace LibraryCad
         }
 
         /// <summary>
-        /// Hàm check số các đối tượng được chọn
+        /// Hàm check số các text tượng được chọn
         /// </summary>
         /// <param name="sSet">Các đối tượng được chọn</param>
         /// <param name="trans"></param>
         /// <returns></returns>
-        public static bool CheckIfSelectionSetIsNumber(SelectionSet sSet, Document doc)
+        public static bool CheckIfSelectionSetIsNumber(SelectionSet selSet, Document doc)
         {
             using (var trans = doc.Database.TransactionManager.StartOpenCloseTransaction())
             {
-                foreach (SelectedObject acSSObj in sSet)
+                foreach (SelectedObject selObj in selSet)
                 {
-                    // Check to make sure a valid SelectedObject object was returned
-                    if (acSSObj != null)
+                    if (selObj != null)
                     {
-                        // Open the selected object for write
-                        DBText acText = trans.GetObject(acSSObj.ObjectId, OpenMode.ForRead) as DBText;
-
+                        DBText acText = trans.GetObject(selObj.ObjectId, OpenMode.ForRead) as DBText;
                         // Nếu không phải số thì trả về false
                         if (!CheckIfNumber(acText.TextString)) return false;
                     }
@@ -48,7 +45,7 @@ namespace LibraryCad
         }
 
         /// <summary>
-        /// Hàm lấy số từ editor
+        /// Hàm lấy số nhập vào
         /// </summary>
         /// <param name="doc">Document</param>
         /// <returns></returns>
@@ -57,20 +54,19 @@ namespace LibraryCad
             while (1 == 1)
             {
                 // Lấy số nhập từ editor
-                PromptStringOptions pStrOpts;
-                pStrOpts = new PromptStringOptions("\nNhập số: ");
-                pStrOpts.AllowSpaces = false;
-                PromptResult pStrRes = doc.Editor.GetString(pStrOpts);
-
+                PromptStringOptions options;
+                options = new PromptStringOptions("\nNhập số: ");
+                options.AllowSpaces = false;
+                PromptResult result = doc.Editor.GetString(options);
                 // Chạy vòng lặp đến khi người dùng nhập số
                 while (1 == 1)
                 {
-                    if (CheckIfNumber(pStrRes.StringResult))
+                    if (CheckIfNumber(result.StringResult))
                     {
-                        return double.Parse(pStrRes.StringResult);
+                        return double.Parse(result.StringResult);
                     }
-                    pStrOpts = new PromptStringOptions("\nDữ liệu nhập vào phải là số: ");
-                    pStrRes = doc.Editor.GetString(pStrOpts);
+                    options = new PromptStringOptions("\nDữ liệu nhập vào phải là số: ");
+                    result = doc.Editor.GetString(options);
                 }
             }
         }
@@ -95,7 +91,6 @@ namespace LibraryCad
                 var slft = new SelectionFilter(typeValue);
                 var objectIds = SubFunc.GetListSelection(doc, msg, slft);
                 if (objectIds == null) return null;
-
                 // Check nếu là số thì add vào list
                 var nums = new List<double>();
                 foreach (ObjectId obj in objectIds)
@@ -119,8 +114,7 @@ namespace LibraryCad
         {
             foreach (double num in nums)
             {
-                // Check to make sure a valid SelectedObject object was returned
-                if (num != null && num == 0)
+                if (num == 0)
                 {
                     return true;
                 }
@@ -168,7 +162,6 @@ namespace LibraryCad
         {
             double temp;
             double sr = number / 2;
-
             do
             {
                 temp = sr;

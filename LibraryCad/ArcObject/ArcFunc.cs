@@ -27,10 +27,10 @@ namespace LibraryCad.Arc
                 SelectionFilter slftArc = new SelectionFilter(tvArc);
                 try
                 {
-                    var arcEts = LibraryCad.LayerFunc.GetEntityByFilterAndLayer(slftArc, layerInfo.Name, doc);
-                    foreach (var arcEt in arcEts)
+                    var arcs = LibraryCad.LayerFunc.GetEntityByFilterAndLayer(slftArc, layerInfo.Name, doc);
+                    foreach (var arcId in arcs)
                     {
-                        var arc = trans.GetObject(arcEt.ObjectId, OpenMode.ForRead) as Autodesk.AutoCAD.DatabaseServices.Arc;
+                        var arc = trans.GetObject(arcId.ObjectId, OpenMode.ForRead) as Autodesk.AutoCAD.DatabaseServices.Arc;
                         perimeter += arc.Length;
                     }
                     return perimeter;
@@ -58,12 +58,12 @@ namespace LibraryCad.Arc
                     using (var trans = doc.Database.TransactionManager.StartOpenCloseTransaction())
                     {
                         var arcs = new List<Autodesk.AutoCAD.DatabaseServices.Arc>();
-                        var typeValue = new TypedValue[]
+                        var tvArc = new TypedValue[]
                         {
-                    new TypedValue((int)DxfCode.Start, "ARC")
+                            new TypedValue((int)DxfCode.Start, "ARC")
                         };
-                        var slft = new SelectionFilter(typeValue);
-                        var objectIds = SubFunc.GetListSelection(doc, "\n- Chọn các đường cong: ", slft);
+                        var slftArc = new SelectionFilter(tvArc);
+                        var objectIds = SubFunc.GetListSelection(doc, "\n- Chọn các đường cong: ", slftArc);
                         if (objectIds == null) return null;
                         // Step through the objects in the selection set
                         foreach (ObjectId objId in objectIds)

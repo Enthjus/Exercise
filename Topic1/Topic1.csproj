@@ -108,6 +108,7 @@
     <Compile Include="WorkWithObject\WorkWithBlock.cs" />
     <Compile Include="WorkWithObject\WorkWithCircle.cs" />
     <Compile Include="WorkWithObject\WorkWithDimension.cs" />
+    <Compile Include="WorkWithObject\WorkWithFile.cs" />
     <Compile Include="WorkWithObject\WorkWithLine.cs" />
     <Compile Include="WorkWithObject\WorkWithPolyline.cs" />
     <Compile Include="WorkWithObject\WorkWithString.cs" />
@@ -138,6 +139,9 @@
     <EmbeddedResource Include="LayersForm.resx">
       <DependentUpon>LayersForm.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="EventHandler\Objects\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

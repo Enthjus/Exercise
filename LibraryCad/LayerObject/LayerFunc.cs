@@ -22,12 +22,13 @@ namespace LibraryCad
             {
                 try
                 {
-                    LayerTable lyrTb = trans.GetObject(doc.Database.LayerTableId, OpenMode.ForRead) as LayerTable;
-                    LayerTableRecord lyrTblRec = trans.GetObject(dim.LayerId, OpenMode.ForRead) as LayerTableRecord;
-                    var layerName = lyrTblRec.Name;
-                    if (lyrTb.Has(lyrTblRec.Name))
+                    LayerTable layerTable = trans.GetObject(doc.Database.LayerTableId, OpenMode.ForRead) as LayerTable;
+                    LayerTableRecord layerTableRec = trans.GetObject(dim.LayerId, OpenMode.ForRead) as LayerTableRecord;
+                    var layerName = layerTableRec.Name;
+                    // Check tên layer có trong bảng không
+                    if (layerTable.Has(layerTableRec.Name))
                     {
-                        return lyrTblRec;
+                        return layerTableRec;
                     }
                     return null;
                 }
@@ -49,46 +50,37 @@ namespace LibraryCad
         public static string DeleteLayer(Document doc, string layerName)
         {
             var db = doc.Database;
-            if (layerName == "0")
-                return "Layer '0' cannot be deleted.";
-
+            // Không cho xóa layer 0
+            if (layerName == "0") return "Layer '0' cannot be deleted.";
             using (doc.LockDocument())
             {
                 using (Transaction trans = db.TransactionManager.StartTransaction())
                 {
                     var layerTable = (LayerTable)trans.GetObject(db.LayerTableId, OpenMode.ForRead);
-
-                    // Check nếu name truyền vào không tồn tại thì thông báo luôn
+                    // Check nếu name truyền vào không tồn tại thì trả về thông báo thông báo
                     if (!layerTable.Has(layerName))
                     {
                         return "Layer '" + layerName + "' not found.";
                     }
-
                     try
                     {
-                        var layerId = layerTable[layerName];
-
+                        ObjectId layerId = layerTable[layerName];
                         // Check nếu là layer đang sử dụng thì không thể xóa
                         if (db.Clayer == layerId)
                         {
                             return "Current layer cannot be deleted.";
                         }
-
-                        var layer = trans.GetObject(layerId, OpenMode.ForWrite) as LayerTableRecord;
-
+                        LayerTableRecord layer = trans.GetObject(layerId, OpenMode.ForWrite) as LayerTableRecord;
                         // Bỏ khóa nếu layer đang khóa
                         layer.IsLocked = false;
-
-                        var blockTable = (BlockTable)trans.GetObject(db.BlockTableId, OpenMode.ForRead);
-
+                        BlockTable blockTable = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
                         foreach (var btrId in blockTable)
                         {
-                            var block = (BlockTableRecord)trans.GetObject(btrId, OpenMode.ForRead);
-
+                            BlockTableRecord block = trans.GetObject(btrId, OpenMode.ForRead) as BlockTableRecord;
                             // Xóa các đối tượng đang sử dụng layer
                             foreach (var entId in block)
                             {
-                                var ent = (Entity)trans.GetObject(entId, OpenMode.ForRead);
+                                Entity ent = trans.GetObject(entId, OpenMode.ForRead) as Entity;
                                 if (ent.Layer == layerName)
                                 {
                                     ent.UpgradeOpen();
@@ -96,12 +88,9 @@ namespace LibraryCad
                                 }
                             }
                         }
-
                         // Xóa layer
                         layer.Erase();
-
                         trans.Commit();
-
                         return "Layer '" + layerName + "' have been deleted.";
                     }
                     catch (System.Exception e)
@@ -122,62 +111,49 @@ namespace LibraryCad
             try
             {
                 var msg = "";
-                // Get the current document and database
                 Document doc = acad.DocumentManager.MdiActiveDocument;
                 Database db = doc.Database;
-
                 using (doc.LockDocument())
                 {
-                    // Start a transaction
                     using (Transaction trans = db.TransactionManager.StartTransaction())
                     {
                         ObjectId id = ObjectId.Null;
-                        // Open the Layer table for read
-                        LayerTable layerTbl = trans.GetObject(db.LayerTableId, OpenMode.ForRead) as LayerTable;
-
+                        LayerTable layerTable = trans.GetObject(db.LayerTableId, OpenMode.ForRead) as LayerTable;
                         var layerName = layerInfo.Name;
-
                         // Nếu đã có thì sửa 
-                        if (layerTbl.Has(layerName))
+                        if (layerTable.Has(layerName))
                         {
                             // Sửa
-                            id = layerTbl[layerName];
+                            id = layerTable[layerName];
                             msg = "Sửa thành công";
                         }
                         // Nếu chưa có thì tạo
                         else
                         {
-                            foreach (var entId in layerTbl)
+                            foreach (var entityId in layerTable)
                             {
-                                LayerTableRecord layer = trans.GetObject(entId, OpenMode.ForRead) as LayerTableRecord;
-                                if(layer.Color.ColorIndex == layerInfo.ColorId)
+                                LayerTableRecord layer = trans.GetObject(entityId, OpenMode.ForRead) as LayerTableRecord;
+                                if (layer.Color.ColorIndex == layerInfo.ColorId)
                                 {
                                     return "Màu đã tồn tại làm ơn chọn màu khác";
                                 }
                             }
-
-                            LayerTableRecord layerTblRec = new LayerTableRecord();
+                            LayerTableRecord tableRec = new LayerTableRecord();
                             LibraryCad.SubFunc.AddRegAppTableRecord("Phuc");
                             ResultBuffer rb = new ResultBuffer(new TypedValue(1001, "Phuc"), new TypedValue(1000, "Layer create by tool"));
-                            layerTblRec.Name = layerName;
-                            layerTblRec.XData = rb;
-
-                                // Chuyển layertable từ for read sang for write
-                                layerTbl.UpgradeOpen();
-
-                            // Append the new layer to the Layer table and the transaction
-                            id = layerTbl.Add(layerTblRec);
-                            trans.AddNewlyCreatedDBObject(layerTblRec, true);
+                            tableRec.Name = layerName;
+                            tableRec.XData = rb;
+                            // Chuyển layertable từ for read sang for write
+                            layerTable.UpgradeOpen();
+                            // Thêm layer mới vào bảng Layer và transaction
+                            id = layerTable.Add(tableRec);
+                            trans.AddNewlyCreatedDBObject(tableRec, true);
                             msg = "Thêm thành công";
                         }
-
                         //Tới đối tượng mới tạo hoặc đối tượng đã có để sửa thuộc tính
-                        LayerTableRecord layerTblRecNew = trans.GetObject(id, OpenMode.ForWrite) as LayerTableRecord;
-                        layerTblRecNew.Color = Color.FromColorIndex(ColorMethod.ByAci, layerInfo.ColorId);
-                        layerTblRecNew.Description = layerInfo.Des;
-
-                        //LibraryCad.SubFunc.SetXdata(layerTblRecNew.ObjectId, "Phuc", "Layer create by tool");
-
+                        LayerTableRecord tableRecNew = trans.GetObject(id, OpenMode.ForWrite) as LayerTableRecord;
+                        tableRecNew.Color = Color.FromColorIndex(ColorMethod.ByAci, layerInfo.ColorId);
+                        tableRecNew.Description = layerInfo.Des;
                         trans.Commit();
                     }
                 }
@@ -200,29 +176,29 @@ namespace LibraryCad
         {
             try
             {
-                var result = new List<Entity>();
+                var entities = new List<Entity>();
                 using (doc.LockDocument())
                 {
                     using (Transaction trans = doc.TransactionManager.StartOpenCloseTransaction())
                     {
-                        PromptSelectionResult acSSPrompt;
-                        acSSPrompt = doc.Editor.SelectAll(filter);
-                        if (acSSPrompt.Status == PromptStatus.OK)
+                        PromptSelectionResult result;
+                        result = doc.Editor.SelectAll(filter);
+                        if (result.Status == PromptStatus.OK)
                         {
-                            var objIds = acSSPrompt.Value.GetObjectIds();
+                            var objIds = result.Value.GetObjectIds();
                             foreach (var objId in objIds)
                             {
-                                var ent = trans.GetObject(objId, OpenMode.ForRead) as Entity;
-                                if (ent.Layer == layerName)
+                                var entity = trans.GetObject(objId, OpenMode.ForRead) as Entity;
+                                if (entity.Layer == layerName)
                                 {
-                                    result.Add(ent);
+                                    entities.Add(entity);
                                 }
                             }
                         }
                         trans.Commit();
                     }
                 }
-                return result;
+                return entities;
             }
             catch (System.Exception ex)
             {
@@ -232,7 +208,7 @@ namespace LibraryCad
         }
 
         /// <summary>
-        /// Hám lấy layer tạo bởi tool
+        /// Hàm lấy layer tạo bởi tool
         /// </summary>
         /// <param name="doc">Document</param>
         /// <returns></returns>
@@ -252,14 +228,15 @@ namespace LibraryCad
                             var layer = trans.GetObject(layerId, OpenMode.ForRead) as LayerTableRecord;
                             try
                             {
+                                // Lấy layer theo xdata đã truyền vào trước đó
                                 var data = layer.XData.AsArray();
                                 if ((string)data[0].Value == "Phuc" && (string)data[1].Value == "Layer create by tool")
                                 {
-                                    var ly = new LayerInfo();
-                                    ly.Name = layer.Name;
-                                    ly.ColorId = layer.Color.ColorIndex;
-                                    ly.Des = layer.Description;
-                                    layerInfos.Add(ly);
+                                    var layerInfo = new LayerInfo();
+                                    layerInfo.Name = layer.Name;
+                                    layerInfo.ColorId = layer.Color.ColorIndex;
+                                    layerInfo.Des = layer.Description;
+                                    layerInfos.Add(layerInfo);
                                 }
                             }
                             catch
@@ -270,7 +247,7 @@ namespace LibraryCad
                         trans.Commit();
                         return layerInfos;
                     }
-                    catch(System.Exception ex)
+                    catch (System.Exception ex)
                     {
                         doc.Editor.WriteMessage(ex.Message);
                         trans.Abort();
@@ -290,42 +267,36 @@ namespace LibraryCad
         {
             if (layerInfos == null) return null;
             var layerObjs = new List<LayerObject>();
-
             using (doc.LockDocument())
             {
                 using (var trans = doc.Database.TransactionManager.StartOpenCloseTransaction())
                 {
                     foreach (var layer in layerInfos)
                     {
-                        if(layer == null) continue;
+                        if (layer == null) continue;
                         var perimeter = 0.0;
                         var area = 0.0;
                         var layerObject = new LayerObject();
                         layerObject.LayerName = layer.Name;
-
                         try
                         {
                             //Chiều dài các line cùng layer
                             perimeter += LibraryCad.LineFunc.LineProperties(layer, doc);
-
                             //Chiều dài các đường cong cùng layer
                             perimeter += LibraryCad.Arc.ArcFunc.ArcProperties(layer, doc);
-
                             //Chiều dài và diện tích các pline cùng layer
                             var plineProp = LibraryCad.Polyline.PolylineFunc.PlineProperties(layer, doc);
                             perimeter += plineProp.Perimeter;
                             area += plineProp.Area;
-
                             //Chiều dài và diện tích các đường tròn cùng layer
                             var circleProp = LibraryCad.CircleFunc.CircleProperties(layer, doc);
                             perimeter += circleProp.Perimeter;
                             area += circleProp.Area;
-
                             layerObject.Perimeter = perimeter;
                             layerObject.Area = area;
                             layerObjs.Add(layerObject);
                         }
-                        catch(System.Exception ex)
+                        catch (System.Exception ex)
                         {
                             doc.Editor.WriteMessage(ex.Message);
                             trans.Abort();
@@ -335,64 +306,5 @@ namespace LibraryCad
                 }
             }
         }
-
-        //internal static void CreateLayers(Document _doc, List<ItemProp> _lays)
-        //{
-        //    if (_doc.Database != null)
-        //    {
-        //        using (_doc.LockDocument())
-        //        {
-        //            using (Transaction tr = _doc.Database.TransactionManager.StartTransaction())
-        //            {
-        //                ObjectId id = ObjectId.Null;
-        //                string xData_NameApp = "$Inx.Cad.Mep$";
-        //                string xData_LayerMep = "$Mep.Tem.Layers$";
-        //                using (LayerTable layerTable = (LayerTable)tr.GetObject(_doc.Database.LayerTableId, OpenMode.ForWrite))
-        //                {
-        //                    LayerTableRecord rec = new LayerTableRecord();
-        //                    foreach (var lay in _lays)
-        //                    {
-        //                        if (layerTable.Has(lay.LayerName))
-        //                        {
-        //                            id = layerTable[lay.LayerName];
-        //                        }
-        //                        else
-        //                        {
-        //                            rec = new LayerTableRecord
-        //                            {
-        //                                Name = lay.LayerName,
-        //                            };
-        //                            id = layerTable.Add(rec);
-        //                            tr.AddNewlyCreatedDBObject(rec, true);
-        //                        }
-        //                        rec = (LayerTableRecord)tr.GetObject(id, OpenMode.ForWrite);
-
-        //                        //LinetypeTableRecord ll = tr.GetObject(rec.LinetypeObjectId, OpenMode.ForRead) as LinetypeTableRecord;
-        //                        //string df = ll.Name;
-
-        //                        //
-        //                        //using (var lttable = (LinetypeTable)tr.GetObject(_doc.Database.LinetypeTableId, OpenMode.ForRead))
-        //                        //{
-        //                        //    if (lttable.Has(lay.LineType))
-        //                        //    {
-        //                        //        rec.UpgradeOpen();
-        //                        //        rec.LinetypeObjectId = lttable[lay.LineType];// GetLineTypeID(_doc.Database, lay.LineType);
-        //                        //    }
-        //                        //}
-        //                        rec.Color = Color.FromColorIndex(ColorMethod.ByAci, lay.ColorValue);
-        //                        //rec.LinetypeObjectId = GetLineTypeID(_doc.Database, lay.LineType);
-        //                        //rec.LineWeight = GetLineWeight(lay.LineWeight);
-        //                        rec.Description = lay.Description;
-
-        //                        /*Gán xData*/
-        //                        LibDictionary.SetXData(rec.ObjectId, xData_NameApp, xData_LayerMep);
-        //                    }
-        //                }
-
-        //                tr.Commit();
-        //            }
-        //        }
-        //    }
-        //}
     }
 }

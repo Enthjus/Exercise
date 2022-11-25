@@ -14,11 +14,16 @@ namespace Topic1.WorkWithObject
         [CommandMethod("DimMArc")]
         public static void DimMultiArc()
         {
-            Document doc = Application.DocumentManager.MdiActiveDocument;
-
-            var arcs = LibraryCad.Arc.ArcFunc.SelectionSetToListArc(doc);
-
-            LibraryCad.DimensionFunc.DimMultiArc(arcs, doc);
+            try
+            {
+                Document doc = Application.DocumentManager.MdiActiveDocument;
+                var arcs = LibraryCad.Arc.ArcFunc.SelectionSetToListArc(doc);
+                LibraryCad.DimensionFunc.DimMultiArc(arcs, doc);
+            }
+            catch
+            {
+                return;
+            }
         }
     }
 }

@@ -3,7 +3,6 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using System;
-using acad = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace Topic1.EventHandler
 {
@@ -86,19 +85,12 @@ namespace Topic1.EventHandler
         [CommandMethod("AddPlObjEvent")]
         public void AddPlObjEvent()
         {
-            // Get the current document and database, and start a transaction
             Document acDoc = Application.DocumentManager.MdiActiveDocument;
             Database acCurDb = acDoc.Database;
-
             using (Transaction acTrans = acCurDb.TransactionManager.StartTransaction())
             {
-                // Open the Block table record for read
                 BlockTable acBlkTbl = acTrans.GetObject(acCurDb.BlockTableId, OpenMode.ForRead) as BlockTable;
-
-                // Open the Block table record Model space for write
                 BlockTableRecord acBlkTblRec = acTrans.GetObject(acBlkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
-
-                // Create a closed polyline
                 acPoly = new Polyline();
                 acPoly.AddVertexAt(0, new Point2d(1, 1), 0, 0, 0);
                 acPoly.AddVertexAt(1, new Point2d(1, 2), 0, 0, 0);
@@ -106,14 +98,9 @@ namespace Topic1.EventHandler
                 acPoly.AddVertexAt(3, new Point2d(3, 3), 0, 0, 0);
                 acPoly.AddVertexAt(4, new Point2d(3, 2), 0, 0, 0);
                 acPoly.Closed = true;
-
-                // Add the new object to the block table record and the transaction
                 acBlkTblRec.AppendEntity(acPoly);
                 acTrans.AddNewlyCreatedDBObject(acPoly, true);
-
                 acPoly.Modified += new System.EventHandler(acPolyMod);
-
-                // Save the new object to the database
                 acTrans.Commit();
             }
         }
@@ -123,20 +110,15 @@ namespace Topic1.EventHandler
         {
             if (acPoly != null)
             {
-                // Get the current document and database, and start a transaction
                 Document acDoc = Application.DocumentManager.MdiActiveDocument;
                 Database acCurDb = acDoc.Database;
-
                 using (Transaction acTrans = acCurDb.TransactionManager.StartTransaction())
                 {
-                    // Open the polyline for read
                     acPoly = acTrans.GetObject(acPoly.ObjectId, OpenMode.ForRead) as Polyline;
-
                     if (acPoly.IsWriteEnabled == false)
                     {
                         acTrans.GetObject(acPoly.ObjectId, OpenMode.ForWrite);
                     }
-
                     acPoly.Modified -= new System.EventHandler(acPolyMod);
                     acPoly = null;
                 }
@@ -145,7 +127,14 @@ namespace Topic1.EventHandler
 
         public void acPolyMod(object senderObj, EventArgs evtArgs)
         {
-            Application.ShowAlertDialog("The area of " + acPoly.ToString() + " is: " + acPoly.Area);
+            if(!acPoly.IsErased)
+            {
+                Application.ShowAlertDialog("The area of " + acPoly.ToString() + " is: " + acPoly.Area);
+            }
+            else
+            {
+                Application.ShowAlertDialog("The polyline " + acPoly.ToString() + " is deleted!");
+            }
         }
     }
 }

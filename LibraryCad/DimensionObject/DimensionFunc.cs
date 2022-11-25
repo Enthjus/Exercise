@@ -28,7 +28,6 @@ namespace LibraryCad
                     var slft = new SelectionFilter(typeValues);
                     var selSet = SubFunc.GetListSelection(doc, "- Chọn các dimension mà bạn muốn tính tồng: ", slft);
                     if (selSet == null) return null;
-
                     // Chuyển sang dạnh dimension rồi add vào list
                     foreach (ObjectId sel in selSet)
                     {
@@ -57,7 +56,6 @@ namespace LibraryCad
         /// <param name="doc">Document</param>
         public static void DimMultiLine(List<Line> lines, Document doc)
         {
-            Database db = doc.Database;
             using (doc.LockDocument())
             {
                 foreach (Line line in lines)
@@ -75,57 +73,46 @@ namespace LibraryCad
         public static void DimLine(Line line, Document doc)
         {
             Database db = doc.Database;
-
             using (Transaction trans = db.TransactionManager.StartTransaction())
             {
                 //Mở block table để đọc
                 BlockTable blockTable = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
-
                 // Mở Block table record Model space để ghi 
-                BlockTableRecord blockTableRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
-
+                BlockTableRecord tableRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
+                // Tạo vector để bắt điểm dim
                 Vector3d ang = line.GetFirstDerivative(line.GetParameterAtPoint(line.StartPoint));
-                // scale the vector by 5.0 (so that it's 5 units length)
+                // Đặt độ dài cho vector
                 ang = ang.GetNormal() * 1;
-                // rotate the vector
+                // Xoay vector
                 ang = ang.TransformBy(Matrix3d.Rotation(System.Math.PI / 2.0, line.Normal, Point3d.Origin));
-
-                // tạo aligned dimension
+                // Tạo aligned dimension
                 using (AlignedDimension algDim = new AlignedDimension(line.StartPoint, line.EndPoint, line.StartPoint + ang, "", db.Dimstyle))
                 {
                     RegAppTable acRegAppTbl = trans.GetObject(db.RegAppTableId, OpenMode.ForRead) as RegAppTable;
-
-                    // Check to see if the app "ACAD_DSTYLE_DIMROTATE" is registered and if not add it to the RegApp table
-                    if (acRegAppTbl.Has("ACAD_DSTYLE_DIMROTATE") == false)
+                    // Kiểm tra xem app "ACAD_DSTYLE_DIMROTATE" đã tồn tại hay chưa và nếu chưa thì thêm vào RegApp table
+                    if (acRegAppTbl.Has("ACAD_DSTYLE_DIMALIGNED") == false)
                     {
                         using (RegAppTableRecord acRegAppTblRec = new RegAppTableRecord())
                         {
-                            acRegAppTblRec.Name = "ACAD_DSTYLE_DIMROTATE";
-
-
+                            acRegAppTblRec.Name = "ACAD_DSTYLE_DIMALIGNED";
                             trans.GetObject(db.RegAppTableId, OpenMode.ForWrite);
-
                             acRegAppTbl.Add(acRegAppTblRec);
                             trans.AddNewlyCreatedDBObject(acRegAppTblRec, true);
                         }
                     }
-
-                    // Create a result buffer to define the Xdata
-                    ResultBuffer acResBuf = new ResultBuffer();
-                    acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataRegAppName, "ACAD_DSTYLE_DIMROTATE"));
-                    acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 387));
-                    acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 3));
-                    acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 389));
-                    acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataXCoordinate, new Point3d(-1.26985, -3.91514, 0)));
-
+                    // Tạo result buffer để định nghĩa Xdata
+                    ResultBuffer rb = new ResultBuffer();
+                    rb.Add(new TypedValue((int)DxfCode.ExtendedDataRegAppName, "ACAD_DSTYLE_DIMALIGNED"));
+                    rb.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 387));
+                    rb.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 3));
+                    rb.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 389));
+                    rb.Add(new TypedValue((int)DxfCode.ExtendedDataXCoordinate, new Point3d(-1.26985, -3.91514, 0)));
                     // Thêm Xdata vào dimension
-                    algDim.XData = acResBuf;
-
+                    algDim.XData = rb;
                     // thêm đối tượng mới vào Model space và transaction
-                    blockTableRec.AppendEntity(algDim); 
+                    tableRec.AppendEntity(algDim); 
                     trans.AddNewlyCreatedDBObject(algDim, true);
                 }
-
                 trans.Commit();
             }
         }
@@ -137,7 +124,6 @@ namespace LibraryCad
         /// <param name="doc">Document</param>
         public static void DimMultiArc(List<Autodesk.AutoCAD.DatabaseServices.Arc> arcs, Document doc)
         {
-            Database db = doc.Database;
             using (doc.LockDocument())
             {
                 foreach (Autodesk.AutoCAD.DatabaseServices.Arc arc in arcs)
@@ -155,54 +141,43 @@ namespace LibraryCad
         public static void DimArc(Autodesk.AutoCAD.DatabaseServices.Arc arc, Document doc)
         {
             Database db = doc.Database;
-
             using (Transaction trans = db.TransactionManager.StartTransaction())
             {
                 //Mở block table để đọc
                 BlockTable blockTable = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
-
                 // Mở Block table record Model space để ghi 
-                BlockTableRecord blockTableRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
-
+                BlockTableRecord tableRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
+                // Tạo vector để đặt điểm dim
                 Vector3d ang = arc.GetFirstDerivative(arc.GetParameterAtPoint(LibraryCad.Arc.ArcFunc.GetMidpoint(arc)));
-                // scale the vector by 1 (so that it's 1 units length)
                 ang = ang.GetNormal() * -1;
-                // rotate the vector
                 ang = ang.TransformBy(Matrix3d.Rotation(System.Math.PI / 2.0, arc.Normal, Point3d.Origin));
-
-                // tạo aligned dimension
+                // Tạo arc dimension
                 using (ArcDimension arcDim = new ArcDimension(arc.Center, arc.StartPoint, arc.EndPoint, LibraryCad.Arc.ArcFunc.GetMidpoint(arc) + ang, "", db.Dimstyle))
                 {
                     arcDim.TextPosition = arcDim.ArcPoint;
-                    RegAppTable acRegAppTbl = trans.GetObject(db.RegAppTableId, OpenMode.ForRead) as RegAppTable;
-
-                    // Check to see if the app "ACAD_DSTYLE_DIMARC" is registered and if not add it to the RegApp table
-                    if (acRegAppTbl.Has("ACAD_DSTYLE_DIMARC") == false)
+                    RegAppTable regAppTable = trans.GetObject(db.RegAppTableId, OpenMode.ForRead) as RegAppTable;
+                    // Kiểm tra xem app "ACAD_DSTYLE_DIMARC" đã được tạo chưa và nếu chưa thì thêm vào RegApp table
+                    if (regAppTable.Has("ACAD_DSTYLE_DIMARC") == false)
                     {
                         using (RegAppTableRecord acRegAppTblRec = new RegAppTableRecord())
                         {
                             acRegAppTblRec.Name = "ACAD_DSTYLE_DIMARC";
-
                             trans.GetObject(db.RegAppTableId, OpenMode.ForWrite);
-
-                            acRegAppTbl.Add(acRegAppTblRec);
+                            regAppTable.Add(acRegAppTblRec);
                             trans.AddNewlyCreatedDBObject(acRegAppTblRec, true);
                         }
                     }
-
-                    // Create a result buffer to define the Xdata
-                    ResultBuffer acResBuf = new ResultBuffer();
-                    acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataRegAppName, "ACAD_DSTYLE_DIMARC"));
-                    acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 387));
-                    acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 3));
-                    acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 389));
-                    acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataXCoordinate, new Point3d(-1.26985, 3.91514, 0)));
-
-                    // Attach the Xdata to the dimension
-                    arcDim.XData = acResBuf;
-
+                    // Tạo result buffer để định nghĩa Xdata
+                    ResultBuffer rb = new ResultBuffer();
+                    rb.Add(new TypedValue((int)DxfCode.ExtendedDataRegAppName, "ACAD_DSTYLE_DIMARC"));
+                    rb.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 387));
+                    rb.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 3));
+                    rb.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 389));
+                    rb.Add(new TypedValue((int)DxfCode.ExtendedDataXCoordinate, new Point3d(-1.26985, 3.91514, 0)));
+                    // Thêm Xdata vào dimension
+                    arcDim.XData = rb;
                     // thêm đối tượng mới vào Model space và transaction
-                    blockTableRec.AppendEntity(arcDim);
+                    tableRec.AppendEntity(arcDim);
                     trans.AddNewlyCreatedDBObject(arcDim, true);
                 }
 
@@ -215,68 +190,60 @@ namespace LibraryCad
         /// </summary>
         /// <param name="points">list các điểm</param>
         /// <param name="doc">Document</param>
-        public static void DimPolyline(List<Point3d> points, Document doc)
+        public static void DimPolyline(List<Point3d> points, Document doc, int dimStatus)
         {
             Database db = doc.Database;
-
             using (Transaction trans = db.TransactionManager.StartTransaction())
             {
-                //Mở block table để đọc
                 BlockTable blockTable = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
-
-                // Mở Block table record Model space để ghi 
-                BlockTableRecord blockTableRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
-
+                BlockTableRecord tableRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
+                int angScale;
+                // Check dim status để đặt vị trí dim trong hay ngoài
+                if (dimStatus == 1)
+                {
+                    angScale = -1;
+                }
+                else if (dimStatus == 0)
+                {
+                    angScale = 1;
+                }
+                else return;
                 var j = 1;
                 for (int i = 0; i < points.Count - 1; i++)
                 {
                     var line = new Line(points[i], points[j]);
-
+                    // Tạo vector để đặt điểm dim
                     Vector3d ang = line.GetFirstDerivative(line.GetParameterAtPoint(points[i]));
-                    // scale the vector by 5.0 (so that it's 5 units length)
-                    ang = ang.GetNormal() * 1;
-                    // rotate the vector
+                    ang = ang.GetNormal() * angScale;
                     ang = ang.TransformBy(Matrix3d.Rotation(System.Math.PI / 2.0, line.Normal, Point3d.Origin));
-
-                    // tạo aligned dimension
+                    // Tạo aligned dimension
                     using (AlignedDimension algDim = new AlignedDimension(points[i], points[j], line.StartPoint + ang, "", db.Dimstyle))
                     {
                         RegAppTable acRegAppTbl = trans.GetObject(db.RegAppTableId, OpenMode.ForRead) as RegAppTable;
-
-                        // Check to see if the app "ACAD_DSTYLE_DIMROTATE" is registered and if not add it to the RegApp table
+                        // Kiểm tra xem app "ACAD_DSTYLE_DIMROTATE_PLINE" đã được tạo chưa và nếu chưa thì thêm vào RegApp table
                         if (acRegAppTbl.Has("ACAD_DSTYLE_DIMROTATE_PLINE") == false)
                         {
                             using (RegAppTableRecord acRegAppTblRec = new RegAppTableRecord())
                             {
                                 acRegAppTblRec.Name = "ACAD_DSTYLE_DIMROTATE_PLINE";
-
-
                                 trans.GetObject(db.RegAppTableId, OpenMode.ForWrite);
-
                                 acRegAppTbl.Add(acRegAppTblRec);
                                 trans.AddNewlyCreatedDBObject(acRegAppTblRec, true);
                             }
                         }
-
-                        // Create a result buffer to define the Xdata
-                        ResultBuffer acResBuf = new ResultBuffer();
-                        acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataRegAppName, "ACAD_DSTYLE_DIMROTATE_PLINE"));
-                        acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 387));
-                        acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 3));
-                        acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 389));
-                        acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataXCoordinate, new Point3d(-1.26985, -3.91514, 0)));
-
-                        // Thêm Xdata vào dimension
-                        algDim.XData = acResBuf;
-
-                        // thêm đối tượng mới vào Model space và transaction
-                        blockTableRec.AppendEntity(algDim);
+                        // Tạo result buffer để định nghĩa Xdata
+                        ResultBuffer rb = new ResultBuffer();
+                        rb.Add(new TypedValue((int)DxfCode.ExtendedDataRegAppName, "ACAD_DSTYLE_DIMROTATE_PLINE"));
+                        rb.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 387));
+                        rb.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 3));
+                        rb.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 389));
+                        rb.Add(new TypedValue((int)DxfCode.ExtendedDataXCoordinate, new Point3d(-1.26985, -3.91514, 0)));
+                        algDim.XData = rb;
+                        tableRec.AppendEntity(algDim);
                         trans.AddNewlyCreatedDBObject(algDim, true);
                     }
-
                     j++;
                 }
-
                 trans.Commit();
             }
         }
@@ -286,99 +253,95 @@ namespace LibraryCad
         /// </summary>
         /// <param name="arcs">đường cong</param>
         /// <param name="doc">Document</param>
-        public static void DimArc(CircularArc3d circularArc, Document doc)
+        public static void DimArc(CircularArc3d circularArc, Document doc, int dimStatus)
         {
             Database db = doc.Database;
-
             using (Transaction trans = db.TransactionManager.StartTransaction())
             {
-                //Mở block table để đọc
                 BlockTable blockTable = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
-
-                // Mở Block table record Model space để ghi 
-                BlockTableRecord blockTableRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
-
-                Autodesk.AutoCAD.DatabaseServices.Arc arc = new Autodesk.AutoCAD.DatabaseServices.Arc(circularArc.Center, circularArc.Radius, new Line(circularArc.Center, circularArc.StartPoint).Angle, new Line(circularArc.Center, circularArc.EndPoint).Angle);
-
-                //Vector3d ang = arc.GetFirstDerivative(arc.GetParameterAtPoint(LibraryCad.Arc.ArcFunc.GetMidpoint(arc)));
-                //// scale the vector by 1 (so that it's 1 units length)
-                //ang = ang.GetNormal() * -1;
-                //// rotate the vector
-                //ang = ang.TransformBy(Matrix3d.Rotation(System.Math.PI / 2.0, arc.Normal, Point3d.Origin));
-
-                Point3d point3 = arc.StartPoint.Add(arc.EndPoint.GetAsVector()).MultiplyBy(0.5);
-
-                // tạo aligned dimension
-                using (ArcDimension arcDim = new ArcDimension(arc.Center, arc.StartPoint, arc.EndPoint, point3/*LibraryCad.Arc.ArcFunc.GetMidpoint(arc) + ang*/, "", db.Dimstyle))
+                BlockTableRecord tableRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
+                try
                 {
-                    arcDim.TextPosition = arcDim.ArcPoint;
-                    RegAppTable acRegAppTbl = trans.GetObject(db.RegAppTableId, OpenMode.ForRead) as RegAppTable;
-
-                    // Check to see if the app "ACAD_DSTYLE_DIMARC" is registered and if not add it to the RegApp table
-                    if (acRegAppTbl.Has("ACAD_DSTYLE_DIMARC_LENGTH") == false)
+                    var line = new Line(circularArc.StartPoint, circularArc.EndPoint);
+                    var midLine = LibraryCad.LineFunc.GetMidpoint(line);
+                    Vector3d ang = new Line(circularArc.Center, midLine).Delta;
+                    ArcDimension arcDim;
+                    RadialDimension radDim;
+                    // Check xem người dùng nhập gì để tạo dim bên trong hay ngoài đường cong
+                    if (dimStatus == 1)
                     {
-                        using (RegAppTableRecord acRegAppTblRec = new RegAppTableRecord())
-                        {
-                            acRegAppTblRec.Name = "ACAD_DSTYLE_DIMARC_LENGTH";
-
-                            trans.GetObject(db.RegAppTableId, OpenMode.ForWrite);
-
-                            acRegAppTbl.Add(acRegAppTblRec);
-                            trans.AddNewlyCreatedDBObject(acRegAppTblRec, true);
-                        }
+                        arcDim = new ArcDimension(circularArc.Center, circularArc.StartPoint, circularArc.EndPoint, midLine - (ang / ang.Length * (1 + (circularArc.Radius - ang.Length))), "", db.Dimstyle);
+                        radDim = new RadialDimension(circularArc.Center, midLine, -2, "", db.Dimstyle);
                     }
-
-                    // Create a result buffer to define the Xdata
-                    ResultBuffer acResBuf = new ResultBuffer();
-                    acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataRegAppName, "ACAD_DSTYLE_DIMARC_LENGTH"));
-                    acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 387));
-                    acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 3));
-                    acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 389));
-                    acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataXCoordinate, new Point3d(-1.26985, 3.91514, 0)));
-
-                    // Attach the Xdata to the dimension
-                    arcDim.XData = acResBuf;
-
-                    // thêm đối tượng mới vào Model space và transaction
-                    blockTableRec.AppendEntity(arcDim);
-                    trans.AddNewlyCreatedDBObject(arcDim, true);
+                    else if (dimStatus == 0)
+                    {
+                        arcDim = new ArcDimension(circularArc.Center, circularArc.StartPoint, circularArc.EndPoint, midLine + (ang / ang.Length * (1 + (circularArc.Radius - ang.Length))), "", db.Dimstyle);
+                        radDim = new RadialDimension(circularArc.Center, midLine, 2, "", db.Dimstyle);
+                    }
+                    else
+                    {
+                        return;
+                    }
+                    // Tạo dim độ dài đường cong
+                    using (arcDim)
+                    {
+                        arcDim.TextPosition = arcDim.ArcPoint;
+                        RegAppTable regAppTable = trans.GetObject(db.RegAppTableId, OpenMode.ForRead) as RegAppTable;
+                        // Kiểm tra xem app "ACAD_DSTYLE_DIMARC_LENGTH" đã được tạo chưa và nếu chưa thì thêm vào RegApp table
+                        if (regAppTable.Has("ACAD_DSTYLE_DIMARC_LENGTH") == false)
+                        {
+                            using (RegAppTableRecord raTableRec = new RegAppTableRecord())
+                            {
+                                raTableRec.Name = "ACAD_DSTYLE_DIMARC_LENGTH";
+                                trans.GetObject(db.RegAppTableId, OpenMode.ForWrite);
+                                regAppTable.Add(raTableRec);
+                                trans.AddNewlyCreatedDBObject(raTableRec, true);
+                            }
+                        }
+                        // Tạo result buffer để định nghĩa Xdata
+                        ResultBuffer acResBuf = new ResultBuffer();
+                        acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataRegAppName, "ACAD_DSTYLE_DIMARC_LENGTH"));
+                        acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 387));
+                        acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 3));
+                        acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 389));
+                        acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataXCoordinate, new Point3d(-1.26985, 3.91514, 0)));
+                        arcDim.XData = acResBuf;
+                        tableRec.AppendEntity(arcDim);
+                        trans.AddNewlyCreatedDBObject(arcDim, true);
+                    }
+                    // Tạo dim kích thước bán kính
+                    using (radDim)
+                    {
+                        RegAppTable regAppTable = trans.GetObject(db.RegAppTableId, OpenMode.ForRead) as RegAppTable;
+                        // Kiểm tra xem app "ACAD_DSTYLE_DIMARC_RADIUS" đã được tạo chưa và nếu chưa thì thêm vào RegApp table
+                        if (regAppTable.Has("ACAD_DSTYLE_DIMARC_RADIUS") == false)
+                        {
+                            using (RegAppTableRecord raTableRec = new RegAppTableRecord())
+                            {
+                                raTableRec.Name = "ACAD_DSTYLE_DIMARC_RADIUS";
+                                trans.GetObject(db.RegAppTableId, OpenMode.ForWrite);
+                                regAppTable.Add(raTableRec);
+                                trans.AddNewlyCreatedDBObject(raTableRec, true);
+                            }
+                        }
+                        // Tạo result buffer để định nghĩa Xdata
+                        ResultBuffer rb = new ResultBuffer();
+                        rb.Add(new TypedValue((int)DxfCode.ExtendedDataRegAppName, "ACAD_DSTYLE_DIMARC_RADIUS"));
+                        rb.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 387));
+                        rb.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 3));
+                        rb.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 389));
+                        rb.Add(new TypedValue((int)DxfCode.ExtendedDataXCoordinate, new Point3d(-1.26985, 3.91514, 0)));
+                        radDim.XData = rb;
+                        tableRec.AppendEntity(radDim);
+                        trans.AddNewlyCreatedDBObject(radDim, true);
+                    }
+                    trans.Commit();
                 }
-
-                using (RadialDimension radDim = new RadialDimension(circularArc.Center, LibraryCad.Arc.ArcFunc.GetMidpoint(arc), -1.5, "", db.Dimstyle))
+                catch(System.Exception ex)
                 {
-                    RegAppTable acRegAppTbl = trans.GetObject(db.RegAppTableId, OpenMode.ForRead) as RegAppTable;
-
-                    // Check to see if the app "ACAD_DSTYLE_DIMARC" is registered and if not add it to the RegApp table
-                    if (acRegAppTbl.Has("ACAD_DSTYLE_DIMARC_RADIUS") == false)
-                    {
-                        using (RegAppTableRecord acRegAppTblRec = new RegAppTableRecord())
-                        {
-                            acRegAppTblRec.Name = "ACAD_DSTYLE_DIMARC_RADIUS";
-
-                            trans.GetObject(db.RegAppTableId, OpenMode.ForWrite);
-
-                            acRegAppTbl.Add(acRegAppTblRec);
-                            trans.AddNewlyCreatedDBObject(acRegAppTblRec, true);
-                        }
-                    }
-
-                    // Create a result buffer to define the Xdata
-                    ResultBuffer acResBuf = new ResultBuffer();
-                    acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataRegAppName, "ACAD_DSTYLE_DIMARC_RADIUS"));
-                    acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 387));
-                    acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 3));
-                    acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataInteger16, 389));
-                    acResBuf.Add(new TypedValue((int)DxfCode.ExtendedDataXCoordinate, new Point3d(-1.26985, 3.91514, 0)));
-
-                    // Attach the Xdata to the dimension
-                    radDim.XData = acResBuf;
-
-                    // thêm đối tượng mới vào Model space và transaction
-                    blockTableRec.AppendEntity(radDim);
-                    trans.AddNewlyCreatedDBObject(radDim, true);
+                    doc.Editor.WriteMessage(ex.Message);
+                    trans.Abort();
                 }
-
-                trans.Commit();
             }
         }
     }

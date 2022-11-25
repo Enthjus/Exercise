@@ -17,26 +17,14 @@ namespace LibraryCad
         public static void CreateText(Document doc, string text, Point3d point, ObjectId lyrId = new ObjectId())
         {
             var db = doc.Database;
-
             using (Transaction trans = db.TransactionManager.StartTransaction())
             {
                 try
                 {
-                    // Open the Block table for read
-                    BlockTable acBlkTbl;
-                    acBlkTbl = trans.GetObject(db.BlockTableId,
-                                                    OpenMode.ForRead) as BlockTable;
-
-                    // Open the Block table record Model space for write
-                    BlockTableRecord acBlkTblRec;
-                    acBlkTblRec = trans.GetObject(acBlkTbl[BlockTableRecord.ModelSpace],
-                                                    OpenMode.ForWrite) as BlockTableRecord;
-
-                    var lyrTbl = trans.GetObject(db.LayerTableId,
-                                        OpenMode.ForRead) as LayerTable;
-
-
-                    // Create a single-line text object
+                    BlockTable blockTable = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
+                    BlockTableRecord tableRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
+                    var layerTable = trans.GetObject(db.LayerTableId, OpenMode.ForRead) as LayerTable;
+                    // Tạo đối tượng chuỗi 1 dòng
                     using (DBText acText = new DBText())
                     {
                         if(lyrId != null)
@@ -46,8 +34,7 @@ namespace LibraryCad
                         acText.Position = point;
                         acText.Height = 200;
                         acText.TextString = text;
-
-                        acBlkTblRec.AppendEntity(acText);
+                        tableRec.AppendEntity(acText);
                         trans.AddNewlyCreatedDBObject(acText, true);
                     }
                     trans.Commit();
@@ -69,36 +56,25 @@ namespace LibraryCad
         {
             using (var trans = doc.Database.TransactionManager.StartOpenCloseTransaction())
             {
-                // Request for objects to be selected in the drawing area
-                PromptSelectionResult acSSPrompt = doc.Editor.GetSelection();
-
-                // If the prompt status is OK, objects were selected
-                if (acSSPrompt.Status == PromptStatus.OK)
+                PromptSelectionResult selResult = doc.Editor.GetSelection();
+                if (selResult.Status == PromptStatus.OK)
                 {
-                    SelectionSet acSSet = acSSPrompt.Value;
-
+                    SelectionSet selSet = selResult.Value;
                     var mergeText = "";
-
-                    // Step through the objects in the selection set
-                    foreach (SelectedObject acSSObj in acSSet)
+                    foreach (SelectedObject selObj in selSet)
                     {
-                        // Check to make sure a valid SelectedObject object was returned
-                        if (acSSObj != null && trans.GetObject(acSSObj.ObjectId, OpenMode.ForRead).GetType() == typeof(DBText))
+                        // Kiểm tra xem có đúng kiểu hay không
+                        if (selObj != null && trans.GetObject(selObj.ObjectId, OpenMode.ForRead).GetType() == typeof(DBText))
                         {
-                            // Open the selected object for write
-                            DBText acText = trans.GetObject(acSSObj.ObjectId,
-                                                                OpenMode.ForRead) as DBText;
-
-                            if (acText != null || acText.TextString.Trim() != "")
+                            DBText dbText = trans.GetObject(selObj.ObjectId, OpenMode.ForRead) as DBText;
+                            if (dbText != null || dbText.TextString.Trim() != "")
                             {
-                                // Merge text
-                                mergeText += acText.TextString + " ";
+                                // Gom chuỗi
+                                mergeText += dbText.TextString + " ";
                             }
                         }
                     }
-
                     mergeText = mergeText.Trim();
-
                     return mergeText;
                 }
                 return "";

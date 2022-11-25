@@ -3,7 +3,6 @@ using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.EditorInput;
-using System;
 
 namespace Topic1
 {
@@ -13,25 +12,20 @@ namespace Topic1
         public static void CreateMText()
         {
             Document doc = Application.DocumentManager.CurrentDocument;
-
             using (doc.LockDocument())
             {
                 // Cho tạo nhiều chuỗi đến khi người dùng nhấn esc hoặc hủy lệnh
                 while (1 == 1)
                 {
                     // Lấy chuỗi từ editor
-                    var text = LibraryCad.SubFunc.GetString(doc).Trim();
-
+                    var text = LibraryCad.SubFunc.GetString(doc, "Nhập text muốn tạo").Trim();
                     // Chọn điểm
                     var pointInf = LibraryCad.SubFunc.PickPoint(doc);
-
                     if (pointInf == null || pointInf.status == false) return;
-
-                    // Tạo chuỗi
+                    // Tạo chuỗi tại điểm người dùng vừa chọn
                     LibraryCad.TextFunc.CreateText(doc, text, pointInf.point);
                 }
             }
-
         }
 
         [CommandMethod("ReadText")]
@@ -39,30 +33,25 @@ namespace Topic1
         {
             Document doc = Application.DocumentManager.CurrentDocument;
             Database db = doc.Database;
-
             using (doc.LockDocument())
             {
                 using (var trans = db.TransactionManager.StartTransaction())
                 {
-                    PromptSelectionResult acSSPrompt = doc.Editor.GetSelection();
-
-                    if (acSSPrompt.Status == PromptStatus.OK)
+                    PromptSelectionResult result = doc.Editor.GetSelection();
+                    if (result.Status == PromptStatus.OK)
                     {
-                        SelectionSet acSSet = acSSPrompt.Value;
-
+                        SelectionSet acSSet = result.Value;
                         foreach (SelectedObject acSSObj in acSSet)
                         {
                             if (acSSObj != null)
                             {
                                 DBText acText = trans.GetObject(acSSObj.ObjectId, OpenMode.ForRead) as DBText;
-
                                 if (acText != null)
                                 {
                                     doc.Editor.WriteMessage("text: " + acText.TextString);
                                 }
                             }
                         }
-
                         trans.Commit();
                     }
                 }
@@ -74,7 +63,6 @@ namespace Topic1
         {
             Document doc = Application.DocumentManager.CurrentDocument;
             Database db = doc.Database;
-            
             using (doc.LockDocument())
             {
                 using (var trans = db.TransactionManager.StartTransaction())
@@ -84,17 +72,12 @@ namespace Topic1
                         // Chọn điểm
                         var pointInf = LibraryCad.SubFunc.PickPoint(doc);
                         Point3d point = pointInf.point;
-
                         if (pointInf == null || pointInf.status == false) return;
-
                         // Chọn Set đối tượng
                         string mergeText = LibraryCad.TextFunc.MergeString(doc);
-
                         if (mergeText == "") return;
-
-                        // Create text
+                        // Tạo text theo chuỗi vừa gom được
                         LibraryCad.TextFunc.CreateText(doc, mergeText, point);
-
                         // Save the new object to the database
                         trans.Commit();
                     }
