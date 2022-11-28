@@ -23,7 +23,7 @@ namespace Topic1
                     var pointInf = LibraryCad.SubFunc.PickPoint(doc);
                     if (pointInf == null || pointInf.status == false) return;
                     // Tạo chuỗi tại điểm người dùng vừa chọn
-                    LibraryCad.TextFunc.CreateText(doc, text, pointInf.point);
+                    LibraryCad.TextFunc.CreateText(doc, text, pointInf.point, doc.Database.Clayer);
                 }
             }
         }
@@ -77,7 +77,7 @@ namespace Topic1
                         string mergeText = LibraryCad.TextFunc.MergeString(doc);
                         if (mergeText == "") return;
                         // Tạo text theo chuỗi vừa gom được
-                        LibraryCad.TextFunc.CreateText(doc, mergeText, point);
+                        LibraryCad.TextFunc.CreateText(doc, mergeText, point, doc.Database.Clayer);
                         // Save the new object to the database
                         trans.Commit();
                     }

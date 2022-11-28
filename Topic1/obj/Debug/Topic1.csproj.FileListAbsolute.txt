@@ -21,3 +21,8 @@ D:\c#\ATC\AddinLearning\Topic1\obj\Debug\Topic1.csproj.CoreCompileInputs.cache
 D:\c#\ATC\AddinLearning\Topic1\obj\Debug\Topic1.csproj.CopyComplete
 D:\c#\ATC\AddinLearning\Topic1\obj\Debug\Topic1.dll
 D:\c#\ATC\AddinLearning\Topic1\obj\Debug\Topic1.pdb
+D:\c#\ATC\AddinLearning\Topic1\bin\Debug\AcCui.dll
+D:\c#\ATC\AddinLearning\Topic1\bin\Debug\AdWindows.dll
+D:\c#\ATC\AddinLearning\Topic1\bin\Debug\AcCui.xml
+D:\c#\ATC\AddinLearning\Topic1\bin\Debug\AdWindows.xml
+D:\c#\ATC\AddinLearning\Topic1\obj\Debug\Topic1.Properties.Resources.resources

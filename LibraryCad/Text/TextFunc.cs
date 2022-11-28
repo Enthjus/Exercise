@@ -14,7 +14,7 @@ namespace LibraryCad
         /// <param name="db">Database Doc</param>
         /// <param name="text">Chuỗi</param>
         /// <param name="point">Điểm</param>
-        public static void CreateText(Document doc, string text, Point3d point, ObjectId lyrId = new ObjectId())
+        public static void CreateText(Document doc, string text, Point3d point, ObjectId lyrId)
         {
             var db = doc.Database;
             using (Transaction trans = db.TransactionManager.StartTransaction())
@@ -32,7 +32,7 @@ namespace LibraryCad
                             acText.LayerId = lyrId;
                         }
                         acText.Position = point;
-                        acText.Height = 200;
+                        acText.Height = 20;
                         acText.TextString = text;
                         tableRec.AppendEntity(acText);
                         trans.AddNewlyCreatedDBObject(acText, true);

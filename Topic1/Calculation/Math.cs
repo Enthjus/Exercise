@@ -46,7 +46,7 @@ namespace Topic1
                         }
 
                         // Create text
-                        LibraryCad.TextFunc.CreateText(doc, sum.ToString(), point);
+                        LibraryCad.TextFunc.CreateText(doc, sum.ToString(), point, db.Clayer);
 
                         // Save the new object to the database
                         trans.Commit();
@@ -99,7 +99,7 @@ namespace Topic1
                         }
 
                         // Create text
-                        LibraryCad.TextFunc.CreateText(doc, sum.ToString(), point);
+                        LibraryCad.TextFunc.CreateText(doc, sum.ToString(), point, db.Clayer);
 
                         // Save the new object to the database
                         trans.Commit();
@@ -152,7 +152,7 @@ namespace Topic1
                         }
 
                         // Create text
-                        LibraryCad.TextFunc.CreateText(doc, subtraction.ToString(), point);
+                        LibraryCad.TextFunc.CreateText(doc, subtraction.ToString(), point, db.Clayer);
 
                         // Save the new object to the database
                         trans.Commit();
@@ -196,7 +196,7 @@ namespace Topic1
                         // Check nếu có số 0 thì in ra 0 luôn
                         if (LibraryCad.MathFunc.CheckIfHasZero(nums))
                         {
-                            LibraryCad.TextFunc.CreateText(doc, "0", point);
+                            LibraryCad.TextFunc.CreateText(doc, "0", point, db.Clayer);
                             trans.Commit();
                             return;
                         }
@@ -217,7 +217,7 @@ namespace Topic1
                         }
 
                         // Create text
-                        LibraryCad.TextFunc.CreateText(doc, multiplication.ToString(), point);
+                        LibraryCad.TextFunc.CreateText(doc, multiplication.ToString(), point, db.Clayer);
 
                         // Save the new object to the database
                         trans.Commit();
@@ -268,7 +268,7 @@ namespace Topic1
                         // Check nếu số đầu là 0 thì trả về 0
                         if (LibraryCad.MathFunc.CheckIfFirstNumIsZero(nums))
                         {
-                            LibraryCad.TextFunc.CreateText(doc, "0", point);
+                            LibraryCad.TextFunc.CreateText(doc, "0", point, db.Clayer);
                             trans.Commit();
                             return;
                         }
@@ -288,7 +288,7 @@ namespace Topic1
                         }
 
                         // Create text
-                        LibraryCad.TextFunc.CreateText(doc, division.ToString(), point);
+                        LibraryCad.TextFunc.CreateText(doc, division.ToString(), point, db.Clayer);
 
                         // Save the new object to the database
                         trans.Commit();

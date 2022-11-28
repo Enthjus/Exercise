@@ -22,20 +22,20 @@ namespace Topic1.WorkWithObject
         public static void SaveMultiFile()
         {
             Document doc = Application.DocumentManager.MdiActiveDocument;
-            Database newDb = new Database(false, true);
             foreach (string path in filepaths)
             {
+                Database newDb = new Database(false, true);
                 using (newDb)
                 {
                     try
                     {
                         newDb.ReadDwgFile(path, FileOpenMode.OpenForReadAndAllShare, false, null);
+                        newDb.SaveAs(path, DwgVersion.Current);
                     }
                     catch
                     {
                         doc.Editor.WriteMessage("Không tìm thấy file!");
                     }
-                    newDb.SaveAs(path, DwgVersion.Current);
                 }
             }
         }
