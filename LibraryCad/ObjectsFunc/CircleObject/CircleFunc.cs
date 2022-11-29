@@ -18,35 +18,26 @@ namespace LibraryCad
         {
             using (var trans = doc.Database.TransactionManager.StartOpenCloseTransaction())
             {
-                try
+                // Tạo filter để lọc các đối tượng được chọn
+                var tvCircle = new TypedValue[]
                 {
-                    // Tạo filter để lọc các đối tượng được chọn
-                    var tvCircle = new TypedValue[]
-                    {
                         new TypedValue((int)DxfCode.Start, "CIRCLE")
-                    };
-                    var slft = new SelectionFilter(tvCircle);
-                    var objectIds = SubFunc.GetListSelection(doc, "- Chọn các đường tròn: ", slft);
-                    if (objectIds == null) return null;
-                    // Parse sang dạng line rồi thêm vào list
-                    var circles = new List<Circle>();
-                    foreach (ObjectId objectId in objectIds)
-                    {
-                        Circle circle = trans.GetObject(objectId, OpenMode.ForRead) as Circle;
-                        if (circle != null)
-                        {
-                            circles.Add(circle);
-                        }
-                    }
-                    trans.Commit();
-                    return circles;
-                }
-                catch(System.Exception ex)
+                };
+                var slft = new SelectionFilter(tvCircle);
+                var objectIds = SubFunc.GetListSelection(doc, "- Chọn các đường tròn: ", slft);
+                if (objectIds == null) return null;
+                // Parse sang dạng line rồi thêm vào list
+                var circles = new List<Circle>();
+                foreach (ObjectId objectId in objectIds)
                 {
-                    doc.Editor.WriteMessage(ex.Message);
-                    trans.Abort();
-                    return null;
+                    Circle circle = trans.GetObject(objectId, OpenMode.ForRead) as Circle;
+                    if (circle != null)
+                    {
+                        circles.Add(circle);
+                    }
                 }
+                trans.Commit();
+                return circles;
             }
         }
 
@@ -58,31 +49,24 @@ namespace LibraryCad
         {
             using (var trans = doc.Database.TransactionManager.StartTransaction())
             {
-                try
+                doc.Editor.WriteMessage("Vẽ đường tròn!");
+                BlockTable blockTable = trans.GetObject(doc.Database.BlockTableId, OpenMode.ForRead) as BlockTable;
+                BlockTableRecord tableRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
+                // Lấy bán kính nhập vào
+                var circleRad = SubFunc.GetString(doc, "- Nhập bán kính: ");
+                if (!MathFunc.CheckIfNumber(circleRad)) return;
+                // Lấy tâm đường tròn người dùng chọn
+                var centerPoint = SubFunc.PickPoint(doc);
+                if (!centerPoint.status) return;
+                // Tạo đường tròn
+                using (var circle = new Circle())
                 {
-                    doc.Editor.WriteMessage("Vẽ đường tròn!");
-                    BlockTable blockTable = trans.GetObject(doc.Database.BlockTableId, OpenMode.ForRead) as BlockTable;
-                    BlockTableRecord tableRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
-                    // Lấy bán kính nhập vào
-                    var circleRad = MathFunc.GetNum(doc);
-                    // Lấy tâm nhập vào
-                    var centerPoint = SubFunc.PickPoint(doc);
-                    if (!centerPoint.status) return;
-                    // Tạo đường tròn
-                    using (var circle = new Circle())
-                    {
-                        circle.Radius = circleRad;
-                        circle.Center = centerPoint.point;
-                        tableRec.AppendEntity(circle);
-                        trans.AddNewlyCreatedDBObject(circle, true);
-                    }
-                    trans.Commit();
+                    circle.Radius = double.Parse(circleRad);
+                    circle.Center = centerPoint.point;
+                    tableRec.AppendEntity(circle);
+                    trans.AddNewlyCreatedDBObject(circle, true);
                 }
-                catch (System.Exception ex)
-                {
-                    doc.Editor.WriteMessage(ex.Message);
-                    trans.Abort();
-                }
+                trans.Commit();
             }
         }
 

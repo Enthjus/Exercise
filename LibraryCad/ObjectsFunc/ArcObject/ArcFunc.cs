@@ -17,17 +17,18 @@ namespace LibraryCad.Arc
         /// <returns></returns>
         public static double ArcProperties(LayerInfo layerInfo, Document doc)
         {
+            Database db = doc.Database;
             var perimeter = 0.0;
-            using (var trans = doc.Database.TransactionManager.StartOpenCloseTransaction())
+            using (var trans = db.TransactionManager.StartOpenCloseTransaction())
             {
                 TypedValue[] tvArc = new TypedValue[]
                 {
                     new TypedValue((int)DxfCode.Start, "ARC")
                 };
-                SelectionFilter slftArc = new SelectionFilter(tvArc);
+                SelectionFilter filterArc = new SelectionFilter(tvArc);
                 try
                 {
-                    var arcs = LibraryCad.LayerFunc.GetEntityByFilterAndLayer(slftArc, layerInfo.Name, doc);
+                    var arcs = LayerFunc.GetEntityByFilterAndLayer(filterArc, layerInfo.Name, doc);
                     foreach (var arcId in arcs)
                     {
                         var arc = trans.GetObject(arcId.ObjectId, OpenMode.ForRead) as Autodesk.AutoCAD.DatabaseServices.Arc;
@@ -51,36 +52,29 @@ namespace LibraryCad.Arc
         /// <returns>list đường cong</returns>
         public static List<Autodesk.AutoCAD.DatabaseServices.Arc> SelectionSetToListArc(Document doc)
         {
-            try
+            using (doc.LockDocument())
             {
-                using (doc.LockDocument())
+                using (var trans = doc.Database.TransactionManager.StartOpenCloseTransaction())
                 {
-                    using (var trans = doc.Database.TransactionManager.StartOpenCloseTransaction())
+                    var arcs = new List<Autodesk.AutoCAD.DatabaseServices.Arc>();
+                    var tvArc = new TypedValue[]
                     {
-                        var arcs = new List<Autodesk.AutoCAD.DatabaseServices.Arc>();
-                        var tvArc = new TypedValue[]
-                        {
                             new TypedValue((int)DxfCode.Start, "ARC")
-                        };
-                        var slftArc = new SelectionFilter(tvArc);
-                        var objectIds = SubFunc.GetListSelection(doc, "\n- Chọn các đường cong: ", slftArc);
-                        if (objectIds == null) return null;
-                        // Step through the objects in the selection set
-                        foreach (ObjectId objId in objectIds)
+                    };
+                    var filterArc = new SelectionFilter(tvArc);
+                    var objectIds = SubFunc.GetListSelection(doc, "\n- Chọn các đường cong: ", filterArc);
+                    if (objectIds == null) return null;
+                    // Step through the objects in the selection set
+                    foreach (ObjectId objId in objectIds)
+                    {
+                        var arc = trans.GetObject(objId, OpenMode.ForRead) as Autodesk.AutoCAD.DatabaseServices.Arc;
+                        if (arc != null)
                         {
-                            var arc = trans.GetObject(objId, OpenMode.ForRead) as Autodesk.AutoCAD.DatabaseServices.Arc;
-                            if (arc != null)
-                            {
-                                arcs.Add(arc);
-                            }
+                            arcs.Add(arc);
                         }
-                        return arcs;
                     }
+                    return arcs;
                 }
-            }
-            catch
-            {
-                return null;
             }
         }
 

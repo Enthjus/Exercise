@@ -32,7 +32,7 @@ namespace LibraryCad
                             acText.LayerId = lyrId;
                         }
                         acText.Position = point;
-                        acText.Height = 20;
+                        acText.Height = 1;
                         acText.TextString = text;
                         tableRec.AppendEntity(acText);
                         trans.AddNewlyCreatedDBObject(acText, true);

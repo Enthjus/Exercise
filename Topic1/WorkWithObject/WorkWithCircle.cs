@@ -1,8 +1,6 @@
 ﻿using Autodesk.AutoCAD.Runtime;
 using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.Geometry;
-using Autodesk.AutoCAD.EditorInput;
+using LibraryCad;
 
 namespace Topic1
 {
@@ -15,12 +13,12 @@ namespace Topic1
             using (doc.LockDocument())
             {
                 // Chọn các đối tượng chỉ lấy circle
-                var circles = LibraryCad.CircleFunc.ParseSelectionToListCircle(doc);
+                var circles = CircleFunc.ParseSelectionToListCircle(doc);
                 if (circles == null) return;
                 // Gọi hàm vẽ đường tròn nội tiếp
                 foreach (var circle in circles)
                 {
-                    LibraryCad.CircleFunc.TriangleInscribedInCircle(doc, circle);
+                    CircleFunc.TriangleInscribedInCircle(doc, circle);
                 }
             }
         }
@@ -32,12 +30,12 @@ namespace Topic1
             using (doc.LockDocument())
             {
                 // Chọn các đối tượng chỉ lấy circle
-                var circles = LibraryCad.CircleFunc.ParseSelectionToListCircle(doc);
+                var circles = CircleFunc.ParseSelectionToListCircle(doc);
                 if (circles == null) return;
                 // Gọi hàm vẽ đường tròn ngoại tiếp
                 foreach (var circle in circles)
                 {
-                    LibraryCad.CircleFunc.TriangleCircumscribedAboutCircle(doc, circle);
+                    CircleFunc.TriangleCircumscribedAboutCircle(doc, circle);
                 }
             }
         }
@@ -49,7 +47,7 @@ namespace Topic1
             using (doc.LockDocument())
             {
                 // Vẽ đường tròn
-                LibraryCad.CircleFunc.DrawCircle(doc);
+                CircleFunc.DrawCircle(doc);
             }
         }
     }

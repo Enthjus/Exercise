@@ -23,9 +23,9 @@ namespace LibraryCad
                     PromptPointResult result;
                     options.Message = "\nChọn điểm: ";
                     result = doc.Editor.GetPoint(options);
-                    Point3d point = result.Value;
                     if (result.Status == PromptStatus.Cancel) pointInf.status = false;
                     else pointInf.status = true;
+                    Point3d point = result.Value;
                     pointInf.point = point;
                     trans.Commit();
                     return pointInf;
@@ -49,10 +49,10 @@ namespace LibraryCad
             try
             {
                 // Lấy chuỗi người dùng nhập vào
-                PromptStringOptions options;
-                options = new PromptStringOptions("\n" + str);
+                PromptStringOptions options = new PromptStringOptions("\n" + str);
                 options.AllowSpaces = false;
                 PromptResult result = doc.Editor.GetString(options);
+                if (result.Status != PromptStatus.OK) return "";
                 return result.StringResult;
             }
             catch (System.Exception ex)
@@ -69,7 +69,7 @@ namespace LibraryCad
         /// <param name="msg">Chuỗi hiển thị cho người dùng</param>
         /// <param name="slft">Đối tượng muốn lọc</param>
         /// <returns>Set các đối tượng</returns>
-        public static ObjectId[] GetListSelection(Document doc, string msg, SelectionFilter slft = null)
+        public static ObjectId[] GetListSelection(Document doc, string msg, SelectionFilter filter = null)
         {
             try
             {
@@ -77,14 +77,14 @@ namespace LibraryCad
                 options.MessageForAdding = $"\n{msg}";
                 PromptSelectionResult selResult;
                 // Nếu không có filter thì lấy hết
-                if (slft == null)
+                if (filter == null)
                 {
                     selResult = doc.Editor.GetSelection();
                 }
                 // Nếu có filter thì lấy theo filter
                 else
                 {
-                    selResult = doc.Editor.GetSelection(options, slft);
+                    selResult = doc.Editor.GetSelection(options, filter);
                 }
                 // Nếu prompt status là OK, thì trả về object id
                 if (selResult.Status == PromptStatus.OK)
@@ -114,7 +114,7 @@ namespace LibraryCad
                 try
                 {
                     DBObject obj = trans.GetObject(objId, OpenMode.ForWrite);
-                    AddRegAppTableRecord(nameApp);
+                    AddRegAppTableRecord(doc, nameApp);
                     ResultBuffer rb = new ResultBuffer(new TypedValue(1001, nameApp), new TypedValue(1000, xStr));
                     obj.XData = rb;
                     rb.Dispose();
@@ -132,9 +132,8 @@ namespace LibraryCad
         /// Hàm thêm RegAppTable
         /// </summary>
         /// <param name="regAppName">tên RegAppTable</param>
-        public static void AddRegAppTableRecord(string regAppName)
+        public static void AddRegAppTableRecord(Document doc, string regAppName)
         {
-            Document doc = Application.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
             using (var trans = doc.TransactionManager.StartTransaction())
             {
@@ -177,6 +176,57 @@ namespace LibraryCad
             else
             {
                 return -1;
+            }
+        }
+
+        /// <summary>
+        /// Hàm lấy danh sách id các đối tượng được chọn
+        /// </summary>
+        /// <param name="doc">Document</param>
+        /// <param name="objIdColl">Danh sách id các đối tượng</param>
+        public static void PickAllObject(Document doc, ObjectIdCollection objIdColl)
+        {
+            Database db = doc.Database;
+            using (doc.LockDocument())
+            {
+                using (Transaction trans = db.TransactionManager.StartTransaction())
+                {
+                    // Lấy list các DBObjects
+                    var objIds = GetListSelection(doc, "\n- Chọn các đối tượng muốn sao chép: ");
+                    if (objIds != null)
+                    {
+                        foreach (var objId in objIds)
+                        {
+                            objIdColl.Add(objId);
+                        }
+                    }
+                    trans.Commit();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Hàm clone các đối tượng sang database khác
+        /// </summary>
+        /// <param name="doc">Document</param>
+        /// <param name="objIdColl">Danh sách id các đối tượng</param>
+        /// <param name="filePath">Đường dẫn file muốn đặt đối tượng</param>
+        public static void CLoneObjectToDatabase(Document doc, ObjectIdCollection objIdColl, string filePath)
+        {
+            Database newDB = new Database(true, true);
+            using (newDB)
+            {
+                using (Transaction trans = newDB.TransactionManager.StartTransaction())
+                {
+                    BlockTable blockTable = trans.GetObject(newDB.BlockTableId, OpenMode.ForRead) as BlockTable;
+                    BlockTableRecord tableRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
+                    // Clone đối tượng qua database mới tạo
+                    IdMapping idMap = new IdMapping();
+                    doc.Database.WblockCloneObjects(objIdColl, tableRec.ObjectId, idMap, DuplicateRecordCloning.Ignore, false);
+                    trans.Commit();
+                    // Lưu thành file mới
+                    newDB.SaveAs(filePath, DwgVersion.Current);
+                }
             }
         }
     }

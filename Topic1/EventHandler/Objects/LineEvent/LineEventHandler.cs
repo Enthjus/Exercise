@@ -15,24 +15,26 @@ namespace Topic1.EventHandler.Objects.LineEvent
         Line line = null;
 
         [CommandMethod("AddLObjEvent")]
-        public void AddPlObjEvent()
+        public void AddLObjEvent()
         {
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
             using (Transaction trans = db.TransactionManager.StartTransaction())
             {
+                // Tạo bảng để đọc và viết
                 BlockTable blockTable = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
                 BlockTableRecord tableRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
                 line = new Line(new Point3d(1, 1, 0), new Point3d(3, 2, 0));
                 tableRec.AppendEntity(line);
                 trans.AddNewlyCreatedDBObject(line, true);
+                // Bắt sự kiện khi thực hiện thay đổi trên line
                 line.Modified += new System.EventHandler(LineMod);
                 trans.Commit();
             }
         }
 
         [CommandMethod("RemoveLObjEvent")]
-        public void RemovePlObjEvent()
+        public void RemoveLObjEvent()
         {
             if (line != null)
             {
@@ -53,13 +55,13 @@ namespace Topic1.EventHandler.Objects.LineEvent
 
         public void LineMod(object senderObj, EventArgs evtArgs)
         {
-            if (!line.IsErased)
+            if (line.IsErased)
             {
-                Application.ShowAlertDialog("The area of " + line.ToString() + " is: " + line.Length);
+                Application.ShowAlertDialog("The line " + line.ToString() + " is deleted!");
             }
             else
             {
-                Application.ShowAlertDialog("The polyline " + line.ToString() + " is deleted!");
+                Application.ShowAlertDialog("The area of " + line.ToString() + " is: " + line.Length);
             }
         }
     }

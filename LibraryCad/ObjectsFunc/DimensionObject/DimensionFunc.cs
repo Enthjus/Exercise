@@ -3,6 +3,7 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LibraryCad
 {
@@ -342,6 +343,75 @@ namespace LibraryCad
                     doc.Editor.WriteMessage(ex.Message);
                     trans.Abort();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Tính tổng kích thước các dim được chọn
+        /// </summary>
+        /// <param name="doc">Document</param>
+        public static void DimensionSum(Document doc)
+        {
+            Database db = doc.Database;
+            using (doc.LockDocument())
+            {
+                // Tạo filter
+                var typeValues = new TypedValue[]
+                {
+                    new TypedValue((int)DxfCode.Start, "DIMENSION")
+                };
+                var slft = new SelectionFilter(typeValues);
+                using (var trans = db.TransactionManager.StartTransaction())
+                {
+                    var sum = 0.0;
+                    var dimensions = new List<Dimension>();
+                    // Lấy đối tượng theo filter
+                    var objectIds = SubFunc.GetListSelection(doc, "- Chọn các dim muốm tính tổng giá trị:", slft);
+                    if (objectIds == null) return;
+                    foreach (var objectId in objectIds)
+                    {
+                        var dimension = trans.GetObject(objectId, OpenMode.ForRead) as Dimension;
+                        if (dimension != null)
+                        {
+                            dimensions.Add(dimension);
+                        }
+                    }
+                    // Cộng tổng các kích thước dim lại
+                    dimensions.Where(dim => dim.Measurement > 0).ToList().ForEach(dimension => sum += dimension.Measurement);
+                    // Set layer hiện tại
+                    var layer = db.Clayer;
+                    // Lấy điểm đặt kết quả
+                    var point = LibraryCad.SubFunc.PickPoint(doc);
+                    if (point.status == false || point == null) return;
+                    LibraryCad.TextFunc.CreateText(doc, System.Math.Round(sum).ToString(), point.point, layer);
+                    trans.Commit();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Hàm tạo rotate dimension
+        /// </summary>
+        /// <param name="doc">Document</param>
+        public static void CreateRotateDim(Document doc)
+        {
+            Database db = doc.Database;
+            using (Transaction trans = db.TransactionManager.StartTransaction())
+            {
+                BlockTable blockTable = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
+                BlockTableRecord tableRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
+                // Tạo dim dạng rotated
+                using (RotatedDimension rotateDim = new RotatedDimension())
+                {
+                    rotateDim.XLine1Point = new Point3d(0, 0, 0);
+                    rotateDim.XLine2Point = new Point3d(6, 3, 0);
+                    rotateDim.Rotation = 0.707;
+                    rotateDim.DimLinePoint = new Point3d(0, 5, 0);
+                    rotateDim.DimensionStyle = db.Dimstyle;
+                    tableRec.AppendEntity(rotateDim);
+                    trans.AddNewlyCreatedDBObject(rotateDim, true);
+                }
+                trans.Commit();
             }
         }
     }

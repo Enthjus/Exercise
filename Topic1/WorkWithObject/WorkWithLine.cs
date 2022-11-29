@@ -2,7 +2,7 @@
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
-using Autodesk.AutoCAD.EditorInput;
+using LibraryCad;
 
 namespace Topic1
 {
@@ -21,7 +21,7 @@ namespace Topic1
                     {
                         var sumLine = 0.0;
                         // Parse các đối tượng được chọn thành list đoạn thẳng
-                        var lines = LibraryCad.LineFunc.SelectionSetToListLine(doc);
+                        var lines = LineFunc.SelectionSetToListLine(doc);
                         // Cộng độ dài các đoạn thẳng
                         if (lines != null)
                         {
@@ -69,10 +69,10 @@ namespace Topic1
         {
             Document doc = Application.DocumentManager.MdiActiveDocument;
             // Lấy list đoạn thẳng từ các đối tượng được chọn
-            var lines = LibraryCad.LineFunc.SelectionSetToListLine(doc);
-            if (lines.Count == 0) return;
+            var lines = LineFunc.SelectionSetToListLine(doc);
+            if (lines == null) return;
             // Tạo dim trên list đoạn thẳng vừa nhận được
-            LibraryCad.DimensionFunc.DimMultiLine(lines, doc);
+            DimensionFunc.DimMultiLine(lines, doc);
         }
     }
 }

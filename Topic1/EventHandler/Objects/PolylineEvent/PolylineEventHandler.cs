@@ -21,6 +21,7 @@ namespace Topic1.EventHandler.Objects.PolylineEvent
             Database db = doc.Database;
             using (Transaction trans = db.TransactionManager.StartTransaction())
             {
+                // Tạo bảng để đọc và viết
                 BlockTable blockTable = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
                 BlockTableRecord tableRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
                 // Tạo polyline đóng
@@ -33,7 +34,7 @@ namespace Topic1.EventHandler.Objects.PolylineEvent
                 pline.Closed = true;
                 tableRec.AppendEntity(pline);
                 trans.AddNewlyCreatedDBObject(pline, true);
-                // Thêm sự kiện khi thực hiện thay đổi trên polyline
+                // Bắt sự kiện khi thực hiện thay đổi trên polyline
                 pline.Modified += new System.EventHandler(PolyMod);
                 trans.Commit();
             }
@@ -44,33 +45,32 @@ namespace Topic1.EventHandler.Objects.PolylineEvent
         {
             if (pline != null)
             {
-                // Get the current document and database, and start a transaction
                 Document doc = Application.DocumentManager.MdiActiveDocument;
                 Database db = doc.Database;
-
                 using (Transaction trans = db.TransactionManager.StartTransaction())
                 {
-                    // Open the polyline for read
-                    pline = trans.GetObject(pline.ObjectId,
-                                               OpenMode.ForRead) as Polyline;
-
+                    pline = trans.GetObject(pline.ObjectId, OpenMode.ForRead) as Polyline;
                     if (pline.IsWriteEnabled == false)
                     {
                         trans.GetObject(pline.ObjectId, OpenMode.ForWrite);
                     }
-
+                    // Thêm bắt sự kiện lúc thay đổi
                     pline.Modified -= new System.EventHandler(PolyMod);
                     pline = null;
                 }
             }
         }
 
-        public void PolyMod(object senderObj,
-                              EventArgs evtArgs)
+        public void PolyMod(object senderObj, EventArgs evtArgs)
         {
-            Application.ShowAlertDialog("The area of " +
-                                        pline.ToString() + " is: " +
-                                        pline.Area);
+            if (pline.IsErased)
+            {
+                Application.ShowAlertDialog("The polyline " + pline.ToString() + " is deleted!");
+            }
+            else
+            {
+                Application.ShowAlertDialog("The area of " + pline.ToString() + " is: " + pline.Area);
+            }
         }
     }
 }

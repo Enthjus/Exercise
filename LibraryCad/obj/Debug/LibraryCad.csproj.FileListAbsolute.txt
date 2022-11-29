@@ -1,6 +1,6 @@
-D:\c#\ATC\AddinLearning\LibraryCad\bin\Debug\LibraryCad.dll
-D:\c#\ATC\AddinLearning\LibraryCad\bin\Debug\LibraryCad.pdb
 D:\c#\ATC\AddinLearning\LibraryCad\obj\Debug\LibraryCad.csproj.AssemblyReference.cache
 D:\c#\ATC\AddinLearning\LibraryCad\obj\Debug\LibraryCad.csproj.CoreCompileInputs.cache
+D:\c#\ATC\AddinLearning\LibraryCad\bin\Debug\LibraryCad.dll
+D:\c#\ATC\AddinLearning\LibraryCad\bin\Debug\LibraryCad.pdb
 D:\c#\ATC\AddinLearning\LibraryCad\obj\Debug\LibraryCad.dll
 D:\c#\ATC\AddinLearning\LibraryCad\obj\Debug\LibraryCad.pdb

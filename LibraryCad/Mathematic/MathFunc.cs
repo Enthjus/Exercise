@@ -45,33 +45,6 @@ namespace LibraryCad
         }
 
         /// <summary>
-        /// Hàm lấy số nhập vào
-        /// </summary>
-        /// <param name="doc">Document</param>
-        /// <returns></returns>
-        public static double GetNum(Document doc)
-        {
-            while (1 == 1)
-            {
-                // Lấy số nhập từ editor
-                PromptStringOptions options;
-                options = new PromptStringOptions("\nNhập số: ");
-                options.AllowSpaces = false;
-                PromptResult result = doc.Editor.GetString(options);
-                // Chạy vòng lặp đến khi người dùng nhập số
-                while (1 == 1)
-                {
-                    if (CheckIfNumber(result.StringResult))
-                    {
-                        return double.Parse(result.StringResult);
-                    }
-                    options = new PromptStringOptions("\nDữ liệu nhập vào phải là số: ");
-                    result = doc.Editor.GetString(options);
-                }
-            }
-        }
-
-        /// <summary>
         /// Hàm chỉ lấy số từ các đối tượng được chọn
         /// </summary>
         /// <param name="doc">Document</param>
@@ -84,21 +57,19 @@ namespace LibraryCad
                 // Tạo filter để lọc các đối tượng được chọn
                 var typeValue = new TypedValue[]
                 {
-                    new TypedValue((int)DxfCode.Start, "TEXT"),
-                    new TypedValue((int)DxfCode.Start, "MTEXT"),
-                    new TypedValue((int)DxfCode.Start, "DTEXT")
+                    new TypedValue((int)DxfCode.Start, "TEXT")
                 };
-                var slft = new SelectionFilter(typeValue);
-                var objectIds = SubFunc.GetListSelection(doc, msg, slft);
+                var filter = new SelectionFilter(typeValue);
+                var objectIds = SubFunc.GetListSelection(doc, msg, filter);
                 if (objectIds == null) return null;
                 // Check nếu là số thì add vào list
                 var nums = new List<double>();
                 foreach (ObjectId obj in objectIds)
                 {
-                    DBText s = trans.GetObject(obj, OpenMode.ForRead) as DBText;
-                    if (s != null && CheckIfNumber(s.TextString))
+                    DBText num = trans.GetObject(obj, OpenMode.ForRead) as DBText;
+                    if (num != null && CheckIfNumber(num.TextString))
                     {
-                        nums.Add(double.Parse(s.TextString));
+                        nums.Add(double.Parse(num.TextString));
                     }
                 }
                 return nums;

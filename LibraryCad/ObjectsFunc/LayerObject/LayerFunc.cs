@@ -139,13 +139,11 @@ namespace LibraryCad
                                 }
                             }
                             LayerTableRecord tableRec = new LayerTableRecord();
-                            LibraryCad.SubFunc.AddRegAppTableRecord("Phuc");
+                            SubFunc.AddRegAppTableRecord(doc, "Phuc");
                             ResultBuffer rb = new ResultBuffer(new TypedValue(1001, "Phuc"), new TypedValue(1000, "Layer create by tool"));
                             tableRec.Name = layerName;
                             tableRec.XData = rb;
-                            // Chuyển layertable từ for read sang for write
                             layerTable.UpgradeOpen();
-                            // Thêm layer mới vào bảng Layer và transaction
                             id = layerTable.Add(tableRec);
                             trans.AddNewlyCreatedDBObject(tableRec, true);
                             msg = "Thêm thành công";

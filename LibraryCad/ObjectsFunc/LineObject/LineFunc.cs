@@ -17,29 +17,36 @@ namespace LibraryCad
         /// <returns>List Line</returns>
         public static List<Line> SelectionSetToListLine(Document doc)
         {
-            using (doc.LockDocument())
+            try
             {
-                using (var trans = doc.Database.TransactionManager.StartOpenCloseTransaction())
+                using (doc.LockDocument())
                 {
-                    var lines = new List<Line>();
-                    var typeValue = new TypedValue[]
+                    using (var trans = doc.Database.TransactionManager.StartOpenCloseTransaction())
                     {
-                        new TypedValue((int)DxfCode.Start, "LINE")
-                    };
-                    var slft = new SelectionFilter(typeValue);
-                    var objectIds = SubFunc.GetListSelection(doc, "- Chọn các đoạn thẳng: ", slft);
-                    if (objectIds == null) return null;
-                    // Lấy đoạn thẳng từ list object id 
-                    foreach (ObjectId objId in objectIds)
-                    {
-                        var line = trans.GetObject(objId, OpenMode.ForRead) as Line;
-                        if (line != null)
+                        var lines = new List<Line>();
+                        var typeValue = new TypedValue[]
                         {
-                            lines.Add(line);
+                        new TypedValue((int)DxfCode.Start, "LINE")
+                        };
+                        var slft = new SelectionFilter(typeValue);
+                        var objectIds = SubFunc.GetListSelection(doc, "- Chọn các đoạn thẳng: ", slft);
+                        if (objectIds == null) return null;
+                        // Lấy đoạn thẳng từ list object id 
+                        foreach (ObjectId objId in objectIds)
+                        {
+                            var line = trans.GetObject(objId, OpenMode.ForRead) as Line;
+                            if (line != null)
+                            {
+                                lines.Add(line);
+                            }
                         }
+                        return lines;
                     }
-                    return lines;
                 }
+            }
+            catch
+            {
+                return null;
             }
         }
 

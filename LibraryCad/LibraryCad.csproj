@@ -53,22 +53,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArcObject\ArcFunc.cs" />
-    <Compile Include="CircleObject\CircleFunc.cs" />
-    <Compile Include="DimensionObject\DimensionFunc.cs" />
-    <Compile Include="FileObject\FileFunc.cs" />
-    <Compile Include="LayerObject\LayerFunc.cs" />
-    <Compile Include="LineObject\LineFunc.cs" />
+    <Compile Include="ObjectsFunc\ArcObject\ArcFunc.cs" />
+    <Compile Include="ObjectsFunc\BlockObject\BlockFunc.cs" />
+    <Compile Include="ObjectsFunc\CircleObject\CircleFunc.cs" />
+    <Compile Include="ObjectsFunc\DimensionObject\DimensionFunc.cs" />
+    <Compile Include="ObjectsFunc\FileObject\FileFunc.cs" />
+    <Compile Include="ObjectsFunc\LayerObject\LayerFunc.cs" />
+    <Compile Include="ObjectsFunc\LineObject\LineFunc.cs" />
     <Compile Include="Mathematic\MathFunc.cs" />
     <Compile Include="Models\BlockInfo.cs" />
     <Compile Include="Models\LayerInfo.cs" />
     <Compile Include="Models\LayerObject.cs" />
     <Compile Include="Models\PlineInfo.cs" />
     <Compile Include="Models\PointInf.cs" />
-    <Compile Include="PolylineObject\PolylineFunc.cs" />
+    <Compile Include="ObjectsFunc\PolylineObject\PolylineFunc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sub\SubFunc.cs" />
-    <Compile Include="Text\TextFunc.cs" />
+    <Compile Include="ObjectsFunc\TextObject\TextFunc.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
