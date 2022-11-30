@@ -1,5 +1,4 @@
-﻿using Autodesk.AutoCAD.EditorInput;
-using Autodesk.AutoCAD.Geometry;
+﻿using Autodesk.AutoCAD.Geometry;
 
 namespace LibraryCad.Models
 {

@@ -24,12 +24,12 @@ namespace LibraryCad
                     using (var trans = doc.Database.TransactionManager.StartOpenCloseTransaction())
                     {
                         var lines = new List<Line>();
-                        var typeValue = new TypedValue[]
+                        var tvLine = new TypedValue[]
                         {
                         new TypedValue((int)DxfCode.Start, "LINE")
                         };
-                        var slft = new SelectionFilter(typeValue);
-                        var objectIds = SubFunc.GetListSelection(doc, "- Chọn các đoạn thẳng: ", slft);
+                        var filter = new SelectionFilter(tvLine);
+                        var objectIds = SubFunc.GetListSelection(doc, "- Chọn các đoạn thẳng: ", filter);
                         if (objectIds == null) return null;
                         // Lấy đoạn thẳng từ list object id 
                         foreach (ObjectId objId in objectIds)

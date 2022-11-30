@@ -28,6 +28,9 @@ namespace Topic1.EventHandler.Objects.CircleEvent
                 trans.AddNewlyCreatedDBObject(circle, true);
                 // Bắt sự kiện khi thực hiện thay đổi trên đường tròn
                 circle.Modified += new System.EventHandler(CircleMod);
+                circle.Erased += new ObjectErasedEventHandler(CircleDelete);
+                circle.Copied += new ObjectEventHandler(CircleClone);
+                circle.ModifiedXData += new System.EventHandler(CircleMod);
                 trans.Commit();
             }
         }
@@ -47,6 +50,9 @@ namespace Topic1.EventHandler.Objects.CircleEvent
                         trans.GetObject(circle.ObjectId, OpenMode.ForWrite);
                     }
                     circle.Modified -= new System.EventHandler(CircleMod);
+                    circle.Erased -= new ObjectErasedEventHandler(CircleDelete);
+                    circle.Copied -= new ObjectEventHandler(CircleClone);
+                    circle.ModifiedXData -= new System.EventHandler(CircleMod); ;
                     circle = null;
                 }
             }
@@ -54,14 +60,24 @@ namespace Topic1.EventHandler.Objects.CircleEvent
 
         public void CircleMod(object senderObj, EventArgs evtArgs)
         {
-            if (circle.IsErased)
+            if (circle.IsModifiedXData)
             {
-                Application.ShowAlertDialog("The circle " + circle.ToString() + " is deleted!");
+                Application.ShowAlertDialog("Xdata of " + circle.ToString() + " have changed to " + circle.XData);
             }
             else
             {
                 Application.ShowAlertDialog("The area of " + circle.ToString() + " is: " + circle.Circumference);
             }
+        }
+
+        public void CircleDelete(object senderObj, EventArgs evtArgs)
+        {
+            Application.ShowAlertDialog("The circle " + circle.ToString() + " have been deleted!");
+        }
+
+        public void CircleClone(object senderObj, EventArgs evtArgs)
+        {
+            Application.ShowAlertDialog("The circle " + circle.ToString() + " have been cloned!");
         }
     }
 }

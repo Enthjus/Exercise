@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using LibraryCad;
+using LibraryCad.Models;
 using OfficeOpenXml;
 
 namespace Topic1
@@ -29,7 +27,7 @@ namespace Topic1
             if (f.ShowDialog() == DialogResult.OK)
             {
                 string name_txt = f.FileName;
-                string path = Path.GetExtension(name_txt);
+                //string path = Path.GetExtension(name_txt);
                 Stream s = File.Open(name_txt, FileMode.Open);
                 StreamReader r = new StreamReader(s);
                 while (!r.EndOfStream)
@@ -40,11 +38,11 @@ namespace Topic1
                         string line = r.ReadLine();
                         if (line.Length > 0)
                         {
-                            var layerInfo = new LibraryCad.Models.LayerInfo();
+                            var layerInfo = new LayerInfo();
                             layerInfo.Name = line.Split('|')[0];
                             layerInfo.ColorId = short.Parse(line.Split('|')[1]);
                             layerInfo.Des = "tool create layer";
-                            var status = LibraryCad.LayerFunc.CreateLayer(layerInfo);
+                            var status = LayerFunc.CreateLayer(layerInfo);
                             i++;
                         }
                     }
@@ -58,7 +56,7 @@ namespace Topic1
         /// Hàm xuất file excel
         /// </summary>
         /// <param name="layerObjects">List thông tin các đối tượng</param>
-        public static void Export_csv(List<LibraryCad.Models.LayerObject> layerObjects)
+        public static void Export_csv(List<LayerObject> layerObjects)
         {
             string filePath = "";
             //tạo SaveDialog để lưu file excel
@@ -78,7 +76,7 @@ namespace Topic1
             }
             try
             {
-                ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
                 using (ExcelPackage package = new ExcelPackage())
                 {
                     //đặt tên người tạo file

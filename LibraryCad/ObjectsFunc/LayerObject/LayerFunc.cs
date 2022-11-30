@@ -1,10 +1,10 @@
 ﻿using Autodesk.AutoCAD.ApplicationServices;
+using Autodesk.AutoCAD.Colors;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using LibraryCad.Models;
-using acad = Autodesk.AutoCAD.ApplicationServices.Application;
 using System.Collections.Generic;
-using Autodesk.AutoCAD.Colors;
+using acad = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace LibraryCad
 {
@@ -279,15 +279,15 @@ namespace LibraryCad
                         try
                         {
                             //Chiều dài các line cùng layer
-                            perimeter += LibraryCad.LineFunc.LineProperties(layer, doc);
+                            perimeter += LineFunc.LineProperties(layer, doc);
                             //Chiều dài các đường cong cùng layer
-                            perimeter += LibraryCad.Arc.ArcFunc.ArcProperties(layer, doc);
+                            perimeter += Arc.ArcFunc.ArcProperties(layer, doc);
                             //Chiều dài và diện tích các pline cùng layer
-                            var plineProp = LibraryCad.Polyline.PolylineFunc.PlineProperties(layer, doc);
+                            var plineProp = Polyline.PolylineFunc.PlineProperties(layer, doc);
                             perimeter += plineProp.Perimeter;
                             area += plineProp.Area;
                             //Chiều dài và diện tích các đường tròn cùng layer
-                            var circleProp = LibraryCad.CircleFunc.CircleProperties(layer, doc);
+                            var circleProp = CircleFunc.CircleProperties(layer, doc);
                             perimeter += circleProp.Perimeter;
                             area += circleProp.Area;
                             layerObject.Perimeter = perimeter;

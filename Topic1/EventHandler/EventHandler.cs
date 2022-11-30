@@ -56,9 +56,8 @@ namespace Topic1.EventHandler
         public void AddDocEvent()
         {
             // Get the current document
-            Document acDoc = Application.DocumentManager.MdiActiveDocument;
-
-            acDoc.BeginDocumentClose += new DocumentBeginCloseEventHandler(docBeginDocClose);
+            Document doc = Application.DocumentManager.MdiActiveDocument;
+            doc.BeginDocumentClose += new DocumentBeginCloseEventHandler(docBeginDocClose);
         }
 
         [CommandMethod("RemoveDocEvent")]
@@ -66,7 +65,6 @@ namespace Topic1.EventHandler
         {
             // Get the current document
             Document acDoc = Application.DocumentManager.MdiActiveDocument;
-
             acDoc.BeginDocumentClose -= new DocumentBeginCloseEventHandler(docBeginDocClose);
         }
 

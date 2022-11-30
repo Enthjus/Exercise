@@ -25,17 +25,17 @@ namespace LibraryCad
                     BlockTableRecord tableRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
                     var layerTable = trans.GetObject(db.LayerTableId, OpenMode.ForRead) as LayerTable;
                     // Tạo đối tượng chuỗi 1 dòng
-                    using (DBText acText = new DBText())
+                    using (DBText dbText = new DBText())
                     {
-                        if(lyrId != null)
+                        if (lyrId != null)
                         {
-                            acText.LayerId = lyrId;
+                            dbText.LayerId = lyrId;
                         }
-                        acText.Position = point;
-                        acText.Height = 1;
-                        acText.TextString = text;
-                        tableRec.AppendEntity(acText);
-                        trans.AddNewlyCreatedDBObject(acText, true);
+                        dbText.Position = point;
+                        dbText.Height = 1;
+                        dbText.TextString = text;
+                        tableRec.AppendEntity(dbText);
+                        trans.AddNewlyCreatedDBObject(dbText, true);
                     }
                     trans.Commit();
                 }

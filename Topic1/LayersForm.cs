@@ -3,6 +3,7 @@ using Autodesk.AutoCAD.Runtime;
 using acad = Autodesk.AutoCAD.ApplicationServices.Application;
 using System.Windows.Forms;
 using System.IO;
+using LibraryCad;
 
 namespace Topic1
 {
@@ -42,7 +43,7 @@ namespace Topic1
             dtgv_Layers.DataSource = null;
             dtgv_Layers.MultiSelect = false;
             // Load layers được tạo do tool
-            dtgv_Layers.DataSource = LibraryCad.LayerFunc.GetLayer(doc);
+            dtgv_Layers.DataSource = LayerFunc.GetLayer(doc);
         }
 
         private void btn_Delete_Click(object sender, EventArgs e)
@@ -51,7 +52,7 @@ namespace Topic1
             // Lấy tên layer của hàng được người dùng chọn
             string layerName = dtgv_Layers.SelectedCells[0].OwningRow.Cells["Name"].Value.ToString();
             // Xóa layer
-            var msg = LibraryCad.LayerFunc.DeleteLayer(doc, layerName);
+            var msg = LayerFunc.DeleteLayer(doc, layerName);
             // Nếu xóa thành công load lại data
             if(msg.Contains("have been deleted"))
             {
@@ -102,7 +103,7 @@ namespace Topic1
                     for (int ii = dtgv_Layers.Rows.Count - 1; ii >= 0; ii--)
                     {
                         string layerName = dtgv_Layers.Rows[ii].Cells["Name"].Value.ToString();
-                        LibraryCad.LayerFunc.DeleteLayer(doc, layerName);
+                        LayerFunc.DeleteLayer(doc, layerName);
                     }
                     //Thêm dữ liệu mới
                     int i = 0;

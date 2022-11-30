@@ -34,18 +34,18 @@ namespace Topic1
             using (doc.LockDocument())
             {
                 // Tạo filter
-                var typeValues = new TypedValue[]
+                var tvDim = new TypedValue[]
                     {
                         new TypedValue((int)DxfCode.Start, "DIMENSION")
                     };
-                var slft = new SelectionFilter(typeValues);
+                var filter = new SelectionFilter(tvDim);
                 // Bắt đầu transaction
                 using (var trans = db.TransactionManager.StartTransaction())
                 {
                     Variable.sumDim = 0.0;
                     // Lấy list dimension
                     var dimensions = new List<Dimension>();
-                    var objectIds = SubFunc.GetListSelection(doc, "", slft);
+                    var objectIds = SubFunc.GetListSelection(doc, "", filter);
                     if (objectIds == null) return;
                     foreach (var objectId in objectIds)
                     {
@@ -78,10 +78,10 @@ namespace Topic1
                     // Set layer
                     var layer = db.Clayer;
                     // Lấy điểm vừa pick
-                    var ptn = LibraryCad.SubFunc.PickPoint(doc);
+                    var ptn = SubFunc.PickPoint(doc);
                     if (ptn.status == false) return;
                     // Tạo text
-                    LibraryCad.TextFunc.CreateText(doc, Variable.sumDim.ToString(), ptn.point, layer);
+                    TextFunc.CreateText(doc, Variable.sumDim.ToString(), ptn.point, layer);
                     trans.Commit();
                 }
             }
@@ -101,7 +101,7 @@ namespace Topic1
                     {
                         Variable.sumLine = 0.0;
                         // Parse selection set thành list line
-                        var lines = LibraryCad.LineFunc.SelectionSetToListLine(doc);
+                        var lines = LineFunc.SelectionSetToListLine(doc);
                         // Cộng độ dài các đoạn thẳng
                         if (lines != null)
                         {
@@ -138,10 +138,10 @@ namespace Topic1
                         // Set layer
                         var layer = db.Clayer;
                         // Lấy điểm vừa pick
-                        var ptn = LibraryCad.SubFunc.PickPoint(doc);
+                        var ptn = SubFunc.PickPoint(doc);
                         if (ptn.status == false) return;
                         // Tạo text
-                        LibraryCad.TextFunc.CreateText(doc, Variable.sumLine.ToString(), ptn.point, layer);
+                        TextFunc.CreateText(doc, Variable.sumLine.ToString(), ptn.point, layer);
                         trans.Commit();
                     }
                     catch (System.Exception ex)

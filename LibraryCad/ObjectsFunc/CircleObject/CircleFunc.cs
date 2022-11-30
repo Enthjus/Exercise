@@ -23,8 +23,8 @@ namespace LibraryCad
                 {
                         new TypedValue((int)DxfCode.Start, "CIRCLE")
                 };
-                var slft = new SelectionFilter(tvCircle);
-                var objectIds = SubFunc.GetListSelection(doc, "- Chọn các đường tròn: ", slft);
+                var filter = new SelectionFilter(tvCircle);
+                var objectIds = SubFunc.GetListSelection(doc, "- Chọn các đường tròn: ", filter);
                 if (objectIds == null) return null;
                 // Parse sang dạng line rồi thêm vào list
                 var circles = new List<Circle>();

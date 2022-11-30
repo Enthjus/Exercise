@@ -1,7 +1,6 @@
 ﻿using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
-using Autodesk.AutoCAD.Geometry;
 using LibraryCad.Models;
 using System.Collections.Generic;
 
@@ -17,21 +16,22 @@ namespace LibraryCad.Polyline
         /// <returns></returns>
         public static LayerObject PlineProperties(LayerInfo layerInfo, Document doc)
         {
+            Database db = doc.Database;
+            var layerObj = new LayerObject();
             var perimeter = 0.0;
             var area = 0.0;
-            var layerObj = new LayerObject();
-            using (var trans = doc.Database.TransactionManager.StartOpenCloseTransaction())
+            using (var trans = db.TransactionManager.StartOpenCloseTransaction())
             {
                 // Tạo filter để lọc đối tượng theo ý muốn
                 TypedValue[] tvPline = new TypedValue[]
                 {
                     new TypedValue((int)DxfCode.Start, "LWPOLYLINE")
                 };
-                SelectionFilter slftPline = new SelectionFilter(tvPline);
+                SelectionFilter filter = new SelectionFilter(tvPline);
                 try
                 {
-                    // Lấy polyline từ các đối tượng được chọn
-                    var plineEts = LibraryCad.LayerFunc.GetEntityByFilterAndLayer(slftPline, layerInfo.Name, doc);
+                    // Lọc lấy polyline từ các đối tượng được chọn
+                    var plineEts = LayerFunc.GetEntityByFilterAndLayer(filter, layerInfo.Name, doc);
                     // Tính tổng độ dài các polyline và area nếu polyline đóng
                     foreach (var plineEt in plineEts)
                     {
@@ -57,11 +57,11 @@ namespace LibraryCad.Polyline
         /// </summary>
         /// <param name="polyline">polyline</param>
         /// <returns>list các point</returns>
-        public static List<Models.PlineInfo> GetVerticesOfPline(Autodesk.AutoCAD.DatabaseServices.Polyline polyline)
+        public static List<PlineInfo> GetVerticesOfPline(Autodesk.AutoCAD.DatabaseServices.Polyline polyline)
         {
             try
             {
-                var plineInfos = new List<Models.PlineInfo>();
+                var plineInfos = new List<PlineInfo>();
                 if (polyline != null)
                 {
                     // Quét qua từng điểm gấp khúc của đoạn thẳng
@@ -70,20 +70,20 @@ namespace LibraryCad.Polyline
                     {
                         // Khi điểm cuối trùng điểm đầu hoặc polyline đóng thì thoát khỏi vòng lặp
                         if (i == verticesNum - 1 && polyline.GetPoint3dAt(i) == polyline.GetPoint3dAt(0) || i == verticesNum - 1 && polyline.Closed == false) break;
-                        Models.PlineInfo plineInfo = new Models.PlineInfo();
+                        PlineInfo plineInfo = new PlineInfo();
                         plineInfo.Status = false;
                         // Nếu là đường cong thì status = true và gán đường cong
                         if (polyline.GetSegmentType(i) == SegmentType.Arc)
                         {
                             var arc = polyline.GetArcSegmentAt(i);
-                            if(arc != null)
+                            if (arc != null)
                             {
                                 plineInfo.CircularArc = arc;
                                 plineInfo.Status = true;
                             }
                         }
                         plineInfo.StartPoint = polyline.GetPoint3dAt(i);
-                        if(i == verticesNum - 1)
+                        if (i == verticesNum - 1)
                         {
                             plineInfo.EndPoint = polyline.GetPoint3dAt(0);
                         }
@@ -117,7 +117,7 @@ namespace LibraryCad.Polyline
             try
             {
                 Database db = doc.Database;
-                var plines = new List<Autodesk.AutoCAD.DatabaseServices.Polyline>();    
+                var plines = new List<Autodesk.AutoCAD.DatabaseServices.Polyline>();
                 using (doc.LockDocument())
                 {
                     using (Transaction trans = db.TransactionManager.StartOpenCloseTransaction())
@@ -126,8 +126,8 @@ namespace LibraryCad.Polyline
                         {
                             new TypedValue((int)DxfCode.Start, "LWPOLYLINE")
                         };
-                        SelectionFilter slftPline = new SelectionFilter(tvPline);
-                        var objIds = LibraryCad.SubFunc.GetListSelection(doc, "- Chọn polyline:", slftPline);
+                        SelectionFilter filter = new SelectionFilter(tvPline);
+                        var objIds = SubFunc.GetListSelection(doc, "- Chọn polyline:", filter);
                         foreach (var objId in objIds)
                         {
                             if (objId == null) continue;

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using LibraryCad;
+using LibraryCad.Models;
+using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 
@@ -35,12 +37,12 @@ namespace Topic1
                 return;
             }
             // Lấy thông tin layer người dùng nhập vào
-            var layerInfo = new LibraryCad.Models.LayerInfo();
+            var layerInfo = new LayerInfo();
             layerInfo.Name = txb_LayerName.Text;
             layerInfo.ColorId = short.Parse(txb_ColorId.Text);
             layerInfo.Des = "tool create layer";
             // Check xem có thêm thành công hay không
-            var msg = LibraryCad.LayerFunc.CreateLayer(layerInfo);
+            var msg = LayerFunc.CreateLayer(layerInfo);
             if (msg != null)
             {
                 if (msg.Contains("đã tồn tại"))

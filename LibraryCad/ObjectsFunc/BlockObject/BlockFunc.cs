@@ -142,7 +142,7 @@ namespace LibraryCad.BlockObject
                     doc.Database.WblockCloneObjects(objIdColl, blockTable.ObjectId, idMap, DuplicateRecordCloning.Ignore, false);
                     foreach (var blockInfo in blockInfos)
                     {
-                        // Đưa khối từ bảng block vào trang vẽ
+                        // Đưa khối từ bảng insert vào trang vẽ
                         BlockTableRecord tableRec = (BlockTableRecord)trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite);
                         BlockReference blockRef = new BlockReference(blockInfo.Location, blockTable[blockInfo.Name]);
                         blockRef.Rotation = blockInfo.Rotate;

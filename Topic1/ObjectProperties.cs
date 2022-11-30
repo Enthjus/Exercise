@@ -2,6 +2,7 @@
 using Autodesk.AutoCAD.Runtime;
 using acad = Autodesk.AutoCAD.ApplicationServices.Application;
 using System.Windows.Forms;
+using LibraryCad;
 
 namespace Topic1
 {
@@ -30,9 +31,9 @@ namespace Topic1
             dtgv_Area.DataSource = null;
             var doc = acad.DocumentManager.MdiActiveDocument;
             // Lấy layer được tạo bởi winform
-            var layerInfos = LibraryCad.LayerFunc.GetLayer(doc);
+            var layerInfos = LayerFunc.GetLayer(doc);
             // Lấy chiều dài và diện tích của các đối tượng thuộc từng layer
-            var layerObjs = LibraryCad.LayerFunc.GetObjectPropertiesByLayer(doc, layerInfos);
+            var layerObjs = LayerFunc.GetObjectPropertiesByLayer(doc, layerInfos);
             dtgv_Area.DataSource = layerObjs;
         }
 
@@ -40,9 +41,9 @@ namespace Topic1
         {
             var doc = acad.DocumentManager.MdiActiveDocument;
             // Lấy layer được tạo bởi tool
-            var layerInfos = LibraryCad.LayerFunc.GetLayer(doc);
+            var layerInfos = LayerFunc.GetLayer(doc);
             // Lấy chiều dài và diện tích của các đối tượng thuộc từng layer
-            var layerObjs = LibraryCad.LayerFunc.GetObjectPropertiesByLayer(doc, layerInfos);
+            var layerObjs = LayerFunc.GetObjectPropertiesByLayer(doc, layerInfos);
             // Xuất file excel
             Variable.Export_csv(layerObjs);
         }
