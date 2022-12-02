@@ -1,5 +1,6 @@
 ﻿using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
+using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 
 namespace Topic1.WorkWithObject
@@ -25,6 +26,17 @@ namespace Topic1.WorkWithObject
                     try
                     {
                         newDb.ReadDwgFile(path, FileOpenMode.OpenForReadAndAllShare, false, null);
+                        using (var trans = newDb.TransactionManager.StartTransaction())
+                        {
+                            BlockTable blkTable = trans.GetObject(newDb.BlockTableId, OpenMode.ForRead) as BlockTable;
+                            BlockTableRecord blkTblRec = trans.GetObject(blkTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
+                            Circle circle = new Circle();
+                            circle.Radius = 10;
+                            circle.Center = new Point3d(0, 0, 0);
+                            blkTblRec.AppendEntity(circle);
+                            trans.AddNewlyCreatedDBObject(circle, true);
+                            trans.Commit();
+                        }
                         newDb.SaveAs(path, DwgVersion.Current);
                     }
                     catch

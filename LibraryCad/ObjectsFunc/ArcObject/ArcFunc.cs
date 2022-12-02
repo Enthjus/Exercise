@@ -59,7 +59,7 @@ namespace LibraryCad.Arc
                     var arcs = new List<Autodesk.AutoCAD.DatabaseServices.Arc>();
                     var tvArc = new TypedValue[]
                     {
-                            new TypedValue((int)DxfCode.Start, "ARC")
+                        new TypedValue((int)DxfCode.Start, "ARC")
                     };
                     var filterArc = new SelectionFilter(tvArc);
                     var objectIds = SubFunc.GetListSelection(doc, "\n- Chọn các đường cong: ", filterArc);

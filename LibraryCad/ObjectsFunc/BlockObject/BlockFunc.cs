@@ -4,6 +4,7 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using LibraryCad.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LibraryCad.BlockObject
 {
@@ -111,6 +112,39 @@ namespace LibraryCad.BlockObject
                 }
             }
             return blockInfos;
+        }
+
+        /// <summary>
+        /// Hàm cho người dùng chọn 1 block
+        /// </summary>
+        /// <param name="doc">Document</param>
+        /// <returns>BlockReference</returns>
+        public static BlockReference PickBlock(Document doc)
+        {
+            try
+            {
+                Database db = doc.Database;
+                PromptSelectionOptions prSelOpt = new PromptSelectionOptions();
+                prSelOpt.MessageForAdding = "\n- Chọn block muốn thao tác: ";
+                prSelOpt.SingleOnly = true;
+                TypedValue[] tvBlock = new TypedValue[]
+                {
+                        new TypedValue((int)DxfCode.Start, "INSERT")
+                };
+                SelectionFilter filter = new SelectionFilter(tvBlock);
+                PromptSelectionResult prSelRes = doc.Editor.GetSelection(prSelOpt, filter);
+                using(Transaction trans = db.TransactionManager.StartTransaction())
+                {
+                    BlockReference block = trans.GetObject(prSelRes.Value.OfType<SelectedObject>().First().ObjectId, OpenMode.ForRead) as BlockReference;
+                    trans.Commit();
+                    if(block != null) return block;
+                }
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         /// <summary>

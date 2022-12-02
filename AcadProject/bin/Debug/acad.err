@@ -1,8 +1,6 @@
 
 
-INTERNAL ERROR:  !dbobji.cpp@8684
+FATAL ERROR:  Unhandled Access Violation Reading 0x0008 Exception at 51152508h
 
-12/01/2022 at 14:01:19.000  Drawing: Drawing1.dwg
--------------
-8.000  Drawing: Drawing1.dwg
+12/02/2022 at 17:43:51.000  Drawing: Drawing1.dwg
 -------------

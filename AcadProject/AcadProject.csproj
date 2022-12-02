@@ -116,6 +116,7 @@
       <DependentUpon>LayersForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Calculation\Math.cs" />
+    <Compile Include="Plotting\PlotFromModelSpace.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
