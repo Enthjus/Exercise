@@ -1,6 +1,8 @@
 
 
-FATAL ERROR:  Unhandled Access Violation Reading 0x0000 Exception at 511797C5h
+INTERNAL ERROR:  !dbobji.cpp@8684
 
-11/29/2022 at 11:36:48.000  Drawing: Drawing1.dwg
+12/01/2022 at 14:01:19.000  Drawing: Drawing1.dwg
+-------------
+8.000  Drawing: Drawing1.dwg
 -------------

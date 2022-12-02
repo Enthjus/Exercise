@@ -90,6 +90,7 @@
     <Compile Include="AddForm.Designer.cs">
       <DependentUpon>AddForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="EventHandler\DocumentEvent\DocumentEventHandler.cs" />
     <Compile Include="EventHandler\EventHandler.cs" />
     <Compile Include="EventHandler\Objects\CircleEvent\CircleEventHandler.cs" />
     <Compile Include="EventHandler\Objects\LineEvent\LineEventHandler.cs" />
