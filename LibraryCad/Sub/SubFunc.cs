@@ -79,7 +79,7 @@ namespace LibraryCad
                 // Nếu không có filter thì lấy hết
                 if (filter == null)
                 {
-                    selResult = doc.Editor.GetSelection();
+                    selResult = doc.Editor.GetSelection(options);
                 }
                 // Nếu có filter thì lấy theo filter
                 else

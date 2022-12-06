@@ -3,6 +3,7 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using LibraryCad.Models;
+using LibraryCad.ObjectsFunc.BlockObject;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -187,6 +188,139 @@ namespace LibraryCad.BlockObject
                     // Lưu bản vẽ
                     newDB.SaveAs(filePath, DwgVersion.Current);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Hàm chọn đối tượng trong khối
+        /// </summary>
+        /// <param name="ed">Editor</param>
+        /// <param name="entId">Id đối tượng được chọn</param>
+        /// <param name="blkTransform">Ma trận</param>
+        /// <returns></returns>
+        public static bool SelectNestedEntityInBlock(Editor ed, out ObjectId entId, out Matrix3d blkTransform)
+        {
+            entId = ObjectId.Null;
+            blkTransform = Matrix3d.Identity;
+            var res = ed.GetNestedEntity("\nChọn đối tượng trong block:");
+            if (res.Status == PromptStatus.OK)
+            {
+                entId = res.ObjectId;
+                blkTransform = res.Transform;
+                ed.WriteMessage($"\nId đối tượng: {entId}");
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Hàm tạo hightlight bọc quanh đối tượng được chọn trong block
+        /// </summary>
+        /// <param name="doc">Document</param>
+        public static void HighlightEntityInBlock(Document doc)
+        {
+            var ed = doc.Editor;
+            if (SelectNestedEntityInBlock(ed, out ObjectId nestedEntId, out Matrix3d blkTransform))
+            {
+                using (var highlighter = new BlockNestedEntityHighlighter())
+                {
+                    highlighter.HighlightEntityInBlock(nestedEntId, blkTransform);
+                    ed.GetString("\nPress Enter to continue...");
+                }
+                ed.PostCommandPrompt();
+            }
+            else
+            {
+                ed.WriteMessage("\n*Cancel*\n");
+            }
+        }
+
+        /// <summary>
+        /// Hàm xóa 1 đối tượng trong khối
+        /// </summary>
+        /// <param name="doc">Document</param>
+        public static void DeleteEntityInBlock(Document doc)
+        {
+            var ed = doc.Editor;
+            if(SelectNestedEntityInBlock(ed, out ObjectId nestedEntId, out Matrix3d blkTransform))
+            {
+                using(Transaction trans = doc.Database.TransactionManager.StartTransaction())
+                {
+                    var ent = trans.GetObject(nestedEntId, OpenMode.ForWrite) as Entity;
+                    ent.Erase();
+                    trans.Commit();
+                }
+            }
+            else
+            {
+                ed.WriteMessage("\nĐối tượng không phải block!\n");
+            }
+        }
+
+        /// <summary>
+        /// Hàm sửa 1 đối tượng trong khối
+        /// </summary>
+        /// <param name="doc">Document</param>
+        public static void EditEntityInBlock(Document doc)
+        {
+            var ed = doc.Editor;
+            if (SelectNestedEntityInBlock(ed, out ObjectId nestedEntId, out Matrix3d blkTransform))
+            {
+                using (Transaction trans = doc.Database.TransactionManager.StartTransaction())
+                {
+                    var ent = trans.GetObject(nestedEntId, OpenMode.ForWrite) as Entity;
+                    ent.LayerId = doc.Database.Clayer;
+                    trans.Commit();
+                }
+            }
+            else
+            {
+                ed.WriteMessage("\nĐối tượng không phải block!\n");
+            }
+        }
+
+        /// <summary>
+        /// Hàm thêm 1 đối tượng vào khối
+        /// </summary>
+        /// <param name="doc">Document</param>
+        public static void AddEntityToBlock(Document doc)
+        {
+
+            Database db = doc.Database;
+            Editor ed = doc.Editor;
+            try
+            {
+                var entToAdds = SubFunc.GetListSelection(doc, "- Chọn các đối tượng muốn thêm vào block:");
+                var block = BlockFunc.PickBlock(doc);
+                using (Transaction trans = db.TransactionManager.StartTransaction())
+                {
+                    BlockReference insert = trans.GetObject(block.ObjectId, OpenMode.ForRead) as BlockReference;
+                    BlockTableRecord hostBlk = trans.GetObject(insert.BlockTableRecord, OpenMode.ForWrite) as BlockTableRecord;
+                    Matrix3d mat = insert.BlockTransform.Inverse();
+                    foreach (var entToAdd in entToAdds)
+                    {
+                        Entity ent = trans.GetObject(entToAdd, OpenMode.ForWrite) as Entity;
+                        if (insert == null)
+                        {
+                            //ed.WriteMessage("\nThe second selected is not a block reference (INSERT).");
+                            return;
+                        }
+                        Entity clone = ent.Clone() as Entity;
+                        clone.TransformBy(mat);
+                        hostBlk.AppendEntity(clone);
+                        trans.AddNewlyCreatedDBObject(clone, true);
+                        ent.Erase();
+                    }
+                    trans.Commit();
+                }
+                ed.Regen();
+            }
+            catch (System.Exception ex)
+            {
+                ed.WriteMessage(ex.ToString());
             }
         }
     }

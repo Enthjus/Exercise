@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="ObjectsFunc\ArcObject\ArcFunc.cs" />
     <Compile Include="ObjectsFunc\BlockObject\BlockFunc.cs" />
+    <Compile Include="ObjectsFunc\BlockObject\BlockNestedEntityHighlighter.cs" />
     <Compile Include="ObjectsFunc\CircleObject\CircleFunc.cs" />
     <Compile Include="ObjectsFunc\DimensionObject\DimensionFunc.cs" />
     <Compile Include="ObjectsFunc\FileObject\FileFunc.cs" />

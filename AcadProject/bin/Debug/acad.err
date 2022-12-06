@@ -1,6 +1,6 @@
 
 
-FATAL ERROR:  Unhandled Access Violation Reading 0x0008 Exception at 51152508h
+FATAL ERROR:  Unhandled Access Violation Reading 0x0000 Exception at E366BDCCh
 
-12/02/2022 at 17:43:51.000  Drawing: Drawing1.dwg
+12/05/2022 at 09:17:59.000  Drawing: Drawing1.dwg
 -------------
