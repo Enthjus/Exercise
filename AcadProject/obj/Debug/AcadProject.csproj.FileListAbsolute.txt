@@ -26,3 +26,4 @@ D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\AcadProject.csproj.CoreCompileInpu
 D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\AcadProject.csproj.CopyComplete
 D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\Topic1.dll
 D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\Topic1.pdb
+D:\c#\ATC\AddinLearning\AcadProject\bin\Debug\GeometryExtensions.dll
