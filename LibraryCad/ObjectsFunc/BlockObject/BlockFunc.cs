@@ -3,11 +3,12 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using LibraryCad.Models;
-using LibraryCad.ObjectsFunc.BlockObject;
+using LibraryCad.ObjectsFunc.LineObject;
+using LibraryCad.Sub;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LibraryCad.BlockObject
+namespace LibraryCad.ObjectsFunc.BlockObject
 {
     public class BlockFunc
     {
@@ -63,7 +64,7 @@ namespace LibraryCad.BlockObject
                     BlockTableRecord blkTableRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
                     BlockReference blockRef = new BlockReference(Point3d.Origin, tableRecID);
                     // Tạo xdata cho block 
-                    LibraryCad.SubFunc.AddRegAppTableRecord(doc, "Phuc");
+                    SubFunc.AddRegAppTableRecord(doc, "Phuc");
                     ResultBuffer rb = new ResultBuffer(new TypedValue(1001, "Phuc"), new TypedValue(1000, "Block_tool"));
                     blockRef.XData = rb;
                     rb.Dispose();
@@ -134,11 +135,11 @@ namespace LibraryCad.BlockObject
                 };
                 SelectionFilter filter = new SelectionFilter(tvBlock);
                 PromptSelectionResult prSelRes = doc.Editor.GetSelection(prSelOpt, filter);
-                using(Transaction trans = db.TransactionManager.StartTransaction())
+                using (Transaction trans = db.TransactionManager.StartTransaction())
                 {
                     BlockReference block = trans.GetObject(prSelRes.Value.OfType<SelectedObject>().First().ObjectId, OpenMode.ForRead) as BlockReference;
                     trans.Commit();
-                    if(block != null) return block;
+                    if (block != null) return block;
                 }
                 return null;
             }
@@ -245,9 +246,9 @@ namespace LibraryCad.BlockObject
         public static void DeleteEntityInBlock(Document doc)
         {
             var ed = doc.Editor;
-            if(SelectNestedEntityInBlock(ed, out ObjectId nestedEntId, out Matrix3d blkTransform))
+            if (SelectNestedEntityInBlock(ed, out ObjectId nestedEntId, out Matrix3d blkTransform))
             {
-                using(Transaction trans = doc.Database.TransactionManager.StartTransaction())
+                using (Transaction trans = doc.Database.TransactionManager.StartTransaction())
                 {
                     var ent = trans.GetObject(nestedEntId, OpenMode.ForWrite) as Entity;
                     ent.Erase();

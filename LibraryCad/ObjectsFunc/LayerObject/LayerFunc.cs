@@ -3,10 +3,15 @@ using Autodesk.AutoCAD.Colors;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using LibraryCad.Models;
+using LibraryCad.ObjectsFunc.ArcObject;
+using LibraryCad.ObjectsFunc.CircleObject;
+using LibraryCad.ObjectsFunc.LineObject;
+using LibraryCad.ObjectsFunc.PolylineObject;
+using LibraryCad.Sub;
 using System.Collections.Generic;
 using acad = Autodesk.AutoCAD.ApplicationServices.Application;
 
-namespace LibraryCad
+namespace LibraryCad.ObjectsFunc.LayerObject
 {
     public class LayerFunc
     {
@@ -261,10 +266,10 @@ namespace LibraryCad
         /// <param name="doc">document</param>
         /// <param name="layerInfos">list layer</param>
         /// <returns></returns>
-        public static List<LayerObject> GetObjectPropertiesByLayer(Document doc, List<LayerInfo> layerInfos)
+        public static List<LayerObjectInfo> GetObjectPropertiesByLayer(Document doc, List<LayerInfo> layerInfos)
         {
             if (layerInfos == null) return null;
-            var layerObjs = new List<LayerObject>();
+            var layerObjs = new List<LayerObjectInfo>();
             using (doc.LockDocument())
             {
                 using (var trans = doc.Database.TransactionManager.StartOpenCloseTransaction())
@@ -274,16 +279,16 @@ namespace LibraryCad
                         if (layer == null) continue;
                         var perimeter = 0.0;
                         var area = 0.0;
-                        var layerObject = new LayerObject();
+                        var layerObject = new LayerObjectInfo();
                         layerObject.LayerName = layer.Name;
                         try
                         {
                             //Chiều dài các line cùng layer
                             perimeter += LineFunc.LineProperties(layer, doc);
                             //Chiều dài các đường cong cùng layer
-                            perimeter += Arc.ArcFunc.ArcProperties(layer, doc);
+                            perimeter += ArcFunc.ArcProperties(layer, doc);
                             //Chiều dài và diện tích các pline cùng layer
-                            var plineProp = Polyline.PolylineFunc.PlineProperties(layer, doc);
+                            var plineProp = PolylineFunc.PlineProperties(layer, doc);
                             perimeter += plineProp.Perimeter;
                             area += plineProp.Area;
                             //Chiều dài và diện tích các đường tròn cùng layer

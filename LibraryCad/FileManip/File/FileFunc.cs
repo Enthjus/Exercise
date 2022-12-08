@@ -2,7 +2,7 @@
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 
-namespace LibraryCad
+namespace LibraryCad.FileManip.File
 {
     public class FileFunc
     {

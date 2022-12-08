@@ -1,11 +1,12 @@
 ﻿using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
+using LibraryCad.Sub;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 
-namespace LibraryCad
+namespace LibraryCad.Mathematic
 {
     public class MathFunc
     {

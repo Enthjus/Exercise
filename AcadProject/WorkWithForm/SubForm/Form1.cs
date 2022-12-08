@@ -1,15 +1,17 @@
-﻿using System;
-using Autodesk.AutoCAD.Runtime;
-using Autodesk.AutoCAD.ApplicationServices;
+﻿using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
+using Autodesk.AutoCAD.Runtime;
 using LibraryCad;
-using acad = Autodesk.AutoCAD.ApplicationServices.Application;
-using System.Windows.Forms;
+using LibraryCad.ObjectsFunc.LineObject;
+using LibraryCad.Sub;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
+using acad = Autodesk.AutoCAD.ApplicationServices.Application;
 
-namespace Topic1
+namespace Topic1.WorkWithForm.SubForm
 {
     public partial class Form1 : Form
     {

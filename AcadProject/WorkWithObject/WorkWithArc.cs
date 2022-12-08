@@ -1,11 +1,7 @@
 ﻿using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Runtime;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using LibraryCad.ObjectsFunc.ArcObject;
+using LibraryCad.ObjectsFunc.DimensionObject;
 
 namespace Topic1.WorkWithObject
 {
@@ -17,8 +13,8 @@ namespace Topic1.WorkWithObject
             try
             {
                 Document doc = Application.DocumentManager.MdiActiveDocument;
-                var arcs = LibraryCad.Arc.ArcFunc.SelectionSetToListArc(doc);
-                LibraryCad.DimensionFunc.DimMultiArc(arcs, doc);
+                var arcs = ArcFunc.SelectionSetToListArc(doc);
+                DimensionFunc.DimMultiArc(arcs, doc);
             }
             catch
             {

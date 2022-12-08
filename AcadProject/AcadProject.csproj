@@ -87,10 +87,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddForm.cs">
+    <Compile Include="WorkWithForm\LayerManager\LayerForm\AddForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AddForm.Designer.cs">
+    <Compile Include="WorkWithForm\LayerManager\LayerForm\AddForm.Designer.cs">
       <DependentUpon>AddForm.cs</DependentUpon>
     </Compile>
     <Compile Include="EventHandler\DocumentEvent\DocumentEventHandler.cs" />
@@ -99,23 +99,23 @@
     <Compile Include="EventHandler\Objects\LineEvent\LineEventHandler.cs" />
     <Compile Include="EventHandler\Objects\PolylineEvent\PolylineEventHandler.cs" />
     <Compile Include="EventHandler\Objects\TextEvent\TextEventHandler.cs" />
-    <Compile Include="ObjectProperties.cs">
+    <Compile Include="WorkWithForm\LayerManager\LayerObjectForm\ObjectProperties.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ObjectProperties.Designer.cs">
+    <Compile Include="WorkWithForm\LayerManager\LayerObjectForm\ObjectProperties.Designer.cs">
       <DependentUpon>ObjectProperties.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form1.cs">
+    <Compile Include="WorkWithForm\SubForm\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
+    <Compile Include="WorkWithForm\SubForm\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Init.cs" />
-    <Compile Include="LayersForm.cs">
+    <Compile Include="WorkWithForm\LayerManager\LayerForm\LayersForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="LayersForm.Designer.cs">
+    <Compile Include="WorkWithForm\LayerManager\LayerForm\LayersForm.Designer.cs">
       <DependentUpon>LayersForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Calculation\Math.cs" />
@@ -130,7 +130,7 @@
     <Compile Include="WorkWithObject\WorkWithBlock.cs" />
     <Compile Include="WorkWithObject\WorkWithCircle.cs" />
     <Compile Include="WorkWithObject\WorkWithDimension.cs" />
-    <Compile Include="WorkWithObject\WorkWithFile.cs" />
+    <Compile Include="WorkWithFile\WorkWithFile.cs" />
     <Compile Include="WorkWithObject\WorkWithLine.cs" />
     <Compile Include="WorkWithObject\WorkWithPolyline.cs" />
     <Compile Include="WorkWithObject\WorkWithString.cs" />
@@ -153,16 +153,16 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="AddForm.resx">
+    <EmbeddedResource Include="WorkWithForm\LayerManager\LayerForm\AddForm.resx">
       <DependentUpon>AddForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ObjectProperties.resx">
+    <EmbeddedResource Include="WorkWithForm\LayerManager\LayerObjectForm\ObjectProperties.resx">
       <DependentUpon>ObjectProperties.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form1.resx">
+    <EmbeddedResource Include="WorkWithForm\SubForm\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LayersForm.resx">
+    <EmbeddedResource Include="WorkWithForm\LayerManager\LayerForm\LayersForm.resx">
       <DependentUpon>LayersForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

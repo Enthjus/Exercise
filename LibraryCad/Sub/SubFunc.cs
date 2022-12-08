@@ -4,7 +4,7 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using LibraryCad.Models;
 
-namespace LibraryCad
+namespace LibraryCad.Sub
 {
     public class SubFunc
     {

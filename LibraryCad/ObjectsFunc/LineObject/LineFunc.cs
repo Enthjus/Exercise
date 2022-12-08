@@ -3,9 +3,11 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using LibraryCad.Models;
+using LibraryCad.ObjectsFunc.LayerObject;
+using LibraryCad.Sub;
 using System.Collections.Generic;
 
-namespace LibraryCad
+namespace LibraryCad.ObjectsFunc.LineObject
 {
     public class LineFunc
     {
@@ -69,7 +71,7 @@ namespace LibraryCad
                 SelectionFilter slftLine = new SelectionFilter(tvLine);
                 try
                 {
-                    var lineEts = LibraryCad.LayerFunc.GetEntityByFilterAndLayer(slftLine, layerInfo.Name, doc);
+                    var lineEts = LayerFunc.GetEntityByFilterAndLayer(slftLine, layerInfo.Name, doc);
                     // Cộng tổng độ dài các đoạn thẳng lấy được
                     foreach (var lineEt in lineEts)
                     {

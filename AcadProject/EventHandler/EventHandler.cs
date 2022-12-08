@@ -1,8 +1,5 @@
 ﻿using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
-using System;
 
 namespace Topic1.EventHandler
 {
@@ -49,7 +46,7 @@ namespace Topic1.EventHandler
 
         public void docColDocAct(object senderObj, DocumentCollectionEventArgs docColDocActEvtArgs)
         {
-            Application.ShowAlertDialog(docColDocActEvtArgs.Document.Name +  " was activated.");
+            Application.ShowAlertDialog(docColDocActEvtArgs.Document.Name + " was activated.");
         }
 
         [CommandMethod("AddDocEvent")]

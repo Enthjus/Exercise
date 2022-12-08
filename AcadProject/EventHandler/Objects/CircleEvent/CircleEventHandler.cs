@@ -3,9 +3,7 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
-using LibraryCad;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Topic1.EventHandler.Objects.CircleEvent

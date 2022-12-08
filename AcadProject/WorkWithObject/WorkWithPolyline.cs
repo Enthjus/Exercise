@@ -1,10 +1,9 @@
 ﻿using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
-using LibraryCad;
-using LibraryCad.Polyline;
+using LibraryCad.ObjectsFunc.DimensionObject;
+using LibraryCad.ObjectsFunc.PolylineObject;
+using LibraryCad.Sub;
 using System.Collections.Generic;
 
 namespace Topic1.WorkWithObject
@@ -17,7 +16,7 @@ namespace Topic1.WorkWithObject
             Document doc = Application.DocumentManager.MdiActiveDocument;
             // Lọc các đối tượng được chọn chỉ lấy polyline
             var plines = PolylineFunc.SelectionSetToPolyline(doc);
-            if(plines == null) return;
+            if (plines == null) return;
             // Cho người dùng chọn dim mặt trong hay ngoài 
             var dimPosition = SubFunc.GetString(doc, "Nhập in(i) nếu muốn dim bên trong, out(o) nếu muốn dim bên ngoài, không nhập gì thì sẽ theo mặc định: ");
             var dimStatus = SubFunc.ChooseDimPosition(dimPosition);
@@ -26,7 +25,7 @@ namespace Topic1.WorkWithObject
             {
                 // Lấy các điểm gấp khúc của polyline
                 var plineInfos = PolylineFunc.GetVerticesOfPline(pline);
-                foreach (var plineInfo in plineInfos) 
+                foreach (var plineInfo in plineInfos)
                 {
                     // Nếu là đường cong thì dim theo đường cong
                     if (plineInfo.Status)

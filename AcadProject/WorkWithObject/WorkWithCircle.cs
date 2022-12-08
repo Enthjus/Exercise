@@ -1,8 +1,8 @@
-﻿using Autodesk.AutoCAD.Runtime;
-using Autodesk.AutoCAD.ApplicationServices;
-using LibraryCad;
+﻿using Autodesk.AutoCAD.ApplicationServices;
+using Autodesk.AutoCAD.Runtime;
+using LibraryCad.ObjectsFunc.CircleObject;
 
-namespace Topic1
+namespace Topic1.WorkWithObject
 {
     public class WorkWithCircle
     {

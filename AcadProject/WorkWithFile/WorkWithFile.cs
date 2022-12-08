@@ -3,7 +3,7 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 
-namespace Topic1.WorkWithObject
+namespace Topic1.WorkWithFile
 {
     public class WorkWithFile
     {

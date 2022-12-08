@@ -1,11 +1,11 @@
-﻿using System;
-using Autodesk.AutoCAD.Runtime;
-using acad = Autodesk.AutoCAD.ApplicationServices.Application;
-using System.Windows.Forms;
+﻿using Autodesk.AutoCAD.Runtime;
+using LibraryCad.ObjectsFunc.LayerObject;
+using System;
 using System.IO;
-using LibraryCad;
+using System.Windows.Forms;
+using acad = Autodesk.AutoCAD.ApplicationServices.Application;
 
-namespace Topic1
+namespace Topic1.WorkWithForm.LayerManager.LayerForm
 {
     public partial class LayersForm : Form
     {
@@ -54,7 +54,7 @@ namespace Topic1
             // Xóa layer
             var msg = LayerFunc.DeleteLayer(doc, layerName);
             // Nếu xóa thành công load lại data
-            if(msg.Contains("have been deleted"))
+            if (msg.Contains("have been deleted"))
             {
                 LoadData();
             }

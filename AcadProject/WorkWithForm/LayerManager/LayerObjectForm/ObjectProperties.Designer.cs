@@ -1,4 +1,4 @@
-﻿namespace Topic1
+﻿namespace Topic1.WorkWithForm.LayerManager.LayerObjectForm
 {
     partial class ObjectProperties
     {

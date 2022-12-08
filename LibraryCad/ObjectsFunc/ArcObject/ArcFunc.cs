@@ -3,9 +3,11 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using LibraryCad.Models;
+using LibraryCad.ObjectsFunc.LayerObject;
+using LibraryCad.Sub;
 using System.Collections.Generic;
 
-namespace LibraryCad.Arc
+namespace LibraryCad.ObjectsFunc.ArcObject
 {
     public class ArcFunc
     {

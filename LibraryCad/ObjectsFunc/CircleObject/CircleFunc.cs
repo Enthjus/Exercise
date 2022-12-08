@@ -2,10 +2,13 @@
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
+using LibraryCad.Mathematic;
 using LibraryCad.Models;
+using LibraryCad.ObjectsFunc.LayerObject;
+using LibraryCad.Sub;
 using System.Collections.Generic;
 
-namespace LibraryCad
+namespace LibraryCad.ObjectsFunc.CircleObject
 {
     public class CircleFunc
     {
@@ -130,11 +133,11 @@ namespace LibraryCad
         /// <param name="layerInfo">thông tin layer</param>
         /// <param name="doc">document</param>
         /// <returns></returns>
-        public static LayerObject CircleProperties(LayerInfo layerInfo, Document doc)
+        public static LayerObjectInfo CircleProperties(LayerInfo layerInfo, Document doc)
         {
             var perimeter = 0.0;
             var area = 0.0;
-            var layerObj = new LayerObject();
+            var layerObj = new LayerObjectInfo();
             using (var trans = doc.Database.TransactionManager.StartOpenCloseTransaction())
             {
                 // Tạo filter lấy đường tròn
@@ -145,7 +148,7 @@ namespace LibraryCad
                 SelectionFilter slftCircle = new SelectionFilter(tvCircle);
                 try
                 {
-                    var circles = LibraryCad.LayerFunc.GetEntityByFilterAndLayer(slftCircle, layerInfo.Name, doc);
+                    var circles = LayerFunc.GetEntityByFilterAndLayer(slftCircle, layerInfo.Name, doc);
                     foreach (var circleId in circles)
                     {
                         var circle = trans.GetObject(circleId.ObjectId, OpenMode.ForRead) as Circle;

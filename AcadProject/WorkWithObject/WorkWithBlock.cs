@@ -3,8 +3,9 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
-using LibraryCad;
-using LibraryCad.BlockObject;
+using LibraryCad.FileManip.File;
+using LibraryCad.ObjectsFunc.BlockObject;
+using LibraryCad.Sub;
 using System.Linq;
 
 namespace Topic1.WorkWithObject
@@ -131,7 +132,7 @@ namespace Topic1.WorkWithObject
         }
 
         [CommandMethod("ChangeBlkBasePoint")]
-        public static void ChangeBlockBasePoint() 
+        public static void ChangeBlockBasePoint()
         {
             try
             {
@@ -242,7 +243,7 @@ namespace Topic1.WorkWithObject
                     foreach (ObjectId objID in acBlkTblRec)
                     {
                         DBObject dbObj = acTrans.GetObject(objID, OpenMode.ForRead) as DBObject;
-                        
+
                         // Revise the circle in the block
                         if (dbObj is Circle)
                         {

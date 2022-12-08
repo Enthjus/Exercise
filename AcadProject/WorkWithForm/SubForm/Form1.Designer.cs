@@ -1,4 +1,4 @@
-﻿namespace Topic1
+﻿namespace Topic1.WorkWithForm.SubForm
 {
     partial class Form1
     {

@@ -21,7 +21,7 @@ namespace Topic1.WorkWithStyle
                     dimStyleTable.UpgradeOpen();
                     DimStyleTableRecord newDimStyle = new DimStyleTableRecord();
                     newDimStyle.Name = "Test";
-                    newDimStyle.Dimclrt = Color.FromColorIndex(ColorMethod.ByAci, 2); 
+                    newDimStyle.Dimclrt = Color.FromColorIndex(ColorMethod.ByAci, 2);
                     dimId = dimStyleTable.Add(newDimStyle);
                     trans.AddNewlyCreatedDBObject(newDimStyle, true);
                 }

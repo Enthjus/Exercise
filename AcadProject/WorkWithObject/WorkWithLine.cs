@@ -1,10 +1,11 @@
-﻿using Autodesk.AutoCAD.Runtime;
-using Autodesk.AutoCAD.ApplicationServices;
+﻿using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
-using LibraryCad;
+using Autodesk.AutoCAD.Runtime;
+using LibraryCad.ObjectsFunc.DimensionObject;
+using LibraryCad.ObjectsFunc.LineObject;
 
-namespace Topic1
+namespace Topic1.WorkWithObject
 {
     public class WorkWithLine
     {

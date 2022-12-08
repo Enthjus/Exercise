@@ -1,10 +1,10 @@
-﻿using System;
+﻿using LibraryCad.Models;
+using LibraryCad.ObjectsFunc.LayerObject;
+using OfficeOpenXml;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
-using LibraryCad;
-using LibraryCad.Models;
-using OfficeOpenXml;
 
 namespace Topic1
 {
@@ -56,7 +56,7 @@ namespace Topic1
         /// Hàm xuất file excel
         /// </summary>
         /// <param name="layerObjects">List thông tin các đối tượng</param>
-        public static void Export_csv(List<LayerObject> layerObjects)
+        public static void Export_csv(List<LayerObjectInfo> layerObjects)
         {
             string filePath = "";
             //tạo SaveDialog để lưu file excel
@@ -109,7 +109,7 @@ namespace Topic1
                 }
                 MessageBox.Show("Xuất excel thành công");
             }
-            catch 
+            catch
             {
                 MessageBox.Show("Có lỗi khi lưu file");
             }

@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\..\GitRef\AutoCADCodePack\AutoCADCommands\AutoCADCommands.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -53,12 +54,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DocumentManager\DocumentManager.cs" />
+    <Compile Include="FileManip\File\FileFunc.cs" />
+    <Compile Include="FileManip\Plot\PlotFunc.cs" />
     <Compile Include="ObjectsFunc\ArcObject\ArcFunc.cs" />
     <Compile Include="ObjectsFunc\BlockObject\BlockFunc.cs" />
     <Compile Include="ObjectsFunc\BlockObject\BlockNestedEntityHighlighter.cs" />
     <Compile Include="ObjectsFunc\CircleObject\CircleFunc.cs" />
     <Compile Include="ObjectsFunc\DimensionObject\DimensionFunc.cs" />
-    <Compile Include="ObjectsFunc\FileObject\FileFunc.cs" />
     <Compile Include="ObjectsFunc\LayerObject\LayerFunc.cs" />
     <Compile Include="ObjectsFunc\LineObject\LineFunc.cs" />
     <Compile Include="Mathematic\MathFunc.cs" />

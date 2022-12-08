@@ -1,4 +1,4 @@
-﻿namespace Topic1
+﻿namespace Topic1.WorkWithForm.LayerManager.LayerForm
 {
     partial class LayersForm
     {

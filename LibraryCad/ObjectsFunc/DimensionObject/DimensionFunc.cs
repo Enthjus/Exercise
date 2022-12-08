@@ -2,10 +2,13 @@
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
+using LibraryCad.ObjectsFunc.ArcObject;
+using LibraryCad.ObjectsFunc.LineObject;
+using LibraryCad.Sub;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LibraryCad
+namespace LibraryCad.ObjectsFunc.DimensionObject
 {
     public class DimensionFunc
     {
@@ -143,11 +146,11 @@ namespace LibraryCad
                 BlockTable blockTable = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
                 BlockTableRecord tableRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
                 // Tạo vector để đặt điểm dim
-                Vector3d ang = arc.GetFirstDerivative(arc.GetParameterAtPoint(LibraryCad.Arc.ArcFunc.GetMidpoint(arc)));
+                Vector3d ang = arc.GetFirstDerivative(arc.GetParameterAtPoint(ArcFunc.GetMidpoint(arc)));
                 ang = ang.GetNormal() * -1;
                 ang = ang.TransformBy(Matrix3d.Rotation(System.Math.PI / 2.0, arc.Normal, Point3d.Origin));
                 // Tạo arc dimension
-                using (ArcDimension arcDim = new ArcDimension(arc.Center, arc.StartPoint, arc.EndPoint, LibraryCad.Arc.ArcFunc.GetMidpoint(arc) + ang, "", db.Dimstyle))
+                using (ArcDimension arcDim = new ArcDimension(arc.Center, arc.StartPoint, arc.EndPoint, ArcFunc.GetMidpoint(arc) + ang, "", db.Dimstyle))
                 {
                     arcDim.TextPosition = arcDim.ArcPoint;
                     RegAppTable regAppTable = trans.GetObject(db.RegAppTableId, OpenMode.ForRead) as RegAppTable;
@@ -255,7 +258,7 @@ namespace LibraryCad
                 try
                 {
                     var line = new Line(circularArc.StartPoint, circularArc.EndPoint);
-                    var midLine = LibraryCad.LineFunc.GetMidpoint(line);
+                    var midLine = LineFunc.GetMidpoint(line);
                     Vector3d ang = new Line(circularArc.Center, midLine).Delta;
                     ArcDimension arcDim;
                     RadialDimension radDim;

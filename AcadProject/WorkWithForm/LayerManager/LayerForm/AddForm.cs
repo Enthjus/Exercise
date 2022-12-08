@@ -1,10 +1,10 @@
-﻿using LibraryCad;
-using LibraryCad.Models;
+﻿using LibraryCad.Models;
+using LibraryCad.ObjectsFunc.LayerObject;
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace Topic1
+namespace Topic1.WorkWithForm.LayerManager.LayerForm
 {
     public partial class AddForm : Form
     {

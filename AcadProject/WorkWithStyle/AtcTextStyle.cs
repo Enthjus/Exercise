@@ -12,10 +12,10 @@ namespace Topic1.WorkWithStyle
         {
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
-            using(Transaction trans = db.TransactionManager.StartTransaction())
+            using (Transaction trans = db.TransactionManager.StartTransaction())
             {
                 BlockTable blockTable = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
-                BlockTableRecord tableRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;    
+                BlockTableRecord tableRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
                 TextStyleTable textStyleTable = trans.GetObject(db.TextStyleTableId, OpenMode.ForRead) as TextStyleTable;
                 if (!textStyleTable.Has("ROMANS"))
                 {

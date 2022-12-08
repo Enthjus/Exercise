@@ -1,14 +1,14 @@
 ﻿using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.Runtime;
-using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
+using Autodesk.AutoCAD.Runtime;
 using Autodesk.Windows;
+using LibraryCad.DocumentManager;
 using System;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using System.IO;
-using System.Drawing.Imaging;
 using acadApp = Autodesk.AutoCAD.ApplicationServices.Application;
 
 //[assembly: CommandMethod(In)]
@@ -18,16 +18,16 @@ namespace Topic1
     {
         public void Initialize()
         {
+            DocumentManager document = new DocumentManager();
             //throw new System.NotImplementedException();
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Editor ed = doc.Editor;
             ed.WriteMessage("Load thanh cong");
-            if (Autodesk.Windows.ComponentManager.Ribbon == null)
+            if (ComponentManager.Ribbon == null)
             {
                 //Load Ribbon khi khởi động AutoCAD
                 //Ghi nhớ 1 sự kiện khi chưa tìm thấy Ribbon, đợi thực thi
-                Autodesk.Windows.ComponentManager.ItemInitialized +=
-                    new EventHandler<RibbonItemEventArgs>(ComponentManager_ItemInitialized);
+                ComponentManager.ItemInitialized += new EventHandler<RibbonItemEventArgs>(ComponentManager_ItemInitialized);
             }
             else
             {
@@ -44,13 +44,12 @@ namespace Topic1
 
         public void ComponentManager_ItemInitialized(object sender, RibbonItemEventArgs e)
         {
-            if (Autodesk.Windows.ComponentManager.Ribbon != null)
+            if (ComponentManager.Ribbon != null)
             {
-                //Create Ribbon
+                //Tạo Ribbon
                 Ribbon_Utilities();
                 //Loại bỏ sự kiện chờ
-                Autodesk.Windows.ComponentManager.ItemInitialized -=
-                    new EventHandler<RibbonItemEventArgs>(ComponentManager_ItemInitialized);
+                ComponentManager.ItemInitialized -= new EventHandler<RibbonItemEventArgs>(ComponentManager_ItemInitialized);
             }
         }
 
@@ -65,19 +64,10 @@ namespace Topic1
             Tab.IsActive = true;
 
             Utilities_Add_Ribbon.Menu_Thongso(Tab);
-            //Utilities_Add_Ribbon.Menu_Block(Tab);
-            //Utilities_Add_Ribbon.Menu_Layer(Tab);
-            //Utilities_Add_Ribbon.Menu_Dimension(Tab);
-            //Utilities_Add_Ribbon.Menu_Text(Tab);
-            //Utilities_Add_Ribbon.Menu_Object(Tab);
-            //Utilities_Add_Ribbon.Menu_Rebar(Tab);
-            //Utilities_Add_Ribbon.Menu_Table(Tab);
-            //Utilities_Add_Ribbon.Menu_Layout(Tab);
-            //Utilities_Add_Ribbon.Menu_TaiKhoan(Tab);
         }
 
-        string _AppName = "[AutoCAD.net] Phuc Ribbon";
-        string _Decreption = "[AutoCAD.net] Ribbon for v.NET Tools @ Author: Phuc";
+        //string _AppName = "[AutoCAD.net] Phuc Ribbon";
+        //string _Decreption = "[AutoCAD.net] Ribbon for v.NET Tools @ Author: Phuc";
 
 
     }
@@ -87,7 +77,7 @@ namespace Topic1
         // Hàm con tạo Panel
         public static RibbonPanelSource PanelSource_Subfun(RibbonTab Rtab, string Panel)
         {
-            Autodesk.Windows.RibbonPanelSource PanelSource = new RibbonPanelSource();
+            RibbonPanelSource PanelSource = new RibbonPanelSource();
             PanelSource.Title = Panel;
             RibbonPanel RPanel = new RibbonPanel();
             RPanel.Source = PanelSource;

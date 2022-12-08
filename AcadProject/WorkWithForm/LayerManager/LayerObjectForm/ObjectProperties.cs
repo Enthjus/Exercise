@@ -1,10 +1,10 @@
-﻿using System;
-using Autodesk.AutoCAD.Runtime;
-using acad = Autodesk.AutoCAD.ApplicationServices.Application;
+﻿using Autodesk.AutoCAD.Runtime;
+using LibraryCad.ObjectsFunc.LayerObject;
+using System;
 using System.Windows.Forms;
-using LibraryCad;
+using acad = Autodesk.AutoCAD.ApplicationServices.Application;
 
-namespace Topic1
+namespace Topic1.WorkWithForm.LayerManager.LayerObjectForm
 {
     public partial class ObjectProperties : Form
     {

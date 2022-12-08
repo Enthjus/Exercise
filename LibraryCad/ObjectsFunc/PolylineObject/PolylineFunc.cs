@@ -2,9 +2,11 @@
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using LibraryCad.Models;
+using LibraryCad.ObjectsFunc.LayerObject;
+using LibraryCad.Sub;
 using System.Collections.Generic;
 
-namespace LibraryCad.Polyline
+namespace LibraryCad.ObjectsFunc.PolylineObject
 {
     public class PolylineFunc
     {
@@ -14,10 +16,10 @@ namespace LibraryCad.Polyline
         /// <param name="layerInfo">thông tin layer</param>
         /// <param name="doc">document</param>
         /// <returns></returns>
-        public static LayerObject PlineProperties(LayerInfo layerInfo, Document doc)
+        public static LayerObjectInfo PlineProperties(LayerInfo layerInfo, Document doc)
         {
             Database db = doc.Database;
-            var layerObj = new LayerObject();
+            var layerObj = new LayerObjectInfo();
             var perimeter = 0.0;
             var area = 0.0;
             using (var trans = db.TransactionManager.StartOpenCloseTransaction())
