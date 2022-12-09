@@ -1,7 +1,3 @@
-D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\AcadProject.csproj.AssemblyReference.cache
-D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\Topic1.Properties.Resources.resources
-D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\AcadProject.csproj.GenerateResource.cache
-D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\AcadProject.csproj.CoreCompileInputs.cache
 D:\c#\ATC\AddinLearning\AcadProject\bin\Debug\start.scr
 D:\c#\ATC\AddinLearning\AcadProject\bin\Debug\Topic1.dll
 D:\c#\ATC\AddinLearning\AcadProject\bin\Debug\Topic1.pdb
@@ -20,10 +16,14 @@ D:\c#\ATC\AddinLearning\AcadProject\bin\Debug\AdWindows.xml
 D:\c#\ATC\AddinLearning\AcadProject\bin\Debug\DevComponents.DotNetBar2.xml
 D:\c#\ATC\AddinLearning\AcadProject\bin\Debug\EPPlus.xml
 D:\c#\ATC\AddinLearning\AcadProject\bin\Debug\Microsoft.IO.RecyclableMemoryStream.xml
+D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\AcadProject.csproj.AssemblyReference.cache
+D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\Topic1.AcadManip.WorkWithForm.LayerManager.LayerForm.AddForm.resources
+D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\Topic1.AcadManip.WorkWithForm.LayerManager.LayerObjectForm.ObjectProperties.resources
+D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\Topic1.AcadManip.WorkWithForm.SubForm.Form1.resources
+D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\Topic1.AcadManip.WorkWithForm.LayerManager.LayerForm.LayersForm.resources
+D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\Topic1.Properties.Resources.resources
+D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\AcadProject.csproj.GenerateResource.cache
+D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\AcadProject.csproj.CoreCompileInputs.cache
 D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\AcadProject.csproj.CopyComplete
 D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\Topic1.dll
 D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\Topic1.pdb
-D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\Topic1.WorkWithForm.LayerManager.LayerForm.AddForm.resources
-D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\Topic1.WorkWithForm.LayerManager.LayerObjectForm.ObjectProperties.resources
-D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\Topic1.WorkWithForm.SubForm.Form1.resources
-D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\Topic1.WorkWithForm.LayerManager.LayerForm.LayersForm.resources

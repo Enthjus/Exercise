@@ -5,36 +5,36 @@ using System;
 
 namespace LibraryCad.DocumentManager
 {
-    public class DocumentManager
+    public static class DocumentManager
     {
-        internal Document doc { get; set; }
+        public static Document doc { get; set; }
 
-        internal Database db { get; set; }
+        public static Database db { get; set; }
 
-        internal Editor ed { get; set; }
-        
-        internal DocumentCollectionEventHandler DocChange { get; set; }
+        public static Editor ed { get; set; }
 
-        public DocumentManager()
+        public static DocumentCollectionEventHandler DocChange { get; set; }
+
+        public static void CreateDocument()
         {
-            this.doc = Application.DocumentManager.MdiActiveDocument;
-            this.db = doc.Database;
-            this.ed = doc.Editor;
-            if (this.DocChange != null) return;
-            this.DocChange = new DocumentCollectionEventHandler(docColDocAct);
+            doc = Application.DocumentManager.MdiActiveDocument;
+            db = doc.Database;
+            ed = doc.Editor;
+            if (DocChange != null) return;
+            DocChange = new DocumentCollectionEventHandler(docColDocAct);
             Application.DocumentManager.DocumentActivated += DocChange;
         }
 
-        public void docColDocAct(object senderObj, DocumentCollectionEventArgs docColDocActEvtArgs)
+        public static void docColDocAct(object senderObj, DocumentCollectionEventArgs docColDocActEvtArgs)
         {
-            this.doc = Application.DocumentManager.MdiActiveDocument;
+            doc = Application.DocumentManager.MdiActiveDocument;
         }
 
-        public bool IsEventHandlerRegistered(Delegate prospectiveHandler)
+        public static bool IsEventHandlerRegistered(Delegate prospectiveHandler)
         {
-            if (this.DocChange != null)
+            if (DocChange != null)
             {
-                foreach (Delegate existingHandler in this.DocChange.GetInvocationList())
+                foreach (Delegate existingHandler in DocChange.GetInvocationList())
                 {
                     if (existingHandler == prospectiveHandler)
                     {

@@ -18,7 +18,7 @@ namespace Topic1
     {
         public void Initialize()
         {
-            DocumentManager document = new DocumentManager();
+            DocumentManager.CreateDocument();
             //throw new System.NotImplementedException();
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Editor ed = doc.Editor;
