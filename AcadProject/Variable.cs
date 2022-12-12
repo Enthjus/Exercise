@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 
-namespace Topic1
+namespace AcadProject
 {
     public class Variable
     {

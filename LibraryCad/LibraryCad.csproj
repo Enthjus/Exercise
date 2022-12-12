@@ -72,6 +72,7 @@
     <Compile Include="Models\PointInf.cs" />
     <Compile Include="ObjectsFunc\PolylineObject\PolylineFunc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sub\Extensions.cs" />
     <Compile Include="Sub\SubFunc.cs" />
     <Compile Include="ObjectsFunc\TextObject\TextFunc.cs" />
   </ItemGroup>

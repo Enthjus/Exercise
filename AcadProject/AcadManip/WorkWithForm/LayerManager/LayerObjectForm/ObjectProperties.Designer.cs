@@ -1,4 +1,4 @@
-﻿namespace Topic1.AcadManip.WorkWithForm.LayerManager.LayerObjectForm
+﻿namespace AcadProject.AcadManip.WorkWithForm.LayerManager.LayerObjectForm
 {
     partial class ObjectProperties
     {

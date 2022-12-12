@@ -121,13 +121,20 @@ namespace LibraryCad.ObjectsFunc.BlockObject
         /// </summary>
         /// <param name="doc">Document</param>
         /// <returns>BlockReference</returns>
-        public static BlockReference PickBlock(Document doc)
+        public static BlockReference PickBlock(Document doc, string str = "")
         {
             try
             {
                 Database db = doc.Database;
                 PromptSelectionOptions prSelOpt = new PromptSelectionOptions();
-                prSelOpt.MessageForAdding = "\n- Chọn block muốn thao tác: ";
+                if (str == "")
+                {
+                    prSelOpt.MessageForAdding = "\n- Chọn block muốn thao tác: ";
+                }
+                else
+                {
+                    prSelOpt.MessageForAdding = str;
+                }
                 prSelOpt.SingleOnly = true;
                 TypedValue[] tvBlock = new TypedValue[]
                 {
@@ -289,13 +296,13 @@ namespace LibraryCad.ObjectsFunc.BlockObject
         /// <param name="doc">Document</param>
         public static void AddEntityToBlock(Document doc)
         {
-
             Database db = doc.Database;
             Editor ed = doc.Editor;
             try
             {
                 var entToAdds = SubFunc.GetListSelection(doc, "- Chọn các đối tượng muốn thêm vào block:");
                 var block = BlockFunc.PickBlock(doc);
+                if (block == null) return;
                 using (Transaction trans = db.TransactionManager.StartTransaction())
                 {
                     BlockReference insert = trans.GetObject(block.ObjectId, OpenMode.ForRead) as BlockReference;
@@ -315,6 +322,41 @@ namespace LibraryCad.ObjectsFunc.BlockObject
                         trans.AddNewlyCreatedDBObject(clone, true);
                         ent.Erase();
                     }
+                    trans.Commit();
+                }
+                ed.Regen();
+            }
+            catch (System.Exception ex)
+            {
+                ed.WriteMessage(ex.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Hàm thêm 1 khối vào khối
+        /// </summary>
+        /// <param name="doc">Document</param>
+        public static void AddBlockToBlock(Document doc)
+        {
+            Database db = doc.Database;
+            Editor ed = doc.Editor;
+            try
+            {
+                var blkToAdd = BlockFunc.PickBlock(doc, "\n- Chọn block muốn thêm vào:");
+                var block = BlockFunc.PickBlock(doc, "\n- Chọn block chính:");
+                if (block == null || blkToAdd == null || block.Name == blkToAdd.Name) return;
+                using (Transaction trans = db.TransactionManager.StartTransaction())
+                {
+                    BlockReference insert = trans.GetObject(block.ObjectId, OpenMode.ForRead) as BlockReference;
+                    BlockTableRecord hostBlk = trans.GetObject(insert.BlockTableRecord, OpenMode.ForWrite) as BlockTableRecord;
+                    Matrix3d mat = insert.BlockTransform.Inverse();
+                    Entity ent = trans.GetObject(blkToAdd.ObjectId, OpenMode.ForWrite) as Entity;
+                    if (insert == null) return;
+                    Entity clone = ent.Clone() as Entity;
+                    clone.TransformBy(mat);
+                    hostBlk.AppendEntity(clone);
+                    trans.AddNewlyCreatedDBObject(clone, true);
+                    ent.Erase();
                     trans.Commit();
                 }
                 ed.Regen();

@@ -3,7 +3,7 @@ using Autodesk.AutoCAD.Runtime;
 using LibraryCad.ObjectsFunc.ArcObject;
 using LibraryCad.ObjectsFunc.DimensionObject;
 
-namespace Topic1.AcadManip.WorkWithObject
+namespace AcadProject.AcadManip.WorkWithObject
 {
     public class WorkWithArc
     {

@@ -6,7 +6,7 @@ using LibraryCad.ObjectsFunc.PolylineObject;
 using LibraryCad.Sub;
 using System.Collections.Generic;
 
-namespace Topic1.AcadManip.WorkWithObject
+namespace AcadProject.AcadManip.WorkWithObject
 {
     public class WorkWithPolyline
     {

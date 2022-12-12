@@ -4,7 +4,7 @@ using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using System;
 
-namespace Topic1.EventHandler.Objects.TextEvent
+namespace AcadProject.AcadEventHandler.AcadObjectsEvent.TextEvent
 {
     public class TextEventHandler
     {

@@ -4,7 +4,7 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Runtime;
 
-namespace Topic1.AcadManip.WorkWithStyle
+namespace AcadProject.AcadManip.WorkWithStyle
 {
     public class AtcTableStyle
     {

@@ -7,6 +7,7 @@ using LibraryCad.Models;
 using LibraryCad.ObjectsFunc.LayerObject;
 using LibraryCad.Sub;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LibraryCad.ObjectsFunc.CircleObject
 {
@@ -168,6 +169,31 @@ namespace LibraryCad.ObjectsFunc.CircleObject
                     trans.Abort();
                     return null;
                 }
+            }
+        }
+
+        public static ObjectId CircleSelect(Document doc)
+        {
+            try
+            {
+                PromptSelectionOptions prSelOptions = new PromptSelectionOptions();
+                prSelOptions.SingleOnly = true;
+                prSelOptions.SinglePickInSpace = true;
+                TypedValue[] tvCircle = new TypedValue[]
+                {
+                new TypedValue((int)DxfCode.Start, "CIRCLE")
+                };
+                SelectionFilter filter = new SelectionFilter(tvCircle);
+                PromptSelectionResult prSelResult = doc.Editor.GetSelection(prSelOptions, filter);
+                if (prSelResult.Status == PromptStatus.OK)
+                {
+                    return prSelResult.Value.OfType<SelectedObject>().First().ObjectId;
+                }
+                return ObjectId.Null;
+            }
+            catch
+            {
+                return ObjectId.Null;
             }
         }
     }

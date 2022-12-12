@@ -1,7 +1,7 @@
 ﻿using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.Runtime;
 
-namespace Topic1.EventHandler.DocumentEvent
+namespace AcadProject.AcadEventHandler.AcadDocumentEvent
 {
     public class DocumentEventHandler
     {

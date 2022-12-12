@@ -1,10 +1,12 @@
-﻿using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.DatabaseServices;
+﻿using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
-using Autodesk.AutoCAD.Runtime;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Topic1.AcadDrawManip.AcadLayout
+namespace LibraryCad.Sub
 {
     public static class Extensions
     {
@@ -211,46 +213,24 @@ namespace Topic1.AcadDrawManip.AcadLayout
             // Đặt tỷ lệ tùy chỉnh để thu nhỏ một chút
             viewport.CustomScale *= factor;
         }
-    }
 
-
-
-    public class Commands
-    {
-        [CommandMethod("CL")]
-        public void CreateLayout()
-        {
-            var doc = Application.DocumentManager.MdiActiveDocument;
-            if (doc == null) return;
-            var db = doc.Database;
-            var ed = doc.Editor;
-            var ext = new Extents2d();
-            using (var tr = db.TransactionManager.StartTransaction())
-            {
-                var id = LayoutManager.Current.CreateAndMakeLayoutCurrent("NewLayout");
-                var lay = (Layout)tr.GetObject(id, OpenMode.ForWrite);
-                lay.SetPlotSettings("ANSI_B_(11.00_x_17.00_Inches)", "monochrome.ctb", "DWF6 ePlot.pc3");
-                ext = lay.GetMaximumExtents();
-                lay.ApplyToViewport(tr, 2, vp =>
-                {
-                    vp.ResizeViewport(ext, 0.8);
-                    if (ValidDbExtents(db.Extmin, db.Extmax))
-                    {
-                        vp.FitContentToViewport(new Extents3d(db.Extmin, db.Extmax), 0.9);
-                    }
-                    vp.Locked = true;
-                });
-                tr.Commit();
-            }
-            ed.Command("_.ZOOM", "_E");
-            ed.Command("_.ZOOM", ".7X");
-            ed.Regen();
-        }
-
-        // Kiểm tra xem điểm min và max của extend có hợp lệ hay không
-        private bool ValidDbExtents(Point3d min, Point3d max)
+        /// <summary>
+        /// Kiểm tra xem điểm min và max của extend có hợp lệ hay không
+        /// </summary>
+        /// <param name="min">Điểm min của extend</param>
+        /// <param name="max">Điểm max của extend</param>
+        /// <returns></returns>
+        public static bool ValidDbExtents(Point3d min, Point3d max)
         {
             return !(min.X > 0 && min.Y > 0 && min.Z > 0 && max.X < 0 && max.Y < 0 && max.Z < 0);
+        }
+
+        public static void Add(this ObjectIdCollection col, ObjectId[] ids)
+        {
+            foreach (var id in ids)
+            {
+                if (!col.Contains(id)) col.Add(id);
+            }
         }
     }
 }

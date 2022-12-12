@@ -1,20 +1,26 @@
 ﻿using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
+using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
+using LibraryCad.DocumentManager;
 using System;
 
-namespace Topic1.EventHandler.Objects.LineEvent
+namespace AcadProject.AcadEventHandler.AcadObjectsEvent.LineEvent
 {
     public class LineEventHandler
     {
         Line line = null;
 
+        private static Document doc = DocumentManager.doc;
+
+        private static Database db = DocumentManager.db;
+
+        private static Editor ed = DocumentManager.ed;
+
         [CommandMethod("AddLObjEvent")]
         public void AddLObjEvent()
         {
-            Document doc = Application.DocumentManager.MdiActiveDocument;
-            Database db = doc.Database;
             using (Transaction trans = db.TransactionManager.StartTransaction())
             {
                 // Tạo bảng để đọc và viết
@@ -34,8 +40,6 @@ namespace Topic1.EventHandler.Objects.LineEvent
         {
             if (line != null)
             {
-                Document doc = Application.DocumentManager.MdiActiveDocument;
-                Database db = doc.Database;
                 using (Transaction trans = db.TransactionManager.StartTransaction())
                 {
                     line = trans.GetObject(line.ObjectId, OpenMode.ForRead) as Line;

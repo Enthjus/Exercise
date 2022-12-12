@@ -3,15 +3,22 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
+using LibraryCad.DocumentManager;
 using LibraryCad.FileManip.File;
 using LibraryCad.ObjectsFunc.BlockObject;
 using LibraryCad.Sub;
 using System.Linq;
 
-namespace Topic1.AcadManip.WorkWithObject
+namespace AcadProject.AcadManip.WorkWithObject
 {
     public class WorkWithBlock
     {
+        private static Document doc = DocumentManager.doc;
+
+        private static Database db = DocumentManager.db;
+
+        private static Editor ed = DocumentManager.ed;
+
         [CommandMethod("CreateRectangleBlock")]
         public static void CreateRectangleBlock()
         {
@@ -21,26 +28,30 @@ namespace Topic1.AcadManip.WorkWithObject
         [CommandMethod("CopyBlocksBetweenDatabases", CommandFlags.Session)]
         public static void CopyBlocksBetweenDatabases()
         {
-            ObjectIdCollection objIdColl = new ObjectIdCollection();
-            Document doc = Application.DocumentManager.MdiActiveDocument;
-            // List thông tin các khối
-            var blockInfos = BlockFunc.PickBlock(doc, objIdColl);
-            if (blockInfos.Count == 0) return;
-            // Lấy đường dẫn của file muốn thao tác
-            string localRoot = Application.GetSystemVariable("LOCALROOTPREFIX") as string;
-            string filePath = localRoot + "Template\\Test.dwg";
-            // Copy các block mới chọn sang database mới theo đường dẫn truyền vào
-            BlockFunc.CloneBlockToAnotherDatabase(doc, filePath, objIdColl, blockInfos);
+            using (doc.LockDocument())
+            {
+                ObjectIdCollection objIdColl = new ObjectIdCollection();
+                // List thông tin các khối
+                var blockInfos = BlockFunc.PickBlock(doc, objIdColl);
+                if (blockInfos.Count == 0) return;
+                // Lấy đường dẫn của file muốn thao tác
+                string localRoot = Application.GetSystemVariable("LOCALROOTPREFIX") as string;
+                string filePath = localRoot + "Template\\Test.dwg";
+                // Copy các block mới chọn sang database mới theo đường dẫn truyền vào
+                BlockFunc.CloneBlockToAnotherDatabase(doc, filePath, objIdColl, blockInfos);
+            }
         }
 
         [CommandMethod("CopyObjectsBetweenDatabases", CommandFlags.Session)]
         public static void CopyObjectsBetweenDatabases()
         {
-            ObjectIdCollection objIdColl = new ObjectIdCollection();
-            Document doc = Application.DocumentManager.MdiActiveDocument;
-            SubFunc.PickAllObject(doc, objIdColl);
-            if (objIdColl.Count == 0) return;
-            SubFunc.CLoneObjectToDatabase(doc, objIdColl, "D:\\TestFile1.dwg");
+            using (doc.LockDocument())
+            {
+                ObjectIdCollection objIdColl = new ObjectIdCollection();
+                SubFunc.PickAllObject(doc, objIdColl);
+                if (objIdColl.Count == 0) return;
+                SubFunc.CLoneObjectToDatabase(doc, objIdColl, "D:\\TestFile1.dwg");
+            }
         }
 
         [CommandMethod("CopyFileWithText")]
@@ -52,67 +63,33 @@ namespace Topic1.AcadManip.WorkWithObject
         [CommandMethod("AddEntToBlock")]
         public static void AddEntToBlock()
         {
-            Document doc = Application.DocumentManager.MdiActiveDocument;
             using (doc.LockDocument())
             {
                 BlockFunc.AddEntityToBlock(doc);
             }
         }
 
-        [CommandMethod("MergeObjAndBlock")]
-        public static void MergeObjAndBlock()
+        [CommandMethod("AddBlockToBlock")]
+        public static void AddBlockToBlock()
         {
-            try
+            using (doc.LockDocument())
             {
-                Document doc = Application.DocumentManager.MdiActiveDocument;
-                Database db = doc.Database;
-                var block = BlockFunc.PickBlock(doc);
-                var entitiesToAdd = SubFunc.GetListSelection(doc, "- Chọn các đối tượng muốn thêm vào block:");
-                ObjectId[] idsToAdd = new ObjectId[entitiesToAdd.Length];
-                for (int i = 0; i < entitiesToAdd.Length; i++)
-                {
-                    if (entitiesToAdd[i] == block.BlockId) continue;
-                    idsToAdd[i] = entitiesToAdd[i];
-                }
-                using (doc.LockDocument())
-                {
-                    using (Transaction trans = db.TransactionManager.StartTransaction())
-                    {
-                        ObjectIdCollection collection = new ObjectIdCollection();
-                        BlockTable blkTable = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
-                        BlockTableRecord blkTblRec = new BlockTableRecord();
-                        blkTblRec.Name = "blk1";
-                        BlockReference blkRef = trans.GetObject(blkTable[block.BlockName], OpenMode.ForWrite) as BlockReference;
-                        BlockTableRecord blkTblRec1 = trans.GetObject(blkTable[block.BlockName], OpenMode.ForRead) as BlockTableRecord;
-                        var entities = blkTblRec1.Cast<ObjectId>();
-                        collection.Add(entities.ToArray());
-                        collection.Add(idsToAdd);
-                        blkTable.UpgradeOpen();
-                        var blkId = blkTable.Add(blkTblRec);
-                        trans.AddNewlyCreatedDBObject(blkTblRec, true);
-                        IdMapping mapping = new IdMapping();
-                        db.DeepCloneObjects(collection, blkId, mapping, false);
-                        trans.Commit();
-                    }
-                }
-            }
-            catch
-            {
-                return;
+                BlockFunc.AddBlockToBlock(doc);
             }
         }
 
         [CommandMethod("HlEntInBlk")]
         public static void RunMyCommand()
         {
-            var doc = Application.DocumentManager.MdiActiveDocument;
-            BlockFunc.HighlightEntityInBlock(doc);
+            using (doc.LockDocument())
+            {
+                BlockFunc.HighlightEntityInBlock(doc);
+            }
         }
 
         [CommandMethod("DeleteEntityInBlock")]
         public static void DeleteEntityInBlock()
         {
-            var doc = Application.DocumentManager.MdiActiveDocument;
             using (doc.LockDocument())
             {
                 BlockFunc.DeleteEntityInBlock(doc);
@@ -123,7 +100,6 @@ namespace Topic1.AcadManip.WorkWithObject
         [CommandMethod("EditEntityInBlock")]
         public static void EditEntityInBlock()
         {
-            var doc = Application.DocumentManager.MdiActiveDocument;
             using (doc.LockDocument())
             {
                 BlockFunc.EditEntityInBlock(doc);
@@ -136,8 +112,6 @@ namespace Topic1.AcadManip.WorkWithObject
         {
             try
             {
-                Document doc = Application.DocumentManager.MdiActiveDocument;
-                Database db = doc.Database;
                 using (Transaction trans = db.TransactionManager.StartTransaction())
                 {
                     var block = BlockFunc.PickBlock(doc);
@@ -148,7 +122,7 @@ namespace Topic1.AcadManip.WorkWithObject
                     var angle = new Line(oldBP, basePoint.point).Delta;
                     blkTblRec.Origin = blkTblRec.Origin + angle;
                     trans.Commit();
-                    doc.Editor.Regen();
+                    ed.Regen();
                 }
             }
             catch
@@ -162,8 +136,6 @@ namespace Topic1.AcadManip.WorkWithObject
         {
             try
             {
-                Document doc = Application.DocumentManager.MdiActiveDocument;
-                Database db = doc.Database;
                 using (Transaction trans = db.TransactionManager.StartTransaction())
                 {
                     var block = BlockFunc.PickBlock(doc);
@@ -188,115 +160,66 @@ namespace Topic1.AcadManip.WorkWithObject
         [CommandMethod("RedefiningABlock")]
         public void RedefiningABlock()
         {
-            // Get the current database and start a transaction
-            Database acCurDb;
-            acCurDb = Application.DocumentManager.MdiActiveDocument.Database;
-
-            using (Transaction acTrans = acCurDb.TransactionManager.StartTransaction())
+            using (Transaction trans = db.TransactionManager.StartTransaction())
             {
-                // Open the Block table for read
-                BlockTable acBlkTbl;
-                acBlkTbl = acTrans.GetObject(acCurDb.BlockTableId, OpenMode.ForRead) as BlockTable;
-
-                if (!acBlkTbl.Has("CircleBlock"))
+                BlockTable blockTable = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
+                if (!blockTable.Has("CircleBlock"))
                 {
-                    using (BlockTableRecord acBlkTblRec = new BlockTableRecord())
+                    using (BlockTableRecord blkTblRec = new BlockTableRecord())
                     {
-                        acBlkTblRec.Name = "CircleBlock";
-
-                        // Set the insertion point for the block
-                        acBlkTblRec.Origin = new Point3d(0, 0, 0);
-
-                        // Add a circle to the block
+                        blkTblRec.Name = "CircleBlock";
+                        blkTblRec.Origin = new Point3d(0, 0, 0);
                         using (Circle acCirc = new Circle())
                         {
                             acCirc.Center = new Point3d(0, 0, 0);
                             acCirc.Radius = 2;
-
-                            acBlkTblRec.AppendEntity(acCirc);
-
-                            acBlkTbl.UpgradeOpen();
-                            acBlkTbl.Add(acBlkTblRec);
-                            acTrans.AddNewlyCreatedDBObject(acBlkTblRec, true);
-
-                            // Insert the block into the current space
-                            using (BlockReference acBlkRef = new BlockReference(new Point3d(0, 0, 0), acBlkTblRec.Id))
+                            blkTblRec.AppendEntity(acCirc);
+                            blockTable.UpgradeOpen();
+                            blockTable.Add(blkTblRec);
+                            trans.AddNewlyCreatedDBObject(blkTblRec, true);
+                            using (BlockReference blkRef = new BlockReference(new Point3d(0, 0, 0), blkTblRec.Id))
                             {
-                                BlockTableRecord acModelSpace;
-                                acModelSpace = acTrans.GetObject(acCurDb.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
-
-                                acModelSpace.AppendEntity(acBlkRef);
-                                acTrans.AddNewlyCreatedDBObject(acBlkRef, true);
-
-                                Application.ShowAlertDialog("CircleBlock has been created.");
+                                BlockTableRecord modelSpace = trans.GetObject(db.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+                                modelSpace.AppendEntity(blkRef);
+                                trans.AddNewlyCreatedDBObject(blkRef, true);
+                                Application.ShowAlertDialog("CircleBlock đã được tạo.");
                             }
                         }
                     }
                 }
                 else
                 {
-                    // Redefine the block if it exists
-                    BlockTableRecord acBlkTblRec =
-                        acTrans.GetObject(acBlkTbl["CircleBlock"], OpenMode.ForWrite) as BlockTableRecord;
-
-                    // Step through each object in the block table record
-                    foreach (ObjectId objID in acBlkTblRec)
+                    BlockTableRecord blkTblRec = trans.GetObject(blockTable["CircleBlock"], OpenMode.ForWrite) as BlockTableRecord;
+                    foreach (ObjectId objID in blkTblRec)
                     {
-                        DBObject dbObj = acTrans.GetObject(objID, OpenMode.ForRead) as DBObject;
-
-                        // Revise the circle in the block
+                        DBObject dbObj = trans.GetObject(objID, OpenMode.ForRead) as DBObject;
                         if (dbObj is Circle)
                         {
                             Circle acCirc = dbObj as Circle;
-
                             acCirc.UpgradeOpen();
                             acCirc.Radius = acCirc.Radius * 2;
                         }
                     }
-
-                    // Update existing block references
-                    foreach (ObjectId objID in acBlkTblRec.GetBlockReferenceIds(false, true))
+                    foreach (ObjectId objID in blkTblRec.GetBlockReferenceIds(false, true))
                     {
-                        BlockReference acBlkRef = acTrans.GetObject(objID, OpenMode.ForWrite) as BlockReference;
-                        acBlkRef.RecordGraphicsModified(true);
+                        BlockReference blkRef = trans.GetObject(objID, OpenMode.ForWrite) as BlockReference;
+                        blkRef.RecordGraphicsModified(true);
                     }
 
                     Application.ShowAlertDialog("CircleBlock has been revised.");
                 }
-
-                // Save the new object to the database
-                acTrans.Commit();
-
-                // Dispose of the transaction
+                trans.Commit();
             }
         }
-    }
 
-    public static class Extensions
-    {
-        public static void Add(this ObjectIdCollection col, ObjectId[] ids)
-        {
-            foreach (var id in ids)
-            {
-                if (!col.Contains(id))
-                    col.Add(id);
-            }
-        }
-    }
-
-    public class Commands
-    {
         [CommandMethod("MB")]
         public static void MergeBlocks()
         {
-            var doc = Application.DocumentManager.MdiActiveDocument;
             if (doc == null) return;
-            var db = doc.Database;
-            var ed = doc.Editor;
             // Get the name of the first block to merge
-            var pr = ed.GetString("\nEnter name of first block");
-            if (pr.Status != PromptStatus.OK) return;
-            string first = pr.StringResult.ToUpper();
+            var block1 = BlockFunc.PickBlock(doc);
+            if (block1 == null) return;
+            string first = block1.Name.ToUpper(); 
             using (var tr = doc.TransactionManager.StartTransaction())
             {
                 var bt = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForRead);
@@ -304,14 +227,14 @@ namespace Topic1.AcadManip.WorkWithObject
                 if (bt.Has(first))
                 {
                     // Get the name of the second block to merge
-                    pr = ed.GetString("\nEnter name of second block");
-                    if (pr.Status != PromptStatus.OK) return;
-                    string second = pr.StringResult.ToUpper();
+                    var block2 = BlockFunc.PickBlock(doc);
+                    if (block2 == null) return;
+                    string second = block2.Name.ToUpper();
                     // Check whether the second block exists
                     if (bt.Has(second))
                     {
                         // Get the name of the new block
-                        pr = ed.GetString("\nEnter name for new block");
+                        var pr = ed.GetString("\nEnter name for new block");
                         if (pr.Status != PromptStatus.OK) return;
                         string merged = pr.StringResult.ToUpper();
                         // Make sure the new block doesn't already exist

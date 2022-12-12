@@ -4,19 +4,24 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using LibraryCad;
+using LibraryCad.DocumentManager;
 using LibraryCad.Mathematic;
 using LibraryCad.Models;
 using LibraryCad.Sub;
 
-namespace Topic1
+namespace AcadProject.AcadCalculation
 {
     public class Math
     {
+        private static Document doc = DocumentManager.doc;
+
+        private static Database db = DocumentManager.db;
+
+        private static Editor ed = DocumentManager.ed;
+
         [CommandMethod("Sum")]
         public static void Sum()
         {
-            Document doc = Application.DocumentManager.CurrentDocument;
-            Database db = doc.Database;
             using (doc.LockDocument())
             {
                 using (var trans = db.TransactionManager.StartTransaction())
@@ -53,8 +58,6 @@ namespace Topic1
         [CommandMethod("SumSkipString")]
         public static void SumSkipString()
         {
-            Document doc = Application.DocumentManager.CurrentDocument;
-            Database db = doc.Database;
             using (doc.LockDocument())
             {
                 using (var trans = db.TransactionManager.StartTransaction())
@@ -85,8 +88,6 @@ namespace Topic1
         [CommandMethod("Subtraction")]
         public static void Subtraction()
         {
-            Document doc = Application.DocumentManager.CurrentDocument;
-            Database db = doc.Database;
             using (doc.LockDocument())
             {
                 using (var trans = db.TransactionManager.StartTransaction())
@@ -125,8 +126,6 @@ namespace Topic1
         [CommandMethod("Multiplication")]
         public static void Multiplication()
         {
-            Document doc = Application.DocumentManager.CurrentDocument;
-            Database db = doc.Database;
             using (doc.LockDocument())
             {
                 using (var trans = db.TransactionManager.StartTransaction())
@@ -176,8 +175,6 @@ namespace Topic1
         [CommandMethod("Division")]
         public static void Division()
         {
-            Document doc = Application.DocumentManager.CurrentDocument;
-            Database db = doc.Database;
             using (doc.LockDocument())
             {
                 using (var trans = db.TransactionManager.StartTransaction())

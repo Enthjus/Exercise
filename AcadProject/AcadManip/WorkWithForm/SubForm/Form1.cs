@@ -11,7 +11,7 @@ using System.Linq;
 using System.Windows.Forms;
 using acad = Autodesk.AutoCAD.ApplicationServices.Application;
 
-namespace Topic1.AcadManip.WorkWithForm.SubForm
+namespace AcadProject.AcadManip.WorkWithForm.SubForm
 {
     public partial class Form1 : Form
     {

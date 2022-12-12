@@ -1,4 +1,4 @@
-﻿namespace Topic1.AcadManip.WorkWithForm.LayerManager.LayerForm
+﻿namespace AcadProject.AcadManip.WorkWithForm.LayerManager.LayerForm
 {
     partial class LayersForm
     {

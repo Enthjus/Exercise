@@ -2,7 +2,7 @@
 using Autodesk.AutoCAD.Runtime;
 using LibraryCad.ObjectsFunc.CircleObject;
 
-namespace Topic1.AcadManip.WorkWithObject
+namespace AcadProject.AcadManip.WorkWithObject
 {
     public class WorkWithCircle
     {

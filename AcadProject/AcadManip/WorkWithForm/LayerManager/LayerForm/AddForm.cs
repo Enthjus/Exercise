@@ -4,7 +4,7 @@ using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace Topic1.AcadManip.WorkWithForm.LayerManager.LayerForm
+namespace AcadProject.AcadManip.WorkWithForm.LayerManager.LayerForm
 {
     public partial class AddForm : Form
     {
@@ -88,6 +88,11 @@ namespace Topic1.AcadManip.WorkWithForm.LayerManager.LayerForm
                 e.Cancel = false;
                 errorProviderName.SetError(txb_LayerName, "");
             }
+        }
+
+        private void AddForm_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

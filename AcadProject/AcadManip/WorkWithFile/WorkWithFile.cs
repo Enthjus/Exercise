@@ -1,12 +1,20 @@
 ﻿using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
+using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
+using LibraryCad.DocumentManager;
 
-namespace Topic1.AcadManip.WorkWithFile
+namespace AcadProject.AcadManip.WorkWithFile
 {
     public class WorkWithFile
     {
+        private static Document doc = DocumentManager.doc;
+
+        private static Database db = DocumentManager.db;
+
+        private static Editor ed = DocumentManager.ed;
+
         private static string[] filepaths = new string[]
         {
             "E:\\BanVe\\DWG\\02. B2F ~ Block B ~ General Note.dwg",
@@ -17,7 +25,6 @@ namespace Topic1.AcadManip.WorkWithFile
         [CommandMethod("SaveMultiFile")]
         public static void SaveMultiFile()
         {
-            Document doc = Application.DocumentManager.MdiActiveDocument;
             foreach (string path in filepaths)
             {
                 Database newDb = new Database(false, true);
@@ -41,7 +48,7 @@ namespace Topic1.AcadManip.WorkWithFile
                     }
                     catch
                     {
-                        doc.Editor.WriteMessage("Không tìm thấy file!");
+                        ed.WriteMessage("Không tìm thấy file!");
                     }
                 }
             }

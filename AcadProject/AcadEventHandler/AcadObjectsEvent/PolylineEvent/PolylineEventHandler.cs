@@ -4,7 +4,7 @@ using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using System;
 
-namespace Topic1.EventHandler.Objects.PolylineEvent
+namespace AcadProject.AcadEventHandler.AcadObjectsEvent.PolylineEvent
 {
     public class PolylineEventHandler
     {

@@ -1,68 +1,67 @@
 ﻿using Autodesk.AutoCAD.ApplicationServices;
+using Autodesk.AutoCAD.DatabaseServices;
+using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Runtime;
+using LibraryCad.DocumentManager;
+using acad = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace Topic1.EventHandler
 {
     public class EventHandler
     {
+        private static Document doc = DocumentManager.doc;
+
+        private static Database db = DocumentManager.db;
+
+        private static Editor ed = DocumentManager.ed;
+
         [CommandMethod("AddAppEvent")]
         public void AddAppEvent()
         {
-            Application.SystemVariableChanged +=
-                new Autodesk.AutoCAD.ApplicationServices.
-                    SystemVariableChangedEventHandler(appSysVarChanged);
+            acad.SystemVariableChanged += new Autodesk.AutoCAD.ApplicationServices.SystemVariableChangedEventHandler(appSysVarChanged);
         }
 
         [CommandMethod("RemoveAppEvent")]
         public void RemoveAppEvent()
         {
-            Application.SystemVariableChanged -=
-                new Autodesk.AutoCAD.ApplicationServices.
-                    SystemVariableChangedEventHandler(appSysVarChanged);
+            acad.SystemVariableChanged -= new Autodesk.AutoCAD.ApplicationServices.SystemVariableChangedEventHandler(appSysVarChanged);
         }
 
         public void appSysVarChanged(object senderObj, Autodesk.AutoCAD.ApplicationServices.SystemVariableChangedEventArgs sysVarChEvtArgs)
         {
-            object oVal = Application.GetSystemVariable(sysVarChEvtArgs.Name);
+            object oVal = acad.GetSystemVariable(sysVarChEvtArgs.Name);
 
             // Display a message box with the system variable name and the new value
-            Application.ShowAlertDialog(sysVarChEvtArgs.Name + " was changed." +
-                                        "\nNew value: " + oVal.ToString());
+            acad.ShowAlertDialog(sysVarChEvtArgs.Name + " was changed." + "\nNew value: " + oVal.ToString());
         }
 
         [CommandMethod("AddDocColEvent")]
         public void AddDocColEvent()
         {
-            Application.DocumentManager.DocumentActivated +=
-                new DocumentCollectionEventHandler(docColDocAct);
+            acad.DocumentManager.DocumentActivated += new DocumentCollectionEventHandler(docColDocAct);
         }
 
         [CommandMethod("RemoveDocColEvent")]
         public void RemoveDocColEvent()
         {
-            Application.DocumentManager.DocumentActivated -=
-                new DocumentCollectionEventHandler(docColDocAct);
+            acad.DocumentManager.DocumentActivated -= new DocumentCollectionEventHandler(docColDocAct);
         }
 
         public void docColDocAct(object senderObj, DocumentCollectionEventArgs docColDocActEvtArgs)
         {
-            Application.ShowAlertDialog(docColDocActEvtArgs.Document.Name + " was activated.");
+            acad.ShowAlertDialog(docColDocActEvtArgs.Document.Name + " was activated.");
         }
 
         [CommandMethod("AddDocEvent")]
         public void AddDocEvent()
         {
-            // Get the current document
-            Document doc = Application.DocumentManager.MdiActiveDocument;
             doc.BeginDocumentClose += new DocumentBeginCloseEventHandler(docBeginDocClose);
         }
 
         [CommandMethod("RemoveDocEvent")]
         public void RemoveDocEvent()
         {
-            // Get the current document
-            Document acDoc = Application.DocumentManager.MdiActiveDocument;
-            acDoc.BeginDocumentClose -= new DocumentBeginCloseEventHandler(docBeginDocClose);
+            doc.BeginDocumentClose -= new DocumentBeginCloseEventHandler(docBeginDocClose);
         }
 
         public void docBeginDocClose(object senderObj, DocumentBeginCloseEventArgs docBegClsEvtArgs)

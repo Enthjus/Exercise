@@ -7,8 +7,8 @@
     <ProjectGuid>{968EAC75-F084-44FA-A087-A5DFA0889EE1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Topic1</RootNamespace>
-    <AssemblyName>Topic1</AssemblyName>
+    <RootNamespace>AcadProject</RootNamespace>
+    <AssemblyName>AcadProject</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -87,7 +87,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AcadDrawManip\AcadLayout\Extensions.cs" />
     <Compile Include="AcadDrawManip\AcadLayout\WorkWithLayout.cs" />
     <Compile Include="AcadManip\WorkWithForm\LayerManager\LayerForm\AddForm.cs">
       <SubType>Form</SubType>
@@ -95,12 +94,12 @@
     <Compile Include="AcadManip\WorkWithForm\LayerManager\LayerForm\AddForm.Designer.cs">
       <DependentUpon>AddForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="EventHandler\DocumentEvent\DocumentEventHandler.cs" />
-    <Compile Include="EventHandler\EventHandler.cs" />
-    <Compile Include="EventHandler\Objects\CircleEvent\CircleEventHandler.cs" />
-    <Compile Include="EventHandler\Objects\LineEvent\LineEventHandler.cs" />
-    <Compile Include="EventHandler\Objects\PolylineEvent\PolylineEventHandler.cs" />
-    <Compile Include="EventHandler\Objects\TextEvent\TextEventHandler.cs" />
+    <Compile Include="AcadEventHandler\AcadDocumentEvent\DocumentEventHandler.cs" />
+    <Compile Include="AcadEventHandler\EventHandler.cs" />
+    <Compile Include="AcadEventHandler\AcadObjectsEvent\CircleEvent\CircleEventHandler.cs" />
+    <Compile Include="AcadEventHandler\AcadObjectsEvent\LineEvent\LineEventHandler.cs" />
+    <Compile Include="AcadEventHandler\AcadObjectsEvent\PolylineEvent\PolylineEventHandler.cs" />
+    <Compile Include="AcadEventHandler\AcadObjectsEvent\TextEvent\TextEventHandler.cs" />
     <Compile Include="AcadManip\WorkWithForm\LayerManager\LayerObjectForm\ObjectProperties.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -120,8 +119,8 @@
     <Compile Include="AcadManip\WorkWithForm\LayerManager\LayerForm\LayersForm.Designer.cs">
       <DependentUpon>LayersForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Calculation\Math.cs" />
-    <Compile Include="AcadDrawManip\Plotting\PlotFromModelSpace.cs" />
+    <Compile Include="AcadCalculation\Math.cs" />
+    <Compile Include="AcadDrawManip\AcadPlotting\PlotFromModelSpace.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

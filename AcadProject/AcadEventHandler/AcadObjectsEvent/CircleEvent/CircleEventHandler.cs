@@ -3,20 +3,26 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
+using LibraryCad.DocumentManager;
+using LibraryCad.ObjectsFunc.CircleObject;
 using System;
 using System.Linq;
 
-namespace Topic1.EventHandler.Objects.CircleEvent
+namespace AcadProject.AcadEventHandler.AcadObjectsEvent.CircleEvent
 {
     public class CircleEventHandler
     {
         Circle circle = null;
 
+        private static Document doc = DocumentManager.doc;
+
+        private static Database db = DocumentManager.db;
+
+        private static Editor ed = DocumentManager.ed;
+
         [CommandMethod("AddCircleModifyEvent")]
         public void AddCircleModifyEvent()
         {
-            Document doc = Application.DocumentManager.MdiActiveDocument;
-            Database db = doc.Database;
             using (Transaction trans = db.TransactionManager.StartTransaction())
             {
                 // Tạo bảng để đọc và viết
@@ -39,8 +45,6 @@ namespace Topic1.EventHandler.Objects.CircleEvent
         {
             if (circle != null)
             {
-                Document doc = Application.DocumentManager.MdiActiveDocument;
-                Database db = doc.Database;
                 using (Transaction trans = db.TransactionManager.StartTransaction())
                 {
                     circle = trans.GetObject(circle.ObjectId, OpenMode.ForRead) as Circle;
@@ -57,8 +61,6 @@ namespace Topic1.EventHandler.Objects.CircleEvent
         [CommandMethod("AddCircleDeleteEvent")]
         public void AddCircleDeleteEvent()
         {
-            Document doc = Application.DocumentManager.MdiActiveDocument;
-            Database db = doc.Database;
             using (Transaction trans = db.TransactionManager.StartTransaction())
             {
                 // Tạo bảng để đọc và viết
@@ -81,8 +83,6 @@ namespace Topic1.EventHandler.Objects.CircleEvent
         {
             if (circle != null)
             {
-                Document doc = Application.DocumentManager.MdiActiveDocument;
-                Database db = doc.Database;
                 using (Transaction trans = db.TransactionManager.StartTransaction())
                 {
                     circle = trans.GetObject(circle.ObjectId, OpenMode.ForRead) as Circle;
@@ -99,11 +99,9 @@ namespace Topic1.EventHandler.Objects.CircleEvent
         [CommandMethod("AddCircleCopyEvent")]
         public void AddCircleCopyEvent()
         {
-            Document doc = Application.DocumentManager.MdiActiveDocument;
-            Database db = doc.Database;
             using (Transaction trans = db.TransactionManager.StartTransaction())
             {
-                var cirId = CircleSelect();
+                var cirId = CircleFunc.CircleSelect(doc);
                 if (cirId == ObjectId.Null) return;
                 circle = trans.GetObject(cirId, OpenMode.ForRead) as Circle;
                 // Bắt sự kiện khi thực hiện thay đổi trên đường tròn
@@ -117,8 +115,6 @@ namespace Topic1.EventHandler.Objects.CircleEvent
         {
             if (circle != null)
             {
-                Document doc = Application.DocumentManager.MdiActiveDocument;
-                Database db = doc.Database;
                 using (Transaction trans = db.TransactionManager.StartTransaction())
                 {
                     circle = trans.GetObject(circle.ObjectId, OpenMode.ForRead) as Circle;
@@ -129,32 +125,6 @@ namespace Topic1.EventHandler.Objects.CircleEvent
                     circle.Copied -= new ObjectEventHandler(CircleClone);
                     circle = null;
                 }
-            }
-        }
-
-        public static ObjectId CircleSelect()
-        {
-            try
-            {
-                Document doc = Application.DocumentManager.MdiActiveDocument;
-                PromptSelectionOptions prSelOptions = new PromptSelectionOptions();
-                prSelOptions.SingleOnly = true;
-                prSelOptions.SinglePickInSpace = true;
-                TypedValue[] tvCircle = new TypedValue[]
-                {
-                new TypedValue((int)DxfCode.Start, "CIRCLE")
-                };
-                SelectionFilter filter = new SelectionFilter(tvCircle);
-                PromptSelectionResult prSelResult = doc.Editor.GetSelection(prSelOptions, filter);
-                if (prSelResult.Status == PromptStatus.OK)
-                {
-                    return prSelResult.Value.OfType<SelectedObject>().First().ObjectId;
-                }
-                return ObjectId.Null;
-            }
-            catch
-            {
-                return ObjectId.Null;
             }
         }
 

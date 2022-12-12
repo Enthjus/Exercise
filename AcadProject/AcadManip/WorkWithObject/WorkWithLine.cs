@@ -5,7 +5,7 @@ using Autodesk.AutoCAD.Runtime;
 using LibraryCad.ObjectsFunc.DimensionObject;
 using LibraryCad.ObjectsFunc.LineObject;
 
-namespace Topic1.AcadManip.WorkWithObject
+namespace AcadProject.AcadManip.WorkWithObject
 {
     public class WorkWithLine
     {

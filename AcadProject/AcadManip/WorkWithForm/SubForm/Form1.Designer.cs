@@ -1,4 +1,4 @@
-﻿namespace Topic1.AcadManip.WorkWithForm.SubForm
+﻿namespace AcadProject.AcadManip.WorkWithForm.SubForm
 {
     partial class Form1
     {

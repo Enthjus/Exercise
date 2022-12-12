@@ -4,7 +4,7 @@ using System;
 using System.Windows.Forms;
 using acad = Autodesk.AutoCAD.ApplicationServices.Application;
 
-namespace Topic1.AcadManip.WorkWithForm.LayerManager.LayerObjectForm
+namespace AcadProject.AcadManip.WorkWithForm.LayerManager.LayerObjectForm
 {
     public partial class ObjectProperties : Form
     {

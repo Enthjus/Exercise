@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 using acadApp = Autodesk.AutoCAD.ApplicationServices.Application;
 
 //[assembly: CommandMethod(In)]
-namespace Topic1
+namespace AcadProject
 {
     public class Init : IExtensionApplication
     {
