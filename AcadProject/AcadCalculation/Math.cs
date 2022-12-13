@@ -7,6 +7,7 @@ using LibraryCad;
 using LibraryCad.DocumentManager;
 using LibraryCad.Mathematic;
 using LibraryCad.Models;
+using LibraryCad.ObjectsFunc.TextObject;
 using LibraryCad.Sub;
 
 namespace AcadProject.AcadCalculation

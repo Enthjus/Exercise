@@ -27,3 +27,4 @@ D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\AcadProject.csproj.CoreCompileInpu
 D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\AcadProject.csproj.CopyComplete
 D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\AcadProject.dll
 D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\AcadProject.pdb
+D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\AcadProject.AcadManip.WorkWithForm.SortForm.SortText.SortTextForm.resources

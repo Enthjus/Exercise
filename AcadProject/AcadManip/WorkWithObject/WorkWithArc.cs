@@ -2,6 +2,7 @@
 using Autodesk.AutoCAD.Runtime;
 using LibraryCad.ObjectsFunc.ArcObject;
 using LibraryCad.ObjectsFunc.DimensionObject;
+using LibraryCad.Sub;
 
 namespace AcadProject.AcadManip.WorkWithObject
 {

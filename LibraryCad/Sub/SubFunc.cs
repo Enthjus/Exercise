@@ -3,6 +3,9 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using LibraryCad.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace LibraryCad.Sub
 {
@@ -228,6 +231,33 @@ namespace LibraryCad.Sub
                     newDB.SaveAs(filePath, DwgVersion.Current);
                 }
             }
+        }
+
+        public static ObjectId[] getObjIds(Transaction trans, Editor ed, SelectionFilter filter)
+        {
+            try
+            {
+                PromptSelectionResult prSelResult = ed.SelectAll(filter);
+                if (prSelResult.Status == PromptStatus.OK)
+                {
+                    var objIds = prSelResult.Value.GetObjectIds();
+                    return objIds;
+                }
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public static int giaithua(int a)
+        {
+            if (a == 1)
+                return 1; // Kết thúc đệ quy
+
+            return
+                a * giaithua(a - 1);  // Đệ quy
         }
     }
 }

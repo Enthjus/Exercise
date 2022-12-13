@@ -4,6 +4,7 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using LibraryCad;
+using LibraryCad.ObjectsFunc.TextObject;
 using LibraryCad.Sub;
 
 namespace AcadProject.AcadManip.WorkWithObject

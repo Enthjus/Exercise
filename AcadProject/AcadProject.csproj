@@ -106,6 +106,12 @@
     <Compile Include="AcadManip\WorkWithForm\LayerManager\LayerObjectForm\ObjectProperties.Designer.cs">
       <DependentUpon>ObjectProperties.cs</DependentUpon>
     </Compile>
+    <Compile Include="AcadManip\WorkWithForm\SortForm\SortText\SortTextForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AcadManip\WorkWithForm\SortForm\SortText\SortTextForm.Designer.cs">
+      <DependentUpon>SortTextForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="AcadManip\WorkWithForm\SubForm\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -159,6 +165,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AcadManip\WorkWithForm\LayerManager\LayerObjectForm\ObjectProperties.resx">
       <DependentUpon>ObjectProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AcadManip\WorkWithForm\SortForm\SortText\SortTextForm.resx">
+      <DependentUpon>SortTextForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AcadManip\WorkWithForm\SubForm\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

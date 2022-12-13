@@ -4,6 +4,7 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using LibraryCad.ObjectsFunc.ArcObject;
 using LibraryCad.ObjectsFunc.LineObject;
+using LibraryCad.ObjectsFunc.TextObject;
 using LibraryCad.Sub;
 using System.Collections.Generic;
 using System.Linq;

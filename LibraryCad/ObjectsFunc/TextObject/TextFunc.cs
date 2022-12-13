@@ -2,8 +2,11 @@
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace LibraryCad
+namespace LibraryCad.ObjectsFunc.TextObject
 {
     public class TextFunc
     {
@@ -80,5 +83,21 @@ namespace LibraryCad
                 return "";
             }
         }
+
+        public static List<DBText> SortText(List<DBText> dbTexts)
+        {
+            try
+            {
+                var texts = new List<DBText>();
+                texts = dbTexts.OrderBy(a => Int32.Parse(a.TextString)).ToList();
+                return texts;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+
     }
 }

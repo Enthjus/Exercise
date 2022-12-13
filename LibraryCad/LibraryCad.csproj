@@ -75,6 +75,7 @@
     <Compile Include="Sub\Extensions.cs" />
     <Compile Include="Sub\SubFunc.cs" />
     <Compile Include="ObjectsFunc\TextObject\TextFunc.cs" />
+    <Compile Include="TableManip\TableFunc.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

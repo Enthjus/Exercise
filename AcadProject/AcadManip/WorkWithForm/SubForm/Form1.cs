@@ -4,6 +4,7 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Runtime;
 using LibraryCad;
 using LibraryCad.ObjectsFunc.LineObject;
+using LibraryCad.ObjectsFunc.TextObject;
 using LibraryCad.Sub;
 using System;
 using System.Collections.Generic;
