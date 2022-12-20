@@ -88,6 +88,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AcadDrawManip\AcadLayout\WorkWithLayout.cs" />
+    <Compile Include="AcadManip\WorkWithForm\AcadObject\BlockForm\GetBlock.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AcadManip\WorkWithForm\AcadObject\BlockForm\GetBlock.Designer.cs">
+      <DependentUpon>GetBlock.cs</DependentUpon>
+    </Compile>
     <Compile Include="AcadManip\WorkWithForm\LayerManager\LayerForm\AddForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -160,6 +166,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="AcadManip\WorkWithForm\AcadObject\BlockForm\GetBlock.resx">
+      <DependentUpon>GetBlock.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AcadManip\WorkWithForm\LayerManager\LayerForm\AddForm.resx">
       <DependentUpon>AddForm.cs</DependentUpon>
     </EmbeddedResource>

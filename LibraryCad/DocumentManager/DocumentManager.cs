@@ -27,7 +27,10 @@ namespace LibraryCad.DocumentManager
 
         public static void docColDocAct(object senderObj, DocumentCollectionEventArgs docColDocActEvtArgs)
         {
-            doc = Application.DocumentManager.MdiActiveDocument;
+            doc = Application.DocumentManager.CurrentDocument;
+            if(doc == null) return;
+            db = doc.Database;
+            ed = doc.Editor;
         }
 
         public static bool IsEventHandlerRegistered(Delegate prospectiveHandler)

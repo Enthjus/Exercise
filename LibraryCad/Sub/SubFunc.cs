@@ -233,7 +233,7 @@ namespace LibraryCad.Sub
             }
         }
 
-        public static ObjectId[] getObjIds(Transaction trans, Editor ed, SelectionFilter filter)
+        public static ObjectId[] getObjIds(Editor ed, SelectionFilter filter)
         {
             try
             {

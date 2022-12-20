@@ -97,7 +97,5 @@ namespace LibraryCad.ObjectsFunc.TextObject
                 return null;
             }
         }
-
-
     }
 }

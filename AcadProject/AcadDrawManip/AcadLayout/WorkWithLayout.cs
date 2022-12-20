@@ -34,26 +34,29 @@ namespace AcadProject.AcadDrawManip.AcadLayout
         {
             if (doc == null) return;
             var ext = new Extents2d();
-            using (var tr = db.TransactionManager.StartTransaction())
+            using (doc.LockDocument())
             {
-                var id = LayoutManager.Current.CreateAndMakeLayoutCurrent("NewLayout");
-                var lay = (Layout)tr.GetObject(id, OpenMode.ForWrite);
-                lay.SetPlotSettings("ANSI_B_(11.00_x_17.00_Inches)", "monochrome.ctb", "DWF6 ePlot.pc3");
-                ext = lay.GetMaximumExtents();
-                lay.ApplyToViewport(tr, 2, vp =>
+                using (var tr = db.TransactionManager.StartTransaction())
                 {
-                    vp.ResizeViewport(ext, 0.8);
-                    if (Extensions.ValidDbExtents(db.Extmin, db.Extmax))
+                    var id = LayoutManager.Current.CreateAndMakeLayoutCurrent("ABC");
+                    var lay = (Layout)tr.GetObject(id, OpenMode.ForWrite);
+                    lay.SetPlotSettings("ANSI_B_(11.00_x_17.00_Inches)", "monochrome.ctb", "DWF6 ePlot.pc3");
+                    ext = lay.GetMaximumExtents();
+                    lay.ApplyToViewport(tr, 2, vp =>
                     {
-                        vp.FitContentToViewport(new Extents3d(db.Extmin, db.Extmax), 0.9);
-                    }
-                    vp.Locked = true;
-                });
-                tr.Commit();
+                        vp.ResizeViewport(ext, 0.8);
+                        if (Extensions.ValidDbExtents(db.Extmin, db.Extmax))
+                        {
+                            vp.FitContentToViewport(new Extents3d(db.Extmin, db.Extmax), 0.9);
+                        }
+                        vp.Locked = true;
+                    });
+                    tr.Commit();
+                }
+                ed.Command("_.ZOOM", "_E");
+                ed.Command("_.ZOOM", ".7X");
+                ed.Regen();
             }
-            ed.Command("_.ZOOM", "_E");
-            ed.Command("_.ZOOM", ".7X");
-            ed.Regen();
         }
     }
 }

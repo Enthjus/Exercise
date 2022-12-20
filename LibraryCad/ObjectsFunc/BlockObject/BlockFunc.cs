@@ -366,5 +366,67 @@ namespace LibraryCad.ObjectsFunc.BlockObject
                 ed.WriteMessage(ex.ToString());
             }
         }
+
+        public static void GetBlkFromAnotherDB(Document doc, string blkName, string filePath)
+        {
+            try
+            {
+                Database newDB = new Database(false, true);
+                Database db = doc.Database;
+                // Đọc file được chỉ định
+                try
+                {
+                    newDB.ReadDwgFile(filePath, System.IO.FileShare.Read, true, "");
+                }
+                catch
+                {
+                    doc.Editor.WriteMessage("Không tìm thấy file!");
+                }
+                ObjectIdCollection objIdCol = new ObjectIdCollection();
+                List<BlockInfo> blkInfs = new List<BlockInfo>();
+                using (newDB)
+                {
+                    using (Transaction trans = newDB.TransactionManager.StartTransaction())
+                    {
+                        BlockTable blockTable = trans.GetObject(newDB.BlockTableId, OpenMode.ForRead) as BlockTable;
+                        BlockTableRecord modelSpace = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForRead) as BlockTableRecord;
+                        BlockTableRecord blkTblRec = trans.GetObject(blockTable[blkName], OpenMode.ForRead) as BlockTableRecord;
+                        objIdCol.Add(blkTblRec.ObjectId);
+                        foreach (ObjectId id in modelSpace)
+                        {
+                            BlockReference blkRef = trans.GetObject(id, OpenMode.ForRead) as BlockReference;
+                            if (blkRef == null) continue;
+                            if (blkRef.Name == blkName)
+                            {
+                                BlockInfo blkInf = new BlockInfo();
+                                blkInf.Name = blkName;
+                                blkInf.Location = blkRef.Position;
+                                blkInf.Rotate = blkRef.Rotation;
+                                blkInfs.Add(blkInf);
+                            }
+                        }
+                    }
+                    IdMapping idMap = new IdMapping();
+                    newDB.WblockCloneObjects(objIdCol, db.BlockTableId, idMap, DuplicateRecordCloning.Replace, false);
+                }
+                using (Transaction trans = db.TransactionManager.StartTransaction())
+                {
+                    BlockTable blockTable = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
+                    BlockTableRecord blkTblRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
+                    foreach (var blkInf in blkInfs)
+                    {
+                        BlockReference blkRef = new BlockReference(blkInf.Location, blockTable[blkInf.Name]);
+                        blkRef.Rotation = blkInf.Rotate;
+                        blkTblRec.AppendEntity(blkRef);
+                        trans.AddNewlyCreatedDBObject(blkRef, true);
+                    }
+                    trans.Commit();
+                }
+            }
+            catch
+            {
+                return;
+            }
+        }
     }
 }

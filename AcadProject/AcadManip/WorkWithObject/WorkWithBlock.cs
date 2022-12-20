@@ -283,5 +283,51 @@ namespace AcadProject.AcadManip.WorkWithObject
                 tr.Commit();
             }
         }
+
+        [CommandMethod("IB")]
+        public void ImportBlocks()
+        {
+            DocumentCollection dm = Application.DocumentManager;
+            Editor ed = dm.MdiActiveDocument.Editor;
+            Database destDb = dm.MdiActiveDocument.Database;
+            Database sourceDb = new Database(false, true);
+            PromptResult sourceFileName;
+            try
+            {
+                // Get name of DWG from which to copy blocks
+                //sourceFileName =
+                //  ed.GetString("\nEnter the name of the source drawing: ");
+                // Read the DWG into a side database
+                sourceDb.ReadDwgFile("C:\\Users\\OMEN\\AppData\\Local\\Autodesk\\AutoCAD 2021\\R24.0\\enu\\Template\\Test.dwg", System.IO.FileShare.Read, true, "");
+                // Create a variable to store the list of block identifiers
+                ObjectIdCollection blockIds = new ObjectIdCollection();
+                Autodesk.AutoCAD.DatabaseServices.TransactionManager tm = sourceDb.TransactionManager;
+                using (Transaction myT = tm.StartTransaction())
+                {
+                    // Open the block table
+                    BlockTable bt = (BlockTable)tm.GetObject(sourceDb.BlockTableId, OpenMode.ForRead, false);
+                    // Check each block in the block table
+                    foreach (ObjectId btrId in bt)
+                    {
+                        BlockTableRecord btr = (BlockTableRecord)tm.GetObject(btrId, OpenMode.ForRead, false);
+                        // Only add named & non-layout blocks to the copy list
+                        if (!btr.IsAnonymous && !btr.IsLayout)
+                            blockIds.Add(btrId);
+                        btr.Dispose();
+                    }
+                }
+                // Copy blocks from source to destination database
+                IdMapping mapping = new IdMapping();
+                sourceDb.WblockCloneObjects(blockIds, destDb.BlockTableId, mapping, DuplicateRecordCloning.Replace, false);
+
+                ed.WriteMessage("\nCopied " + blockIds.Count.ToString() + " block definitions from " + "C:\\Users\\OMEN\\AppData\\Local\\Autodesk\\AutoCAD 2021\\R24.0\\enu\\Template\\Test.dwg" + " to the current drawing."); 
+            } 
+            catch (Autodesk.AutoCAD.Runtime.Exception ex) 
+            { 
+                ed.WriteMessage("\nError during copy: " + ex.Message); 
+            } 
+            sourceDb.Dispose();
+
+        }
     }
 }
