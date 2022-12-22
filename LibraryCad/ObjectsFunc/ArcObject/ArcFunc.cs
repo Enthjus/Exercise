@@ -11,6 +11,7 @@ namespace LibraryCad.ObjectsFunc.ArcObject
 {
     public class ArcFunc
     {
+        #region Get arcs length
         /// <summary>
         /// Hàm tính tổng các đường cong theo layer
         /// </summary>
@@ -45,20 +46,22 @@ namespace LibraryCad.ObjectsFunc.ArcObject
                 }
             }
         }
+        #endregion
 
+        #region Filter selected object to list arc
         /// <summary>
         /// Hàm convert selectionSet thành list đường cong
         /// </summary>
         /// <param name="selectSet">Các đối tượng được chọn</param>
         /// <param name="doc">Document</param>
         /// <returns>list đường cong</returns>
-        public static List<Autodesk.AutoCAD.DatabaseServices.Arc> SelectionSetToListArc(Document doc)
+        public static List<Arc> SelectionSetToListArc(Document doc)
         {
             using (doc.LockDocument())
             {
                 using (var trans = doc.Database.TransactionManager.StartOpenCloseTransaction())
                 {
-                    var arcs = new List<Autodesk.AutoCAD.DatabaseServices.Arc>();
+                    var arcs = new List<Arc>();
                     var tvArc = new TypedValue[]
                     {
                         new TypedValue((int)DxfCode.Start, "ARC")
@@ -79,7 +82,9 @@ namespace LibraryCad.ObjectsFunc.ArcObject
                 }
             }
         }
+        #endregion
 
+        #region Get middle point of arc
         /// <summary>
         /// Hàm tìm trung điểm của đường cong 
         /// </summary>
@@ -91,5 +96,6 @@ namespace LibraryCad.ObjectsFunc.ArcObject
             double d2 = curve.GetDistanceAtParameter(curve.EndParam);
             return curve.GetPointAtDist(d1 + ((d2 - d1) / 2.0));
         }
+        #endregion
     }
 }

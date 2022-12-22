@@ -128,7 +128,6 @@
             this.Name = "AddForm";
             this.ShowInTaskbar = false;
             this.Text = "AddForm";
-            this.Load += new System.EventHandler(this.AddForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.errorProviderName)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProviderColor)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txb_ColorId)).EndInit();

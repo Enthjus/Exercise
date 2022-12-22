@@ -10,6 +10,7 @@ namespace LibraryCad.ObjectsFunc.TextObject
 {
     public class TextFunc
     {
+        #region Create text
         /// <summary>
         /// Hàm tạo text
         /// </summary>
@@ -49,7 +50,9 @@ namespace LibraryCad.ObjectsFunc.TextObject
                 }
             }
         }
+        #endregion
 
+        #region Merge string
         /// <summary>
         /// Hàm gộp các chuỗi được chọn
         /// </summary>
@@ -83,7 +86,14 @@ namespace LibraryCad.ObjectsFunc.TextObject
                 return "";
             }
         }
+        #endregion
 
+        #region Sort DBText
+        /// <summary>
+        /// Hàm sắp xếp vị trí đối tượng dbtext theo thứ tự tăng dần
+        /// </summary>
+        /// <param name="dbTexts">Danh sách dbtext</param>
+        /// <returns>Danh sách dbtext đã sắp xếp</returns>
         public static List<DBText> SortText(List<DBText> dbTexts)
         {
             try
@@ -97,5 +107,6 @@ namespace LibraryCad.ObjectsFunc.TextObject
                 return null;
             }
         }
+        #endregion
     }
 }

@@ -7,6 +7,20 @@ namespace LibraryCad.TableManip
 {
     public class TableFunc
     {
+        #region Create text with table
+        /// <summary>
+        /// Hàm sắp xếp các text trên bản vẽ hiện hành thành các bảng theo thông tin truyền vào
+        /// </summary>
+        /// <param name="doc">Document</param>
+        /// <param name="db">Database</param>
+        /// <param name="trans">Transaction</param>
+        /// <param name="dbTexts">Danh sách các đối tượng text trên bản vẽ</param>
+        /// <param name="point">Điểm đặt bảng</param>
+        /// <param name="sortTable">Kiểu sắp xếp bảng ngang hay dọc</param>
+        /// <param name="sortText">Kiểu sắp xếp chữ theo thứ tự ngang hay dọc</param>
+        /// <param name="rows">Số hàng của bảng</param>
+        /// <param name="cols">Số cột của bảng</param>
+        /// <param name="distance">Khoảng cách các bảng</param>
         public static void CreateTextTable(Document doc, Database db, Transaction trans, List<DBText> dbTexts, Point3d point, string sortTable, string sortText, int rows, int cols, double distance)
         {
             var pt = point;
@@ -91,7 +105,20 @@ namespace LibraryCad.TableManip
                 if (totalTextOld >= dbTexts.Count) break;
             }
         }
+        #endregion
 
+        #region Create text without table
+        /// <summary>
+        /// Hàm sắp xếp các text trên bản vẽ hiện hành theo dạng bảng từ thông tin truyền vào
+        /// </summary>
+        /// <param name="trans">Transaction</param>
+        /// <param name="dbTexts">Danh sách các đối tượng text trên bản vẽ</param>
+        /// <param name="point">Điểm đặt bảng</param>
+        /// <param name="sortTable">Kiểu sắp xếp bảng ngang hay dọc</param>
+        /// <param name="sortText">Kiểu sắp xếp chữ theo thứ tự ngang hay dọc</param>
+        /// <param name="rows">Số hàng của bảng</param>
+        /// <param name="cols">Số cột của bảng</param>
+        /// <param name="distance">Khoảng cách các bảng</param>
         public static void SortWithoutTable(Transaction trans, List<DBText> dbTexts, Point3d point, string sortTable, string sortText, int rows, int cols, double distance)
         {
             if (dbTexts == null) return;
@@ -157,5 +184,6 @@ namespace LibraryCad.TableManip
                 if (totalTextOld >= dbTexts.Count) break;
             }
         }
+        #endregion
     }
 }

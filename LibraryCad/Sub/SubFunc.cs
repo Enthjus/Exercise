@@ -11,6 +11,7 @@ namespace LibraryCad.Sub
 {
     public class SubFunc
     {
+        #region PickPoint
         /// <summary>
         /// Hàm bắt điểm người dùng chọn
         /// </summary>
@@ -41,7 +42,9 @@ namespace LibraryCad.Sub
                 }
             }
         }
+        #endregion
 
+        #region GetString
         /// <summary>
         /// Hàm lấy chuỗi từ editor
         /// </summary>
@@ -64,7 +67,9 @@ namespace LibraryCad.Sub
                 return null;
             }
         }
+        #endregion
 
+        #region GetListSelection
         /// <summary>
         /// Hàm lấy các đối tượng được chọn theo filter truyển vào
         /// </summary>
@@ -101,7 +106,9 @@ namespace LibraryCad.Sub
                 return null;
             }
         }
+        #endregion
 
+        #region SetXdata
         /// <summary>
         /// Hàm set xdata cho object
         /// </summary>
@@ -130,7 +137,9 @@ namespace LibraryCad.Sub
                 }
             }
         }
+        #endregion
 
+        #region AddRegAppTableRecord
         /// <summary>
         /// Hàm thêm RegAppTable
         /// </summary>
@@ -160,7 +169,9 @@ namespace LibraryCad.Sub
                 }
             }
         }
+        #endregion
 
+        #region ChooseDimPosition
         /// <summary>
         /// Check vị trí dim người dùng muốn chọn
         /// </summary>
@@ -181,7 +192,9 @@ namespace LibraryCad.Sub
                 return -1;
             }
         }
+        #endregion
 
+        #region PickAllObject
         /// <summary>
         /// Hàm lấy danh sách id các đối tượng được chọn
         /// </summary>
@@ -207,7 +220,9 @@ namespace LibraryCad.Sub
                 }
             }
         }
+        #endregion
 
+        #region CLoneObjectToDatabase
         /// <summary>
         /// Hàm clone các đối tượng sang database khác
         /// </summary>
@@ -232,7 +247,15 @@ namespace LibraryCad.Sub
                 }
             }
         }
+        #endregion
 
+        #region getObjIds
+        /// <summary>
+        /// Hàm lấy danh sách ObjectId các đối tượng được chọn
+        /// </summary>
+        /// <param name="ed">Editor</param>
+        /// <param name="filter">Loại đối tượng muốn lấy</param>
+        /// <returns>Mảng các object id</returns>
         public static ObjectId[] getObjIds(Editor ed, SelectionFilter filter)
         {
             try
@@ -250,7 +273,9 @@ namespace LibraryCad.Sub
                 return null;
             }
         }
+        #endregion
 
+        #region giaithua
         public static int giaithua(int a)
         {
             if (a == 1)
@@ -259,5 +284,6 @@ namespace LibraryCad.Sub
             return
                 a * giaithua(a - 1);  // Đệ quy
         }
+        #endregion
     }
 }

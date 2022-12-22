@@ -88,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AcadDrawManip\AcadLayout\WorkWithLayout.cs" />
+    <Compile Include="AcadJigs\PolylineJigging\SlopeCommand.cs" />
     <Compile Include="AcadManip\WorkWithForm\AcadObject\BlockForm\GetBlock.cs">
       <SubType>Form</SubType>
     </Compile>

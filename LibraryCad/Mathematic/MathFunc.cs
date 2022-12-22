@@ -10,6 +10,7 @@ namespace LibraryCad.Mathematic
 {
     public class MathFunc
     {
+        #region Mathematic function
         /// <summary>
         /// Hàm check số
         /// </summary>
@@ -141,5 +142,6 @@ namespace LibraryCad.Mathematic
             } while ((temp - sr) != 0);
             return sr;
         }
+        #endregion
     }
 }

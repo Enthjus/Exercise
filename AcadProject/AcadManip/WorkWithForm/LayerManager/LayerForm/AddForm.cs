@@ -8,7 +8,9 @@ namespace AcadProject.AcadManip.WorkWithForm.LayerManager.LayerForm
 {
     public partial class AddForm : Form
     {
+
         LayersForm LayerController = null;
+
         public bool isSave = false;
 
         public AddForm(LayersForm LayerController)
@@ -88,11 +90,6 @@ namespace AcadProject.AcadManip.WorkWithForm.LayerManager.LayerForm
                 e.Cancel = false;
                 errorProviderName.SetError(txb_LayerName, "");
             }
-        }
-
-        private void AddForm_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }

@@ -1,4 +1,8 @@
-﻿using Autodesk.AutoCAD.Runtime;
+﻿using Autodesk.AutoCAD.ApplicationServices;
+using Autodesk.AutoCAD.DatabaseServices;
+using Autodesk.AutoCAD.EditorInput;
+using Autodesk.AutoCAD.Runtime;
+using LibraryCad.DocumentManager;
 using LibraryCad.ObjectsFunc.LayerObject;
 using System;
 using System.IO;
@@ -9,6 +13,11 @@ namespace AcadProject.AcadManip.WorkWithForm.LayerManager.LayerForm
 {
     public partial class LayersForm : Form
     {
+        private static Document doc = DocumentManager.doc;
+
+        private static Database db = DocumentManager.db;
+
+        private static Editor ed = DocumentManager.ed;
 
         [CommandMethod("LayerController")]
         public static void LayerController()
@@ -39,7 +48,6 @@ namespace AcadProject.AcadManip.WorkWithForm.LayerManager.LayerForm
 
         public void LoadData()
         {
-            var doc = acad.DocumentManager.MdiActiveDocument;
             dtgv_Layers.DataSource = null;
             dtgv_Layers.MultiSelect = false;
             // Load layers được tạo do tool
@@ -48,7 +56,6 @@ namespace AcadProject.AcadManip.WorkWithForm.LayerManager.LayerForm
 
         private void btn_Delete_Click(object sender, EventArgs e)
         {
-            var doc = acad.DocumentManager.MdiActiveDocument;
             // Lấy tên layer của hàng được người dùng chọn
             string layerName = dtgv_Layers.SelectedCells[0].OwningRow.Cells["Name"].Value.ToString();
             // Xóa layer
@@ -98,7 +105,6 @@ namespace AcadProject.AcadManip.WorkWithForm.LayerManager.LayerForm
                 DialogResult kq = MessageBox.Show(" - Bạn Có Muốn Xóa Dữ Liệu Cũ Không!", "Thông Báo!!!", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                 if (kq == DialogResult.Yes)
                 {
-                    var doc = acad.DocumentManager.MdiActiveDocument;
                     //Xóa dữ liệu cũ
                     for (int ii = dtgv_Layers.Rows.Count - 1; ii >= 0; ii--)
                     {

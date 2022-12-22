@@ -6,6 +6,7 @@ namespace LibraryCad.FileManip.File
 {
     public class FileFunc
     {
+        #region Create file have dbtext
         /// <summary>
         /// Hàm tạo file có text
         /// </summary>
@@ -55,5 +56,6 @@ namespace LibraryCad.FileManip.File
                 db.SaveAs(templatePath, DwgVersion.Current);
             }
         }
+        #endregion
     }
 }

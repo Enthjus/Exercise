@@ -12,6 +12,7 @@ namespace LibraryCad.ObjectsFunc.BlockObject
 {
     public class BlockFunc
     {
+        #region Create a rectangle block at origin point
         /// <summary>
         /// Hàm tạo khối hình vuông tại tọa độ (0, 0)
         /// </summary>
@@ -75,7 +76,9 @@ namespace LibraryCad.ObjectsFunc.BlockObject
                 }
             }
         }
+        #endregion
 
+        #region Let user to pick blocks and return blocks info
         /// <summary>
         /// Hàm cho chọn các khối và trả về thông tin các khối 
         /// </summary>
@@ -115,7 +118,9 @@ namespace LibraryCad.ObjectsFunc.BlockObject
             }
             return blockInfos;
         }
+        #endregion
 
+        #region Let user to pick one block
         /// <summary>
         /// Hàm cho người dùng chọn 1 block
         /// </summary>
@@ -155,7 +160,9 @@ namespace LibraryCad.ObjectsFunc.BlockObject
                 return null;
             }
         }
+        #endregion
 
+        #region Clone block to another database
         /// <summary>
         /// Hàm copy các khối từ document đang mở sang database của file khác mà không cần mở file đó lên
         /// </summary>
@@ -198,7 +205,9 @@ namespace LibraryCad.ObjectsFunc.BlockObject
                 }
             }
         }
+        #endregion
 
+        #region Select one entity in block
         /// <summary>
         /// Hàm chọn đối tượng trong khối
         /// </summary>
@@ -223,7 +232,9 @@ namespace LibraryCad.ObjectsFunc.BlockObject
                 return false;
             }
         }
+        #endregion
 
+        #region Create hightlight cover around the entity block
         /// <summary>
         /// Hàm tạo hightlight bọc quanh đối tượng được chọn trong block
         /// </summary>
@@ -245,7 +256,9 @@ namespace LibraryCad.ObjectsFunc.BlockObject
                 ed.WriteMessage("\n*Cancel*\n");
             }
         }
+        #endregion
 
+        #region Delete 1 entity in block
         /// <summary>
         /// Hàm xóa 1 đối tượng trong khối
         /// </summary>
@@ -267,6 +280,8 @@ namespace LibraryCad.ObjectsFunc.BlockObject
                 ed.WriteMessage("\nĐối tượng không phải block!\n");
             }
         }
+        #endregion
+
 
         /// <summary>
         /// Hàm sửa 1 đối tượng trong khối

@@ -3,6 +3,7 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Runtime;
 using LibraryCad;
+using LibraryCad.DocumentManager;
 using LibraryCad.ObjectsFunc.LineObject;
 using LibraryCad.ObjectsFunc.TextObject;
 using LibraryCad.Sub;
@@ -16,6 +17,12 @@ namespace AcadProject.AcadManip.WorkWithForm.SubForm
 {
     public partial class Form1 : Form
     {
+        private static Document doc = DocumentManager.doc;
+
+        private static Database db = DocumentManager.db;
+
+        private static Editor ed = DocumentManager.ed;
+
         public Form1()
         {
             InitializeComponent();
@@ -31,9 +38,6 @@ namespace AcadProject.AcadManip.WorkWithForm.SubForm
         private void btn_PickDimension_Click(object sender, EventArgs e)
         {
             this.Hide();
-            Document doc = acad.DocumentManager.CurrentDocument;
-            Database db = doc.Database;
-            Editor ed = doc.Editor;
             using (doc.LockDocument())
             {
                 // Tạo filter
@@ -72,8 +76,6 @@ namespace AcadProject.AcadManip.WorkWithForm.SubForm
         private void btn_PrintDS_Click(object sender, EventArgs e)
         {
             this.Hide();
-            Document doc = acad.DocumentManager.CurrentDocument;
-            Database db = doc.Database;
             using (doc.LockDocument())
             {
                 using (var trans = db.TransactionManager.StartTransaction())
@@ -93,8 +95,6 @@ namespace AcadProject.AcadManip.WorkWithForm.SubForm
         private void btn_PickLine_Click(object sender, EventArgs e)
         {
             this.Hide();
-            Document doc = acad.DocumentManager.CurrentDocument;
-            Database db = doc.Database;
             using (doc.LockDocument())
             {
                 // Bắt đầu transaction
@@ -129,8 +129,6 @@ namespace AcadProject.AcadManip.WorkWithForm.SubForm
         private void btn_PrintLS_Click(object sender, EventArgs e)
         {
             this.Hide();
-            Document doc = acad.DocumentManager.CurrentDocument;
-            Database db = doc.Database;
             using (doc.LockDocument())
             {
                 // Bắt đầu transaction
