@@ -8,8 +8,7 @@ namespace LibraryCad.ObjectsFunc.BlockObject
     public class BlockNestedEntityHighlighter : IDisposable
     {
         private Entity _entClone = null;
-        private readonly TransientManager _tsManager =
-            TransientManager.CurrentTransientManager;
+        private readonly TransientManager _tsManager = TransientManager.CurrentTransientManager;
         private int _colorIndex = 2;
 
         public void HighlightEntityInBlock(ObjectId nestedEntId, Matrix3d transform)

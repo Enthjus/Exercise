@@ -13,6 +13,7 @@ namespace LibraryCad.ObjectsFunc.CircleObject
 {
     public class CircleFunc
     {
+        #region Lọc lấy đường trong trong các đối tượng được chọn
         /// <summary>
         /// Hàm convert selectionSet thành list Circle
         /// </summary>
@@ -44,7 +45,9 @@ namespace LibraryCad.ObjectsFunc.CircleObject
                 return circles;
             }
         }
+        #endregion
 
+        #region Vẽ đường tròn
         /// <summary>
         /// Hàm vẽ đường tròn
         /// </summary>
@@ -73,7 +76,9 @@ namespace LibraryCad.ObjectsFunc.CircleObject
                 trans.Commit();
             }
         }
+        #endregion
 
+        #region Vẽ tam giác nội tiếp đường tròn
         /// <summary>
         /// Hàm vẽ tam giác đều nội tiếp đường tròn
         /// </summary>
@@ -100,7 +105,9 @@ namespace LibraryCad.ObjectsFunc.CircleObject
                 trans.Commit();
             }
         }
+        #endregion
 
+        #region Vẽ tam giác ngoại tiếp đường tròn
         /// <summary>
         /// Hàm vẽ tam giác đều ngoại tiếp đường tròn
         /// </summary>
@@ -127,7 +134,9 @@ namespace LibraryCad.ObjectsFunc.CircleObject
                 trans.Commit();
             }
         }
+        #endregion
 
+        #region Lấy thuộc tính chu vi và diện tích các đường tròn theo layer
         /// <summary>
         /// Hàm tính chu vi và diện tích các circle theo layer
         /// </summary>
@@ -171,7 +180,14 @@ namespace LibraryCad.ObjectsFunc.CircleObject
                 }
             }
         }
+        #endregion
 
+        #region Lấy id các đường tròn được chọn
+        /// <summary>
+        /// Hàm lấy object id các circle được chọn
+        /// </summary>
+        /// <param name="doc">Document</param>
+        /// <returns>ObjectId</returns>
         public static ObjectId CircleSelect(Document doc)
         {
             try
@@ -196,5 +212,6 @@ namespace LibraryCad.ObjectsFunc.CircleObject
                 return ObjectId.Null;
             }
         }
+        #endregion
     }
 }

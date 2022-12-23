@@ -11,7 +11,7 @@ namespace LibraryCad.ObjectsFunc.ArcObject
 {
     public class ArcFunc
     {
-        #region Get arcs length
+        #region Lấy độ dài đường cong
         /// <summary>
         /// Hàm tính tổng các đường cong theo layer
         /// </summary>
@@ -48,7 +48,7 @@ namespace LibraryCad.ObjectsFunc.ArcObject
         }
         #endregion
 
-        #region Filter selected object to list arc
+        #region Lọc lấy đường cong trong các đối tượng được chọn
         /// <summary>
         /// Hàm convert selectionSet thành list đường cong
         /// </summary>
@@ -84,7 +84,7 @@ namespace LibraryCad.ObjectsFunc.ArcObject
         }
         #endregion
 
-        #region Get middle point of arc
+        #region Lấy trung điểm đường cong
         /// <summary>
         /// Hàm tìm trung điểm của đường cong 
         /// </summary>

@@ -15,6 +15,7 @@ namespace LibraryCad.ObjectsFunc.LayerObject
 {
     public class LayerFunc
     {
+        #region Lấy layer theo tên
         /// <summary>
         /// Hàm lấy layer theo tên
         /// </summary>
@@ -45,7 +46,9 @@ namespace LibraryCad.ObjectsFunc.LayerObject
                 }
             }
         }
+        #endregion
 
+        #region Xóa layer được tạo bởi winform
         /// <summary>
         /// Hàm xóa layer
         /// </summary>
@@ -105,7 +108,9 @@ namespace LibraryCad.ObjectsFunc.LayerObject
                 }
             }
         }
+        #endregion
 
+        #region Tạo layer bằng winform
         /// <summary>
         /// Hàm tạo layer
         /// </summary>
@@ -167,7 +172,9 @@ namespace LibraryCad.ObjectsFunc.LayerObject
                 return "Thêm thất bại";
             }
         }
+        #endregion
 
+        #region Lọc đối tượng chỉ định theo layer
         /// <summary>
         /// Hàm lọc đối tượng theo layer
         /// </summary>
@@ -209,7 +216,9 @@ namespace LibraryCad.ObjectsFunc.LayerObject
                 return null;
             }
         }
+        #endregion
 
+        #region Lấy các layer được tạo bởi winform
         /// <summary>
         /// Hàm lấy layer tạo bởi tool
         /// </summary>
@@ -259,7 +268,9 @@ namespace LibraryCad.ObjectsFunc.LayerObject
                 }
             }
         }
+        #endregion
 
+        #region Lấy tổng chu vi và diện tích các đối tượng theo từng layer tạo bởi winform
         /// <summary>
         /// Hàm lấy tổng chu vi và diện tích các đối tượng theo từng layer
         /// </summary>
@@ -309,5 +320,6 @@ namespace LibraryCad.ObjectsFunc.LayerObject
                 }
             }
         }
+        #endregion
     }
 }

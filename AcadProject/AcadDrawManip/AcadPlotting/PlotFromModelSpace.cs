@@ -2,6 +2,7 @@
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
+using Autodesk.AutoCAD.PlottingServices;
 using Autodesk.AutoCAD.Runtime;
 using Autodesk.AutoCAD.Windows;
 using LibraryCad.DocumentManager;
@@ -10,7 +11,7 @@ using LibraryCad.ObjectsFunc.BlockObject;
 using LibraryCad.Sub;
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Runtime.InteropServices;
 
 namespace AcadProject.AcadDrawManip.AcadPlotting
 {
@@ -37,74 +38,455 @@ namespace AcadProject.AcadDrawManip.AcadPlotting
         {
             try
             {
-                var blk = BlockFunc.PickBlock(doc, "- Chọn block:");
-                var blkName = blk.Name;
-
-
-                TypedValue[] tvBlock = new TypedValue[]
-                {
-                        new TypedValue((int)DxfCode.Start, "INSERT")
-                };
-                SelectionFilter filter = new SelectionFilter(tvBlock);
-                PromptEntityOptions dd = new PromptEntityOptions("Nhat block");
-                dd.SetRejectMessage("\nChi dc chon doi tuong la Block.");
-                dd.AddAllowedClass(typeof(BlockReference), true);
-                var per = ed.GetEntity(dd);
-                string name = per.StringResult;
-                List<BlockReference> blkRefs = new List<BlockReference>();
-                blkRefs.Add(blk);
                 using (doc.LockDocument())
                 {
+                    var result = BlockFunc.PickBlock(ed);
+                    List<BlockReference> blkRefs = new List<BlockReference>();
                     using (Transaction trans = db.TransactionManager.StartTransaction())
                     {
-                        BlockReference blkResf = trans.GetObject(per.ObjectId, OpenMode.ForRead) as BlockReference;
+                        BlockReference blkRef = trans.GetObject(result.ObjectId, OpenMode.ForRead) as BlockReference;
+                        BlockTableRecord blkTblRec = trans.GetObject(blkRef.BlockTableRecord, OpenMode.ForRead) as BlockTableRecord;
+                        ObjectIdCollection blockReferenceIds = blkTblRec.GetBlockReferenceIds(false, false);
+                        string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                        Environment.SetEnvironmentVariable("MYDOCUMENTS", documents);
 
-
-
-                        BlockTable blkTbl = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
-
-
-                        BlockTableRecord blkTblRec = trans.GetObject(blkTbl[BlockTableRecord.ModelSpace], OpenMode.ForRead) as BlockTableRecord;
-                        foreach (ObjectId id in blkTblRec)
-                        {
-                            string sd = id.ObjectClass.DxfName;
-                            if(id.ObjectClass == RXObject.GetClass(typeof(BlockReference)))
-                            {
-                                BlockReference blkRef = trans.GetObject(id, OpenMode.ForRead) as BlockReference;
-                                if(blkRef.Name == blkName)
-                                {
-                                    blkRefs.Add((BlockReference)blkRef);
-                                }
-                            }
-                        }
-                    }
-                    string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                    Environment.SetEnvironmentVariable("MYDOCUMENTS", documents);
-
-                    var ofd = new SaveFileDialog("Select a file using an OpenFileDialog", documents,
-                                  "",
-                                  "File Date Test T22",
-                                  SaveFileDialog.SaveFileDialogFlags.DefaultIsFolder // .AllowMultiple
-                                );
-                    ofd.ShowDialog();
-                    string remoteFileName = ofd.Filename;
-                    //string plotFile = Path.GetFullPath(Application.DocumentManager.MdiActiveDocument.Database.Filename);
-                    //plotFile = plotFile + "-Plot";
-                    int i = 1;
-                    foreach (BlockReference blkRef in blkRefs)
-                    {
-                        var minPt = new Point2d(blkRef.GeometricExtents.MinPoint.X, blkRef.GeometricExtents.MinPoint.Y);
-                        var maxPt = new Point2d(blkRef.GeometricExtents.MaxPoint.X, blkRef.GeometricExtents.MaxPoint.Y);
-                        PlotFunc.xPlot_Khung(minPt, maxPt, "DWG To PDF.pc3", "ANSI_A_(8.50_x_11.00_Inches)", remoteFileName + i.ToString());
+                        var ofd = new SaveFileDialog("Select a file using an OpenFileDialog", documents,
+                                      "",
+                                      "File Date Test T22",
+                                      SaveFileDialog.SaveFileDialogFlags.DefaultIsFolder // .AllowMultiple
+                                    );
+                        ofd.ShowDialog();
+                        string remoteFileName = ofd.Filename;
+                        PlotFunc.PlotMSheet(doc, "DWG To PDF.pc3", "ANSI_A_(8.50_x_11.00_Inches)", remoteFileName, blockReferenceIds);
+                        //int i = 1;
+                        //foreach (BlockReference blkRef in blkRefs)
+                        //{
+                        //    var minPt = new Point2d(blkRef.GeometricExtents.MinPoint.X, blkRef.GeometricExtents.MinPoint.Y);
+                        //    var maxPt = new Point2d(blkRef.GeometricExtents.MaxPoint.X, blkRef.GeometricExtents.MaxPoint.Y);
+                        //    i++;
+                        //}
+                        //foreach (ObjectId blkRefId in blockReferenceIds)
+                        //{
+                        //    BlockReference blkRefClone = trans.GetObject(blkRefId, OpenMode.ForWrite) as BlockReference;
+                        //    blkRefs.Add(blkRefClone);
+                        //}
                     }
                 }
             }
-            catch(System.Exception ex)
+            catch (System.Exception ex)
             {
                 ed.WriteMessage(ex.Message);
             }
         }
 
+        [CommandMethod("mplot")]
+
+        static public void MultiSheetPlot()
+
+        {
+
+            Document doc =
+
+              Application.DocumentManager.MdiActiveDocument;
+
+            Editor ed = doc.Editor;
+
+            Database db = doc.Database;
+
+
+            Transaction tr =
+
+              db.TransactionManager.StartTransaction();
+
+            using (tr)
+
+            {
+
+                BlockTable bt =
+
+                  (BlockTable)tr.GetObject(
+
+                    db.BlockTableId,
+
+                    OpenMode.ForRead
+
+                  );
+
+
+                PlotInfo pi = new PlotInfo();
+
+                PlotInfoValidator piv =
+
+                  new PlotInfoValidator();
+
+                piv.MediaMatchingPolicy =
+
+                  MatchingPolicy.MatchEnabled;
+
+
+                // A PlotEngine does the actual plotting
+
+                // (can also create one for Preview)
+
+
+                if (PlotFactory.ProcessPlotState ==
+
+                    ProcessPlotState.NotPlotting)
+
+                {
+
+                    PlotEngine pe =
+
+                      PlotFactory.CreatePublishEngine();
+
+                    using (pe)
+
+                    {
+
+                        // Create a Progress Dialog to provide info
+
+                        // and allow thej user to cancel
+
+
+                        PlotProgressDialog ppd =
+
+                          new PlotProgressDialog(false, 1, true);
+
+                        using (ppd)
+
+                        {
+
+                            ObjectIdCollection layoutsToPlot =
+
+                              new ObjectIdCollection();
+
+
+                            foreach (ObjectId btrId in bt)
+
+                            {
+
+                                BlockTableRecord btr =
+
+                                  (BlockTableRecord)tr.GetObject(
+
+                                    btrId,
+
+                                    OpenMode.ForRead
+
+                                  );
+
+                                if (btr.IsLayout &&
+
+                                    btr.Name.ToUpper() !=
+
+                                      BlockTableRecord.ModelSpace.ToUpper())
+
+                                {
+
+                                    layoutsToPlot.Add(btrId);
+
+                                }
+
+                            }
+
+
+                            int numSheet = 1;
+
+
+                            foreach (ObjectId btrId in layoutsToPlot)
+
+                            {
+
+                                BlockTableRecord btr =
+
+                                  (BlockTableRecord)tr.GetObject(
+
+                                    btrId,
+
+                                    OpenMode.ForRead
+
+                                  );
+
+                                Layout lo =
+
+                                  (Layout)tr.GetObject(
+
+                                    btr.LayoutId,
+
+                                    OpenMode.ForRead
+
+                                  );
+
+
+                                // We need a PlotSettings object
+
+                                // based on the layout settings
+
+                                // which we then customize
+
+
+                                PlotSettings ps =
+
+                                  new PlotSettings(lo.ModelType);
+
+                                ps.CopyFrom(lo);
+
+
+                                // The PlotSettingsValidator helps
+
+                                // create a valid PlotSettings object
+
+
+                                PlotSettingsValidator psv =
+
+                                  PlotSettingsValidator.Current;
+
+
+                                // We'll plot the extents, centered and
+
+                                // scaled to fit
+
+
+                                psv.SetPlotType(
+
+                                  ps,
+
+                                Autodesk.AutoCAD.DatabaseServices.PlotType.Extents
+
+                                );
+
+                                psv.SetUseStandardScale(ps, true);
+
+                                psv.SetStdScaleType(ps, StdScaleType.ScaleToFit);
+
+                                psv.SetPlotCentered(ps, true);
+
+
+                                // We'll use the standard DWFx PC3, as
+
+                                // this supports multiple sheets
+
+
+                                psv.SetPlotConfigurationName(
+
+                                  ps,
+
+                                  "DWG To PDF.pc3",
+
+                                  "ANSI_A_(8.50_x_11.00_Inches)"
+
+                                );
+
+
+                                // We need a PlotInfo object
+
+                                // linked to the layout
+
+
+                                pi.Layout = btr.LayoutId;
+
+
+                                // Make the layout we're plotting current
+
+
+                                LayoutManager.Current.CurrentLayout =
+
+                                  lo.LayoutName;
+
+
+                                // We need to link the PlotInfo to the
+
+                                // PlotSettings and then validate it
+
+
+                                pi.OverrideSettings = ps;
+
+                                piv.Validate(pi);
+
+
+                                if (numSheet == 1)
+
+                                {
+
+                                    ppd.set_PlotMsgString(
+
+                                      PlotMessageIndex.DialogTitle,
+
+                                      "Custom Plot Progress"
+
+                                    );
+
+                                    ppd.set_PlotMsgString(
+
+                                      PlotMessageIndex.CancelJobButtonMessage,
+
+                                      "Cancel Job"
+
+                                    );
+
+                                    ppd.set_PlotMsgString(
+
+                                      PlotMessageIndex.CancelSheetButtonMessage,
+
+                                      "Cancel Sheet"
+
+                                    );
+
+                                    ppd.set_PlotMsgString(
+
+                                      PlotMessageIndex.SheetSetProgressCaption,
+
+                                      "Sheet Set Progress"
+
+                                    );
+
+                                    ppd.set_PlotMsgString(
+
+                                      PlotMessageIndex.SheetProgressCaption,
+
+                                      "Sheet Progress"
+
+                                    );
+
+                                    ppd.LowerPlotProgressRange = 0;
+
+                                    ppd.UpperPlotProgressRange = 100;
+
+                                    ppd.PlotProgressPos = 0;
+
+
+                                    // Let's start the plot, at last
+
+
+                                    ppd.OnBeginPlot();
+
+                                    ppd.IsVisible = true;
+
+                                    pe.BeginPlot(ppd, null);
+
+
+                                    // We'll be plotting a single document
+
+
+                                    pe.BeginDocument(
+
+                                      pi,
+
+                                      doc.Name,
+
+                                      null,
+
+                                      1,
+
+                                      true, // Let's plot to file
+
+                                      "D:\\MyPlot\\pppp"
+
+                                    );
+
+                                }
+
+
+                                // Which may contain multiple sheets
+
+
+                                ppd.StatusMsgString =
+
+                                  "Plotting " +
+
+                                  doc.Name.Substring(
+
+                                    doc.Name.LastIndexOf("\\") + 1
+
+                                  ) +
+
+                                  " - sheet " + numSheet.ToString() +
+
+                                  " of " + layoutsToPlot.Count.ToString();
+
+
+                                ppd.OnBeginSheet();
+
+
+                                ppd.LowerSheetProgressRange = 0;
+
+                                ppd.UpperSheetProgressRange = 100;
+
+                                ppd.SheetProgressPos = 0;
+
+
+                                PlotPageInfo ppi = new PlotPageInfo();
+
+                                pe.BeginPage(
+
+                                  ppi,
+
+                                  pi,
+
+                                  (numSheet == layoutsToPlot.Count),
+
+                                  null
+
+                                );
+
+                                pe.BeginGenerateGraphics(null);
+
+                                ppd.SheetProgressPos = 50;
+
+                                pe.EndGenerateGraphics(null);
+
+
+                                // Finish the sheet
+
+                                pe.EndPage(null);
+
+                                ppd.SheetProgressPos = 100;
+
+                                ppd.OnEndSheet();
+
+                                numSheet++;
+
+                            }
+
+
+                            // Finish the document
+
+
+                            pe.EndDocument(null);
+
+
+                            // And finish the plot
+
+
+                            ppd.PlotProgressPos = 100;
+
+                            ppd.OnEndPlot();
+
+                            pe.EndPlot(null);
+
+                        }
+
+                    }
+
+                }
+
+                else
+
+                {
+
+                    ed.WriteMessage(
+
+                      "\nAnother plot is in progress."
+
+                    );
+
+                }
+
+            }
+
+        }
+
+        #region Các lệnh cơ bản
         [CommandMethod("PlotterLocalMediaNameList")]
         public static void PlotterLocalMediaNameList()
         {
@@ -209,5 +591,6 @@ namespace AcadProject.AcadDrawManip.AcadPlotting
             // Chuyển sang chế độ paper space
             db.TileMode = false;
         }
+        #endregion
     }
 }

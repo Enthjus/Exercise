@@ -88,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AcadDrawManip\AcadLayout\WorkWithLayout.cs" />
+    <Compile Include="AcadDrawManip\AcadPlotting\PlottingApplication.cs" />
     <Compile Include="AcadJigs\PolylineJigging\SlopeCommand.cs" />
     <Compile Include="AcadManip\WorkWithForm\AcadObject\BlockForm\GetBlock.cs">
       <SubType>Form</SubType>
@@ -192,9 +193,18 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="Resources\add-ent-to-block.png" />
+    <Content Include="Resources\copy-block.png" />
+    <Content Include="Resources\copy-object.png" />
+    <Content Include="Resources\delete-ent-in-block.png" />
+    <Content Include="Resources\draw-circle.png" />
+    <Content Include="Resources\edit-block.png" />
+    <Content Include="Resources\get-block.png" />
     <Content Include="Resources\merge.png" />
     <Content Include="Resources\open-book.png" />
     <Content Include="Resources\text.png" />
+    <Content Include="Resources\triangle-in-circle.png" />
+    <Content Include="Resources\triangle-out-circle.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -6,7 +6,7 @@ namespace LibraryCad.FileManip.File
 {
     public class FileFunc
     {
-        #region Create file have dbtext
+        #region Tạo file có đối tượng text
         /// <summary>
         /// Hàm tạo file có text
         /// </summary>

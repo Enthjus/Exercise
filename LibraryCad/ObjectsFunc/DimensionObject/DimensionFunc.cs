@@ -13,6 +13,7 @@ namespace LibraryCad.ObjectsFunc.DimensionObject
 {
     public class DimensionFunc
     {
+        #region Lọc lấy dimension trong các đối tượng được chọn
         /// <summary>
         /// Hàm lấy dimension trong các đối tượng được chọn
         /// </summary>
@@ -53,7 +54,9 @@ namespace LibraryCad.ObjectsFunc.DimensionObject
                 }
             }
         }
+        #endregion
 
+        #region Tạo dim trên đoạn thẳng
         /// <summary>
         /// Hàm tạo dim trên nhiều đoạn thẳng
         /// </summary>
@@ -116,7 +119,9 @@ namespace LibraryCad.ObjectsFunc.DimensionObject
                 trans.Commit();
             }
         }
+        #endregion
 
+        #region Tạo dim trên đường cong
         /// <summary>
         /// Hàm tạo dim trên nhiều đường cong
         /// </summary>
@@ -180,7 +185,9 @@ namespace LibraryCad.ObjectsFunc.DimensionObject
                 trans.Commit();
             }
         }
+        #endregion
 
+        #region Tạo dim trên đường đa tuyến
         /// <summary>
         /// Hàm tạo dim từ các điểm trên polyline
         /// </summary>
@@ -340,7 +347,9 @@ namespace LibraryCad.ObjectsFunc.DimensionObject
                 }
             }
         }
+        #endregion
 
+        #region Tính tổng các đường dim kích thước
         /// <summary>
         /// Tính tổng kích thước các dim được chọn
         /// </summary>
@@ -383,7 +392,9 @@ namespace LibraryCad.ObjectsFunc.DimensionObject
                 }
             }
         }
+        #endregion
 
+        #region Tạo rotate dimension
         /// <summary>
         /// Hàm tạo rotate dimension
         /// </summary>
@@ -409,5 +420,6 @@ namespace LibraryCad.ObjectsFunc.DimensionObject
                 trans.Commit();
             }
         }
+        #endregion
     }
 }

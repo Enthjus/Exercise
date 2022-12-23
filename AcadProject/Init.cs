@@ -63,7 +63,9 @@ namespace AcadProject
             ribbonControl.Tabs.Add(Tab);
             Tab.IsActive = true;
 
-            Utilities_Add_Ribbon.Menu_Thongso(Tab);
+            Utilities_Add_Ribbon.Menu_Text(Tab);
+            Utilities_Add_Ribbon.Menu_Block(Tab);
+            Utilities_Add_Ribbon.Menu_Circle(Tab);
         }
 
         //string _AppName = "[AutoCAD.net] Phuc Ribbon";
@@ -150,12 +152,13 @@ namespace AcadProject
 
     public class Utilities_Add_Ribbon
     {
-        public static void Menu_Thongso(RibbonTab Tab)
+        #region Menu text
+        public static void Menu_Text(RibbonTab Tab)
         {
             // Create Ribbon PANELS
             RibbonPanelSource panel1Panel = Utilities_Sub_Function.PanelSource_Subfun(Tab, "Thông Số");
 
-            // Create Ribbon BOTTON
+            // Create Ribbon BUTTON
             string P1T_btn1 = "Tạo nhiều" + "\n" + "text";
             RibbonButton pan1button1 = Utilities_Sub_Function.RibbonButton_Subfun(P1T_btn1, "CreateMText ", true, Properties.Resources.text, Orientation.Vertical, RibbonItemSize.Large);
             string P1T_btn2 = "Đọc text";
@@ -170,6 +173,92 @@ namespace AcadProject
 
             panel1Panel.Items.Add(pan1button1);
             panel1Panel.Items.Add(rowPanel);
+        }
+        #endregion
+
+        #region Menu khối
+        public static void Menu_Block(RibbonTab Tab)
+        {
+            // Create Ribbon PANELS
+            RibbonPanelSource panel2Panel = Utilities_Sub_Function.PanelSource_Subfun(Tab, "Thao tác với khối");
+
+            // Create Ribbon BUTTON
+            string P2T_btn1 = "Copy khối qua file khác";
+            RibbonButton pan2button1 = Utilities_Sub_Function.RibbonButton_Subfun(P2T_btn1, "CopyBlocksBetweenDatabases ", true, Properties.Resources.copy_block);
+            string P2T_btn2 = "Copy đối tượng qua file khác";
+            RibbonButton pan2button2 = Utilities_Sub_Function.RibbonButton_Subfun(P2T_btn2, "CopyObjectsBetweenDatabases ", true, Properties.Resources.copy_object);
+            string P2T_btn3 = "Lấy block từ file";
+            RibbonButton pan2button3 = Utilities_Sub_Function.RibbonButton_Subfun(P2T_btn3, "GetBlockController ", true, Properties.Resources.get_block);
+            string P2T_btn4 = "Thêm đối tượng vào khối";
+            RibbonButton pan2button4 = Utilities_Sub_Function.RibbonButton_Subfun(P2T_btn4, "AddEntToBlock ", true, Properties.Resources.add_ent_to_block);
+            string P2T_btn5 = "Xóa khỏi khối";
+            RibbonButton pan2button5 = Utilities_Sub_Function.RibbonButton_Subfun(P2T_btn5, "DeleteEntityInBlock ", true, Properties.Resources.delete_ent_in_block);
+            string P2T_btn6 = "Đổi layer trong khối";
+            RibbonButton pan2button6 = Utilities_Sub_Function.RibbonButton_Subfun(P2T_btn6, "EditEntityInBlock", true, Properties.Resources.edit_block);
+
+            RibbonRowPanel rowPanel1 = new RibbonRowPanel();
+            rowPanel1.Items.Add(pan2button1);
+            rowPanel1.Items.Add(new RibbonRowBreak());
+            rowPanel1.Items.Add(pan2button2);
+            rowPanel1.Items.Add(new RibbonRowBreak());
+            rowPanel1.Items.Add(pan2button3);
+
+            RibbonRowPanel rowPanel2 = new RibbonRowPanel();
+            rowPanel2.Items.Add(pan2button4);
+            rowPanel2.Items.Add(new RibbonRowBreak());
+            rowPanel2.Items.Add(pan2button5);
+            rowPanel2.Items.Add(new RibbonRowBreak());
+            rowPanel2.Items.Add(pan2button6);
+
+            panel2Panel.Items.Add(rowPanel1);
+            panel2Panel.Items.Add(rowPanel2);
+        }
+        #endregion
+
+        public static void Menu_Circle(RibbonTab Tab)
+        {
+            // Create Ribbon PANELS
+            RibbonPanelSource panel3Panel = Utilities_Sub_Function.PanelSource_Subfun(Tab, "Thao tác với hình tròn");
+
+            // Create Ribbon BUTTON
+            string P3T_btn1 = "Vẽ hình tròn";
+            RibbonButton pan3button1 = Utilities_Sub_Function.RibbonButton_Subfun(P3T_btn1, "DrawCircle ", true, Properties.Resources.draw_circle);
+            string P3T_btn2 = "Tam giác nội tiếp đường tròn";
+            RibbonButton pan3button2 = Utilities_Sub_Function.RibbonButton_Subfun(P3T_btn2, "TriangleInscribedWithCircle ", true, Properties.Resources.triangle_in_circle);
+            string P3T_btn3 = "Tam giác ngoại tiếp đường tròn";
+            RibbonButton pan3button3 = Utilities_Sub_Function.RibbonButton_Subfun(P3T_btn3, "TriangleCircumscribedAboutCircle ", true, Properties.Resources.triangle_out_circle);
+
+            RibbonRowPanel rowPanel = new RibbonRowPanel();
+            rowPanel.Items.Add(pan3button1);
+            rowPanel.Items.Add(new RibbonRowBreak());
+            rowPanel.Items.Add(pan3button2);
+            rowPanel.Items.Add(new RibbonRowBreak());
+            rowPanel.Items.Add(pan3button3);
+
+            panel3Panel.Items.Add(rowPanel);
+        }
+
+        public static void Menu_Dimension(RibbonTab Tab)
+        {
+            // Create Ribbon PANELS
+            RibbonPanelSource panel4Panel = Utilities_Sub_Function.PanelSource_Subfun(Tab, "Thao tác với hình tròn");
+
+            // Create Ribbon BUTTON
+            string P4T_btn1 = "Vẽ hình tròn";
+            RibbonButton pan4button1 = Utilities_Sub_Function.RibbonButton_Subfun(P4T_btn1, "DrawCircle ", true, Properties.Resources.draw_circle);
+            string P4T_btn2 = "Tam giác nội tiếp đường tròn";
+            RibbonButton pan4button2 = Utilities_Sub_Function.RibbonButton_Subfun(P4T_btn2, "TriangleInscribedWithCircle ", true, Properties.Resources.triangle_in_circle);
+            string P4T_btn3 = "Tam giác ngoại tiếp đường tròn";
+            RibbonButton pan4button3 = Utilities_Sub_Function.RibbonButton_Subfun(P4T_btn3, "TriangleCircumscribedAboutCircle ", true, Properties.Resources.triangle_out_circle);
+
+            RibbonRowPanel rowPanel = new RibbonRowPanel();
+            rowPanel.Items.Add(pan4button1);
+            rowPanel.Items.Add(new RibbonRowBreak());
+            rowPanel.Items.Add(pan4button2);
+            rowPanel.Items.Add(new RibbonRowBreak());
+            rowPanel.Items.Add(pan4button3);
+
+            panel4Panel.Items.Add(rowPanel);
         }
     }
 }

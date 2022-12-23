@@ -2,6 +2,7 @@
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
+using Autodesk.AutoCAD.Internal;
 using LibraryCad.Models;
 using LibraryCad.ObjectsFunc.LineObject;
 using LibraryCad.Sub;
@@ -162,6 +163,24 @@ namespace LibraryCad.ObjectsFunc.BlockObject
         }
         #endregion
 
+        #region Let user pick a block and return PromptEntityResult object
+        /// <summary>
+        /// Hàm chọn block trả về đối tượng PromptEntityResult
+        /// </summary>
+        /// <param name="ed">Editor</param>
+        /// <returns>Đối tượng</returns>
+        public static PromptEntityResult PickBlock(Editor ed)
+        {
+            PromptEntityOptions options = new PromptEntityOptions("\nPick a block: ");
+            options.SetRejectMessage("\nMust be a block reference: ");
+            options.AddAllowedClass(typeof(BlockReference), true);
+
+            Utils.PostCommandPrompt();
+            PromptEntityResult result = ed.GetEntity(options);  //select a block reference in the drawing.
+            return result;
+        }
+        #endregion
+
         #region Clone block to another database
         /// <summary>
         /// Hàm copy các khối từ document đang mở sang database của file khác mà không cần mở file đó lên
@@ -282,7 +301,7 @@ namespace LibraryCad.ObjectsFunc.BlockObject
         }
         #endregion
 
-
+        #region Change layer 1 entity in block
         /// <summary>
         /// Hàm sửa 1 đối tượng trong khối
         /// </summary>
@@ -304,7 +323,9 @@ namespace LibraryCad.ObjectsFunc.BlockObject
                 ed.WriteMessage("\nĐối tượng không phải block!\n");
             }
         }
+        #endregion
 
+        #region Add 1 entity to block
         /// <summary>
         /// Hàm thêm 1 đối tượng vào khối
         /// </summary>
@@ -346,7 +367,9 @@ namespace LibraryCad.ObjectsFunc.BlockObject
                 ed.WriteMessage(ex.ToString());
             }
         }
+        #endregion
 
+        #region Add 1 block to another block
         /// <summary>
         /// Hàm thêm 1 khối vào khối
         /// </summary>
@@ -381,7 +404,15 @@ namespace LibraryCad.ObjectsFunc.BlockObject
                 ed.WriteMessage(ex.ToString());
             }
         }
+        #endregion
 
+        #region Get block from another file to current file
+        /// <summary>
+        /// Hàm lấy block từ file khác vào file hiện hành
+        /// </summary>
+        /// <param name="doc">Document</param>
+        /// <param name="blkName">tên khối</param>
+        /// <param name="filePath">nguồn của file</param>
         public static void GetBlkFromAnotherDB(Document doc, string blkName, string filePath)
         {
             try
@@ -443,5 +474,62 @@ namespace LibraryCad.ObjectsFunc.BlockObject
                 return;
             }
         }
+        #endregion
+
+        #region Thay đổi tâm của khối
+        /// <summary>
+        /// Hàm thay đổi tâm của khối
+        /// </summary>
+        /// <param name="ed">Editor</param>
+        /// <param name="trans">Transaction</param>
+        /// <param name="result">Khối được chọn</param>
+        public static void ChangeBLockInsertPoint(Editor ed, Transaction trans, PromptEntityResult result, Point3d newPt, string moveStatus)
+        {
+            BlockReference reference = trans.GetObject(result.ObjectId, OpenMode.ForRead) as BlockReference;
+            BlockTableRecord record = trans.GetObject(reference.BlockTableRecord, OpenMode.ForRead) as BlockTableRecord;
+
+            Point3d refPos = reference.Position;                           //current position of inserted block ref.                        
+            //Point3d pmin = reference.Bounds.Value.MinPoint;                //bounding box of entities.
+            //Point3d pmax = reference.Bounds.Value.MaxPoint;
+            //Point3d newPos = (Point3d)(pmin + (pmax - pmin) / 2);          //center point of displayed graphics.
+
+            Vector3d vec = newPt.GetVectorTo(refPos);                     //apply your own desired points here.                  
+            vec = vec.TransformBy(reference.BlockTransform.Transpose());   //
+            Matrix3d mat = Matrix3d.Displacement(vec);                     //     
+
+
+            foreach (ObjectId eid in record)                               //update entities in the table record.
+            {
+                Entity entity = (Entity)trans.GetObject(eid, OpenMode.ForRead) as Entity;
+
+                if (entity != null)
+                {
+                    entity.UpgradeOpen();
+                    entity.TransformBy(mat);
+                    entity.DowngradeOpen();
+                }
+            }
+
+            ObjectIdCollection blockReferenceIds = record.GetBlockReferenceIds(false, false); //get all instances of same block ref.
+
+            foreach (ObjectId eid in blockReferenceIds)              //update all block references of the block modified.
+            {
+                BlockReference BlkRef = (BlockReference)trans.GetObject(eid, OpenMode.ForWrite);
+
+                if(moveStatus == "y")
+                {
+                    BlkRef.TransformBy(mat.Inverse());  // include this line if you want block ref to stay in original location in dwg.
+                }
+
+                BlkRef.RecordGraphicsModified(true);
+            }
+
+            trans.TransactionManager.QueueForGraphicsFlush(); 
+
+            ed.WriteMessage("\nInsertion points modified.");                                  
+
+            trans.Commit();
+        }
+        #endregion
     }
 }

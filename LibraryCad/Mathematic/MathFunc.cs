@@ -10,7 +10,7 @@ namespace LibraryCad.Mathematic
 {
     public class MathFunc
     {
-        #region Mathematic function
+        #region Các hàm tính toán
         /// <summary>
         /// Hàm check số
         /// </summary>

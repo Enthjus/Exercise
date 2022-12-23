@@ -131,6 +131,22 @@ namespace AcadProject.AcadManip.WorkWithObject
             }
         }
 
+        [CommandMethod("ChangeInsertPoint")]
+        public static void ChangeBlockInsertPoint()
+        {
+            var result = BlockFunc.PickBlock(ed);
+            var newPt = SubFunc.PickPoint(doc);
+            var moveStatus = SubFunc.GetString(doc, "- Có giữ nguyên vị trí block không nếu có nhập (y):");
+            if (result == null) return;
+            using (doc.LockDocument())
+            {
+                using(Transaction trans = db.TransactionManager.StartTransaction())
+                {
+                    BlockFunc.ChangeBLockInsertPoint(ed, trans, result, newPt.point, moveStatus);
+                }
+            }
+        }
+
         [CommandMethod("ChangeBlkBPNotMove")]
         public static void ChangeBlkBPNotMove()
         {
