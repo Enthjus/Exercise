@@ -103,6 +103,36 @@ namespace AcadProject.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap dimension_multi_line {
+            get {
+                object obj = ResourceManager.GetObject("dimension_multi_line", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap dimension_multi_polyline {
+            get {
+                object obj = ResourceManager.GetObject("dimension_multi_polyline", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap dimension_sum {
+            get {
+                object obj = ResourceManager.GetObject("dimension_sum", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap draw_circle {
             get {
                 object obj = ResourceManager.GetObject("draw_circle", resourceCulture);

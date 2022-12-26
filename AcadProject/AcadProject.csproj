@@ -197,6 +197,9 @@
     <Content Include="Resources\copy-block.png" />
     <Content Include="Resources\copy-object.png" />
     <Content Include="Resources\delete-ent-in-block.png" />
+    <Content Include="Resources\dimension-multi-line.png" />
+    <Content Include="Resources\dimension-multi-polyline.png" />
+    <Content Include="Resources\dimension-sum.png" />
     <Content Include="Resources\draw-circle.png" />
     <Content Include="Resources\edit-block.png" />
     <Content Include="Resources\get-block.png" />

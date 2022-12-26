@@ -66,6 +66,7 @@ namespace AcadProject
             Utilities_Add_Ribbon.Menu_Text(Tab);
             Utilities_Add_Ribbon.Menu_Block(Tab);
             Utilities_Add_Ribbon.Menu_Circle(Tab);
+            Utilities_Add_Ribbon.Menu_Dimension(Tab);
         }
 
         //string _AppName = "[AutoCAD.net] Phuc Ribbon";
@@ -221,43 +222,41 @@ namespace AcadProject
             RibbonPanelSource panel3Panel = Utilities_Sub_Function.PanelSource_Subfun(Tab, "Thao tác với hình tròn");
 
             // Create Ribbon BUTTON
-            string P3T_btn1 = "Vẽ hình tròn";
-            RibbonButton pan3button1 = Utilities_Sub_Function.RibbonButton_Subfun(P3T_btn1, "DrawCircle ", true, Properties.Resources.draw_circle);
+            string P3T_btn1 = "Vẽ hình\ntròn";
+            RibbonButton pan3button1 = Utilities_Sub_Function.RibbonButton_Subfun(P3T_btn1, "DrawCircle ", true, Properties.Resources.draw_circle, Orientation.Vertical, RibbonItemSize.Large);
             string P3T_btn2 = "Tam giác nội tiếp đường tròn";
             RibbonButton pan3button2 = Utilities_Sub_Function.RibbonButton_Subfun(P3T_btn2, "TriangleInscribedWithCircle ", true, Properties.Resources.triangle_in_circle);
             string P3T_btn3 = "Tam giác ngoại tiếp đường tròn";
             RibbonButton pan3button3 = Utilities_Sub_Function.RibbonButton_Subfun(P3T_btn3, "TriangleCircumscribedAboutCircle ", true, Properties.Resources.triangle_out_circle);
 
             RibbonRowPanel rowPanel = new RibbonRowPanel();
-            rowPanel.Items.Add(pan3button1);
-            rowPanel.Items.Add(new RibbonRowBreak());
             rowPanel.Items.Add(pan3button2);
             rowPanel.Items.Add(new RibbonRowBreak());
             rowPanel.Items.Add(pan3button3);
 
+            panel3Panel.Items.Add(pan3button1);
             panel3Panel.Items.Add(rowPanel);
         }
 
         public static void Menu_Dimension(RibbonTab Tab)
         {
             // Create Ribbon PANELS
-            RibbonPanelSource panel4Panel = Utilities_Sub_Function.PanelSource_Subfun(Tab, "Thao tác với hình tròn");
+            RibbonPanelSource panel4Panel = Utilities_Sub_Function.PanelSource_Subfun(Tab, "Thao tác với đường kích thước");
 
             // Create Ribbon BUTTON
-            string P4T_btn1 = "Vẽ hình tròn";
-            RibbonButton pan4button1 = Utilities_Sub_Function.RibbonButton_Subfun(P4T_btn1, "DrawCircle ", true, Properties.Resources.draw_circle);
-            string P4T_btn2 = "Tam giác nội tiếp đường tròn";
-            RibbonButton pan4button2 = Utilities_Sub_Function.RibbonButton_Subfun(P4T_btn2, "TriangleInscribedWithCircle ", true, Properties.Resources.triangle_in_circle);
-            string P4T_btn3 = "Tam giác ngoại tiếp đường tròn";
-            RibbonButton pan4button3 = Utilities_Sub_Function.RibbonButton_Subfun(P4T_btn3, "TriangleCircumscribedAboutCircle ", true, Properties.Resources.triangle_out_circle);
+            string P4T_btn1 = "Cộng tổng các\nđường kích thước";
+            RibbonButton pan4button1 = Utilities_Sub_Function.RibbonButton_Subfun(P4T_btn1, "DimensionSum ", true, Properties.Resources.dimension_sum, Orientation.Vertical, RibbonItemSize.Large);
+            string P4T_btn2 = "Tạo đường kích thước trên nhiều đoạn thẳng";
+            RibbonButton pan4button2 = Utilities_Sub_Function.RibbonButton_Subfun(P4T_btn2, "DimMLine ", true, Properties.Resources.dimension_multi_line);
+            string P4T_btn3 = "Tạo đường kích thước trên nhiều đường đa tuyến";
+            RibbonButton pan4button3 = Utilities_Sub_Function.RibbonButton_Subfun(P4T_btn3, "Dimpolyline ", true, Properties.Resources.dimension_multi_polyline);
 
             RibbonRowPanel rowPanel = new RibbonRowPanel();
-            rowPanel.Items.Add(pan4button1);
-            rowPanel.Items.Add(new RibbonRowBreak());
             rowPanel.Items.Add(pan4button2);
             rowPanel.Items.Add(new RibbonRowBreak());
             rowPanel.Items.Add(pan4button3);
 
+            panel4Panel.Items.Add(pan4button1);
             panel4Panel.Items.Add(rowPanel);
         }
     }

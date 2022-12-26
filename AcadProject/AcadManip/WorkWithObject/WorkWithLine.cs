@@ -64,16 +64,5 @@ namespace AcadProject.AcadManip.WorkWithObject
                 }
             }
         }
-
-        [CommandMethod("DimMLine")]
-        public static void DimMLine()
-        {
-            Document doc = Application.DocumentManager.MdiActiveDocument;
-            // Lấy list đoạn thẳng từ các đối tượng được chọn
-            var lines = LineFunc.SelectionSetToListLine(doc);
-            if (lines == null) return;
-            // Tạo dim trên list đoạn thẳng vừa nhận được
-            DimensionFunc.DimMultiLine(lines, doc);
-        }
     }
 }
