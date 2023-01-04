@@ -70,9 +70,11 @@
     <Compile Include="Models\LayerObject.cs" />
     <Compile Include="Models\PlineInfo.cs" />
     <Compile Include="Models\PointInf.cs" />
+    <Compile Include="ObjectsFunc\PolylineObject\PolylineExtension.cs" />
     <Compile Include="ObjectsFunc\PolylineObject\PolylineFunc.cs" />
     <Compile Include="ObjectsFunc\TriangleObject\TriangleFunc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sub\AlgerbraicArea.cs" />
     <Compile Include="Sub\Extensions.cs" />
     <Compile Include="Sub\SubFunc.cs" />
     <Compile Include="ObjectsFunc\TextObject\TextFunc.cs" />

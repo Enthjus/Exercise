@@ -23,8 +23,8 @@ namespace AcadProject.AcadManip.WorkWithForm.SortForm.SortText
         private static Editor ed = DocumentManager.ed;
 
         
-        [CommandMethod("SortFromController")]
-        public static void SortFromController()
+        [CommandMethod("SortFormController")]
+        public static void SortFormController()
         {
             SortTextForm form = new SortTextForm();
             acad.ShowModalDialog(form);

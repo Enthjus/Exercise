@@ -121,11 +121,17 @@
   <data name="add_ent_to_block" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\add-ent-to-block.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="arc_dimension" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\arc-dimension.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="copy_block" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\copy-block.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="copy_object" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\copy-object.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="create_line" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\create-line.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="delete_ent_in_block" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\delete-ent-in-block.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -148,11 +154,20 @@
   <data name="get_block" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\get-block.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="layer_controller" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\layer-controller.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="merge" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\merge.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="open_book" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\open-book.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sort_text" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\sort-text.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sum_line" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\sum-line.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="text" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\text.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

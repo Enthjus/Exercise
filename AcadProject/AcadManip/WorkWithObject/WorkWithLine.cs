@@ -4,6 +4,7 @@ using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using LibraryCad.ObjectsFunc.DimensionObject;
 using LibraryCad.ObjectsFunc.LineObject;
+using LibraryCad.Sub;
 
 namespace AcadProject.AcadManip.WorkWithObject
 {
@@ -50,12 +51,15 @@ namespace AcadProject.AcadManip.WorkWithObject
             Database db = doc.Database;
             using (doc.LockDocument())
             {
+                var pt1 = SubFunc.PickPoint(doc);
+                var pt2 = SubFunc.PickPoint(doc);
+                if (pt1 == null || pt2 == null) return;
                 using (Transaction trans = db.TransactionManager.StartTransaction())
                 {
                     BlockTable blockTable = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
                     BlockTableRecord tableRec = trans.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
                     // tạo 1 đoạn thẳng bắt đầu ở 5,5 và kết thúc ở 12,3
-                    using (Line acLine = new Line(new Point3d(5, 5, 0), new Point3d(12, 3, 0)))
+                    using (Line acLine = new Line(pt1.point, pt2.point))
                     {
                         tableRec.AppendEntity(acLine);
                         trans.AddNewlyCreatedDBObject(acLine, true);

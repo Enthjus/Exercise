@@ -126,6 +126,7 @@
     <Compile Include="AcadManip\WorkWithForm\SubForm\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="AcadManip\WorkWithStyle\MleaderStyle.cs" />
     <Compile Include="Init.cs" />
     <Compile Include="AcadManip\WorkWithForm\LayerManager\LayerForm\LayersForm.cs">
       <SubType>Form</SubType>
@@ -191,11 +192,23 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <COMReference Include="SecureDongle">
+      <Guid>{C8DA5750-623D-4AEC-9932-5AF2920C661A}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>1</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\add-ent-to-block.png" />
+    <Content Include="Resources\arc-dimension.png" />
     <Content Include="Resources\copy-block.png" />
     <Content Include="Resources\copy-object.png" />
+    <Content Include="Resources\create-line.png" />
     <Content Include="Resources\delete-ent-in-block.png" />
     <Content Include="Resources\dimension-multi-line.png" />
     <Content Include="Resources\dimension-multi-polyline.png" />
@@ -203,8 +216,11 @@
     <Content Include="Resources\draw-circle.png" />
     <Content Include="Resources\edit-block.png" />
     <Content Include="Resources\get-block.png" />
+    <Content Include="Resources\layer-controller.png" />
     <Content Include="Resources\merge.png" />
     <Content Include="Resources\open-book.png" />
+    <Content Include="Resources\sort-text.png" />
+    <Content Include="Resources\sum-line.png" />
     <Content Include="Resources\text.png" />
     <Content Include="Resources\triangle-in-circle.png" />
     <Content Include="Resources\triangle-out-circle.png" />

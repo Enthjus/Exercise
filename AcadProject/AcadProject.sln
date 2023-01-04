@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcadProject", "AcadProject.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryCad", "..\LibraryCad\LibraryCad.csproj", "{66C32E46-D2F5-48C1-92B3-2BCE0F7373C0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamProject", "..\ExamProject\ExamProject.csproj", "{B805837C-05E7-4F65-977A-91C23C23E574}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{66C32E46-D2F5-48C1-92B3-2BCE0F7373C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66C32E46-D2F5-48C1-92B3-2BCE0F7373C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66C32E46-D2F5-48C1-92B3-2BCE0F7373C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B805837C-05E7-4F65-977A-91C23C23E574}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B805837C-05E7-4F65-977A-91C23C23E574}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B805837C-05E7-4F65-977A-91C23C23E574}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B805837C-05E7-4F65-977A-91C23C23E574}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
