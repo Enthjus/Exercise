@@ -18,6 +18,29 @@ namespace AcadProject.AcadManip.WorkWithObject
 
         private static Editor ed = DocumentManager.ed;
 
+        [CommandMethod("TriangleWithCircle")]
+        public static void TriangleWithCircle()
+        {
+            using (doc.LockDocument())
+            {
+                // Chọn các đối tượng chỉ lấy circle
+                var circles = CircleFunc.ParseSelectionToListCircle(doc);
+                if (circles == null) return;
+                // Gọi hàm vẽ đường tròn nội tiếp
+                foreach (var circle in circles)
+                {
+                    if(Init.triangleStatus == 1)
+                    {
+                        CircleFunc.TriangleInscribedInCircle(doc, circle);
+                    }
+                    else
+                    {
+                        CircleFunc.TriangleCircumscribedAboutCircle(doc, circle);
+                    }
+                }
+            }
+        }
+
         [CommandMethod("TriangleInscribedWithCircle")]
         public static void TriangleInscribedWithCircle()
         {

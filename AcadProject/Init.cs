@@ -8,11 +8,12 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using acadApp = Autodesk.AutoCAD.ApplicationServices.Application;
 
-//[assembly: CommandMethod(In)]
+[assembly: ExtensionApplication(typeof(AcadProject.Init))]
 namespace AcadProject
 {
     enum SDCmd : ushort
@@ -105,6 +106,8 @@ namespace AcadProject
 
     public class Init : IExtensionApplication
     {
+        static AcadProject.UserControl1 _uc;
+
         //Declare variable
         byte[] buffer = new byte[1024];
         object obbuffer = new object();
@@ -120,64 +123,69 @@ namespace AcadProject
 
         SecureDonglecom SD = new SecureDonglecom();
 
+        public static int remainder = 0;
+        public static int triangleStatus = 0;
+
         public void Initialize()
         {
+            Application.DisplayingOptionDialog += new TabbedDialogEventHandler(Application_DisplayingOptionDialog);
+
             DocumentManager.CreateDocument();
             //throw new System.NotImplementedException();
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Editor ed = doc.Editor;
 
-            //Open SecureDongle
-            //SecureDongle Password
-            p1 = 0x1C76;
-            p2 = 0x8078;
-            p3 = 0x8058;    //advance password. Must set to 0 for end user application
-            p4 = 0x5D6A;    //advance password. Must set to 0 for end user application
+            ////Open SecureDongle
+            ////SecureDongle Password
+            //p1 = 0x1C76;
+            //p2 = 0x8078;
+            //p3 = 0x8058;    //advance password. Must set to 0 for end user application
+            //p4 = 0x5D6A;    //advance password. Must set to 0 for end user application
 
-            ret = SD.SecureDongle((ushort)SDCmd.SD_FIND, ref handle, ref lp1, ref lp2, ref p1, ref p2, ref p3, ref p4, ref obbuffer);
+            //ret = SD.SecureDongle((ushort)SDCmd.SD_FIND, ref handle, ref lp1, ref lp2, ref p1, ref p2, ref p3, ref p4, ref obbuffer);
 
-            if (ret != 0)
-            {
-                ed.WriteMessage(string.Format("\nNo SecureDongle found, error code: {0}", ret));
-                return;
-            }
-            else
-            {
-                ed.WriteMessage(string.Format("\nFound SecureDongle. HID: {0:X8}", lp1));
-            }
+            //if (ret != 0)
+            //{
+            //    ed.WriteMessage(string.Format("\nNo SecureDongle found, error code: {0}", ret));
+            //    return;
+            //}
+            //else
+            //{
+            //    ed.WriteMessage(string.Format("\nFound SecureDongle. HID: {0:X8}", lp1));
+            //}
 
-            ret = SD.SecureDongle((ushort)SDCmd.SD_OPEN, ref handle, ref lp1, ref lp2, ref p1, ref p2, ref p3, ref p4, ref obbuffer);
+            //ret = SD.SecureDongle((ushort)SDCmd.SD_OPEN, ref handle, ref lp1, ref lp2, ref p1, ref p2, ref p3, ref p4, ref obbuffer);
 
-            if (ret != 0)
-            {
-                ed.WriteMessage(string.Format("\nOpen SecureDongle failed, error code: {0}", ret));
-                return;
-            }
-            else
-            {
-                ed.WriteMessage(string.Format("\nOpen SecureDongle ({0:X8})", lp1));
-            }
-            value = UInt32.Parse("10");
-            obbuffer = (object)value;
-            ret = SD.SecureDongle((ushort)SDCmd.SD_SET_COUNTER_EX, ref handle, ref lp1, ref lp2, ref p1, ref p2, ref p3, ref p4, ref obbuffer);
-            //Get Counter Value
-            p1 = 5; // Which Counter?
-            ret = SD.SecureDongle((ushort)SDCmd.SD_GET_COUNTER_EX, ref handle, ref lp1, ref lp2, ref p1, ref p2, ref p3, ref p4, ref obbuffer);
-            if (ret != 0)
-            {
-                if (ret == 228)
-                {
-                    ed.WriteMessage(string.Format("Cannot find any valid value in this module."));
-                    return;
-                }
-                ed.WriteMessage(string.Format("Counter decrease failed, error code: {0}", ret));
-                return;
-            }
-            else
-            {
-                value = (UInt32)obbuffer;
-                ed.WriteMessage(string.Format("Counter Value: {0}", value));
-            }
+            //if (ret != 0)
+            //{
+            //    ed.WriteMessage(string.Format("\nOpen SecureDongle failed, error code: {0}", ret));
+            //    return;
+            //}
+            //else
+            //{
+            //    ed.WriteMessage(string.Format("\nOpen SecureDongle ({0:X8})", lp1));
+            //}
+            //value = UInt32.Parse("10");
+            //obbuffer = (object)value;
+            //ret = SD.SecureDongle((ushort)SDCmd.SD_SET_COUNTER_EX, ref handle, ref lp1, ref lp2, ref p1, ref p2, ref p3, ref p4, ref obbuffer);
+            ////Get Counter Value
+            //p1 = 5; // Which Counter?
+            //ret = SD.SecureDongle((ushort)SDCmd.SD_GET_COUNTER_EX, ref handle, ref lp1, ref lp2, ref p1, ref p2, ref p3, ref p4, ref obbuffer);
+            //if (ret != 0)
+            //{
+            //    if (ret == 228)
+            //    {
+            //        ed.WriteMessage(string.Format("Cannot find any valid value in this module."));
+            //        return;
+            //    }
+            //    ed.WriteMessage(string.Format("Counter decrease failed, error code: {0}", ret));
+            //    return;
+            //}
+            //else
+            //{
+            //    value = (UInt32)obbuffer;
+            //    ed.WriteMessage(string.Format("Counter Value: {0}", value));
+            //}
 
 
             ed.WriteMessage("Load thanh cong");
@@ -196,8 +204,7 @@ namespace AcadProject
 
         public void Terminate()
         {
-            //throw new System.NotImplementedException();
-            // Cac ham su ly khi thoat CAD.
+            Application.DisplayingOptionDialog -= new TabbedDialogEventHandler(Application_DisplayingOptionDialog);
         }
 
         public void ComponentManager_ItemInitialized(object sender, RibbonItemEventArgs e)
@@ -232,7 +239,54 @@ namespace AcadProject
         //string _AppName = "[AutoCAD.net] Phuc Ribbon";
         //string _Decreption = "[AutoCAD.net] Ribbon for v.NET Tools @ Author: Phuc";
 
+        private static void ButtonPressedMessage(string name)
+        {
+            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
+            ed.WriteMessage(name + " button pressed.\n");
+        }
 
+        private static void ShowSettings()
+        {
+            if (_uc != null)
+            {
+                Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
+                //ed.WriteMessage("Settings were: checkbox contains {0}," + " combobox contains {1}\n", _uc.checkBox1.Checked, _uc.comboBox1.Text);
+            }
+        }
+
+        private static void OnOK()
+        {
+            ButtonPressedMessage("OK");
+            ShowSettings();
+        }
+
+        private static void OnCancel()
+        {
+            ButtonPressedMessage("Cancel");
+        }
+
+        private static void OnHelp()
+        {
+            ButtonPressedMessage("Help");
+        }
+
+
+        private static void OnApply()
+        {
+            //System.Windows.Forms.RadioButton button = new System.Windows.Forms.RadioButton();
+            //var uc = new UserControl1(button);
+            //_ = button.Text == "Remainder" ? remainder = 1 : remainder = 0;
+
+            remainder = (_uc.rbNotRemainder.Checked) ? 1 : 0;
+            triangleStatus = (_uc.comboBoxSortTable.Text == "Inscribed") ? 1 : 0;
+        }
+
+        private static void Application_DisplayingOptionDialog(object sender, TabbedDialogEventArgs e)
+        {
+            if (_uc == null) _uc = new UserControl1();
+            TabbedDialogExtension tde = new TabbedDialogExtension(_uc, new TabbedDialogAction(OnOK), new TabbedDialogAction(OnCancel), new TabbedDialogAction(OnHelp), new TabbedDialogAction(OnApply));
+            e.AddTab("My Custom Settings", tde);    
+        }
     }
 
     #region Các hàm bổ trợ

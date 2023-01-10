@@ -31,3 +31,4 @@ D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\AcadProject.AcadManip.WorkWithForm
 D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\AcadProject.AcadManip.WorkWithForm.AcadObject.BlockForm.GetBlock.resources
 D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\Interop.SecureDongle.dll
 D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\AcadProject.csproj.ResolveComReference.cache
+D:\c#\ATC\AddinLearning\AcadProject\obj\Debug\AcadProject.UserControl1.resources

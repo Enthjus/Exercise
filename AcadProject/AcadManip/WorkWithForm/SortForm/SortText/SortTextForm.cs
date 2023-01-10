@@ -34,6 +34,7 @@ namespace AcadProject.AcadManip.WorkWithForm.SortForm.SortText
         public SortTextForm()
         {
             InitializeComponent();
+            
         }
 
         private void buttonSort_Click(object sender, EventArgs e)

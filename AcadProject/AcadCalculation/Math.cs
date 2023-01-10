@@ -44,6 +44,10 @@ namespace AcadProject.AcadCalculation
                             sum += num;
                         }
                         // Tạo chuỗi ghi kết quả
+                        if(Init.remainder == 1)
+                        {
+                            sum = System.Math.Round(sum);
+                        }
                         TextFunc.CreateText(doc, sum.ToString(), point, db.Clayer);
                         trans.Commit();
                     }
@@ -80,6 +84,10 @@ namespace AcadProject.AcadCalculation
                         }
                     }
                     // Tạo chuỗi ghi kết quả
+                    if (Init.remainder == 1)
+                    {
+                        sum = System.Math.Round(sum);
+                    }
                     TextFunc.CreateText(doc, sum.ToString(), point, db.Clayer);
                     trans.Commit();
                 }
