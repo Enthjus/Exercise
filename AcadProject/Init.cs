@@ -3,12 +3,17 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Runtime;
 using Autodesk.Windows;
 using LibraryCad.DocumentManager;
+using LibraryCad.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SecureDongle;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Web.Script.Serialization;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using acadApp = Autodesk.AutoCAD.ApplicationServices.Application;
@@ -134,6 +139,23 @@ namespace AcadProject
             //throw new System.NotImplementedException();
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Editor ed = doc.Editor;
+
+            using (StreamReader r = new StreamReader(@"D:\c#\ATC\AddinLearning\appsetting.json"))
+            {
+                string json = r.ReadToEnd();
+                List<AppSetting> items = JsonConvert.DeserializeObject<List<AppSetting>>(json);
+                foreach (AppSetting item in items)
+                {
+                    if(item.Data == "Remainder calculator")
+                    {
+                        remainder = item.Status;
+                    }
+                    else if(item.Data == "Triangle status")
+                    {
+                        triangleStatus = item.Status;
+                    }
+                }
+            }
 
             ////Open SecureDongle
             ////SecureDongle Password
@@ -278,14 +300,31 @@ namespace AcadProject
             //_ = button.Text == "Remainder" ? remainder = 1 : remainder = 0;
 
             remainder = (_uc.rbNotRemainder.Checked) ? 1 : 0;
-            triangleStatus = (_uc.comboBoxSortTable.Text == "Inscribed") ? 1 : 0;
+            triangleStatus = (_uc.comboBoxTriangleStatus.Text == "Inscribed") ? 1 : 0;
+
+            List<AppSetting> appsetting = new List<AppSetting>
+            {
+                new AppSetting("Remainder calculator", remainder),
+                new AppSetting("Triangle status", triangleStatus)
+            };
+
+            var jsonSerialiser = new JavaScriptSerializer();
+            string jsonString = jsonSerialiser.Serialize(appsetting);
+            File.WriteAllText(@"D:\c#\ATC\AddinLearning\appsetting.json", jsonString);
+
+            //// write JSON directly to a file
+            //using (StreamWriter file = File.CreateText(@"D:\c#\ATC\AddinLearning\appsetting.json"))
+            //using (JsonTextWriter writer = new JsonTextWriter(file))
+            //{
+            //    appsetting.WriteTo(writer);
+            //}
         }
 
         private static void Application_DisplayingOptionDialog(object sender, TabbedDialogEventArgs e)
         {
             if (_uc == null) _uc = new UserControl1();
             TabbedDialogExtension tde = new TabbedDialogExtension(_uc, new TabbedDialogAction(OnOK), new TabbedDialogAction(OnCancel), new TabbedDialogAction(OnHelp), new TabbedDialogAction(OnApply));
-            e.AddTab("My Custom Settings", tde);    
+            e.AddTab("My Custom Settings", tde);
         }
     }
 
@@ -500,7 +539,7 @@ namespace AcadProject
             rowPanel.Items.Add(pan5button1);
             rowPanel.Items.Add(new RibbonRowBreak());
             rowPanel.Items.Add(pan5button2);
-            
+
             panel5Panel.Items.Add(rowPanel);
         }
         #endregion

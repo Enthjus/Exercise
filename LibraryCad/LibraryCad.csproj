@@ -57,6 +57,7 @@
     <Compile Include="DocumentManager\DocumentManager.cs" />
     <Compile Include="FileManip\File\FileFunc.cs" />
     <Compile Include="FileManip\Plot\PlotFunc.cs" />
+    <Compile Include="Models\AppSetting.cs" />
     <Compile Include="ObjectsFunc\ArcObject\ArcFunc.cs" />
     <Compile Include="ObjectsFunc\BlockObject\BlockFunc.cs" />
     <Compile Include="ObjectsFunc\BlockObject\BlockNestedEntityHighlighter.cs" />
@@ -74,6 +75,10 @@
     <Compile Include="ObjectsFunc\PolylineObject\PolylineFunc.cs" />
     <Compile Include="ObjectsFunc\TriangleObject\TriangleFunc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StyleFunc\AcadDimStyle\DimStyleFunc.cs" />
+    <Compile Include="StyleFunc\AcadMLeaderStyle\MLeaderStyleFunc.cs" />
+    <Compile Include="StyleFunc\AcadTableStyle\TableStyleFunc.cs" />
+    <Compile Include="StyleFunc\AcadTextStyle\TextStyleFunc.cs" />
     <Compile Include="Sub\AlgerbraicArea.cs" />
     <Compile Include="Sub\Extensions.cs" />
     <Compile Include="Sub\SubFunc.cs" />

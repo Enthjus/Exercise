@@ -20,8 +20,24 @@ namespace AcadProject
         public UserControl1()
         {
             InitializeComponent();
-            comboBoxSortTable.Items.Add("Inscribed");
-            comboBoxSortTable.Items.Add("Circumscribed");
+            comboBoxTriangleStatus.Items.Add("Inscribed");
+            comboBoxTriangleStatus.Items.Add("Circumscribed");
+            if (Init.remainder == 1)
+            {
+                rbNotRemainder.Checked = true;
+            }
+            else
+            {
+                rbRemainder.Checked = true;
+            }
+            if (Init.triangleStatus == 1)
+            {
+                comboBoxTriangleStatus.SelectedIndex = 0;
+            }
+            else
+            {
+                comboBoxTriangleStatus.SelectedIndex = 1;
+            }
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)

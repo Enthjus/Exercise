@@ -38,7 +38,7 @@
             this.rbRemainder = new System.Windows.Forms.RadioButton();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.comboBoxSortTable = new System.Windows.Forms.ComboBox();
+            this.comboBoxTriangleStatus = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.GetBlock.SuspendLayout();
             this.groupBoxRemainder.SuspendLayout();
@@ -102,13 +102,13 @@
             this.rbNotRemainder.Name = "rbNotRemainder";
             this.rbNotRemainder.Size = new System.Drawing.Size(119, 20);
             this.rbNotRemainder.TabIndex = 1;
-            this.rbNotRemainder.TabStop = true;
             this.rbNotRemainder.Text = "Not Remainder";
             this.rbNotRemainder.UseVisualStyleBackColor = true;
             // 
             // rbRemainder
             // 
             this.rbRemainder.AutoSize = true;
+            this.rbRemainder.Checked = true;
             this.rbRemainder.Location = new System.Drawing.Point(36, 32);
             this.rbRemainder.Name = "rbRemainder";
             this.rbRemainder.Size = new System.Drawing.Size(95, 20);
@@ -129,7 +129,7 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.comboBoxSortTable);
+            this.groupBox1.Controls.Add(this.comboBoxTriangleStatus);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Location = new System.Drawing.Point(3, 121);
             this.groupBox1.Name = "groupBox1";
@@ -138,13 +138,13 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Create triangle with circle";
             // 
-            // comboBoxSortTable
+            // comboBoxTriangleStatus
             // 
-            this.comboBoxSortTable.FormattingEnabled = true;
-            this.comboBoxSortTable.Location = new System.Drawing.Point(147, 31);
-            this.comboBoxSortTable.Name = "comboBoxSortTable";
-            this.comboBoxSortTable.Size = new System.Drawing.Size(121, 24);
-            this.comboBoxSortTable.TabIndex = 16;
+            this.comboBoxTriangleStatus.FormattingEnabled = true;
+            this.comboBoxTriangleStatus.Location = new System.Drawing.Point(147, 31);
+            this.comboBoxTriangleStatus.Name = "comboBoxTriangleStatus";
+            this.comboBoxTriangleStatus.Size = new System.Drawing.Size(121, 24);
+            this.comboBoxTriangleStatus.TabIndex = 16;
             // 
             // label4
             // 
@@ -186,7 +186,7 @@
         public System.Windows.Forms.RadioButton rbRemainder;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.GroupBox groupBox1;
-        public System.Windows.Forms.ComboBox comboBoxSortTable;
+        public System.Windows.Forms.ComboBox comboBoxTriangleStatus;
         private System.Windows.Forms.Label label4;
     }
 }
