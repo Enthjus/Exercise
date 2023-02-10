@@ -85,5 +85,65 @@ namespace AcadProject.AcadManip.WorkWithStyle
                 }
             }
         }
+
+        [CommandMethod("ListTableStyles")]
+
+        static public void ListTableStyles()
+
+        {
+
+
+
+            Document doc = Application.DocumentManager.MdiActiveDocument;
+
+            Database db = doc.Database;
+
+            Editor ed = doc.Editor;
+
+
+
+
+
+            using (Transaction tr = db.TransactionManager.StartTransaction())
+
+            {
+
+                DBDictionary tsd = (DBDictionary)tr.GetObject(
+
+                                                    db.TableStyleDictionaryId,
+
+                                                            OpenMode.ForRead);
+
+
+
+                TableStyle tStyle = null;
+
+                foreach (DBDictionaryEntry entry in tsd)
+
+                {
+
+                    tStyle = (TableStyle)tr.GetObject(entry.Value,
+
+                                                            OpenMode.ForRead);
+
+
+
+                    ed.WriteMessage(tStyle.Name + "\n");
+
+                }
+
+                //current table style
+
+                tStyle = (TableStyle)tr.GetObject(
+
+                                        db.Tablestyle, OpenMode.ForRead);
+
+                ed.WriteMessage("Current table style: " + tStyle.Name + "\n");
+
+                tr.Commit();
+
+            }
+
+        }
     }
 }

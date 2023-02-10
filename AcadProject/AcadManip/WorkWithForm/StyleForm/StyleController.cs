@@ -3,7 +3,11 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Runtime;
 using LibraryCad.DocumentManager;
+using LibraryCad.StyleFunc.AcadDimStyle;
+using LibraryCad.StyleFunc.AcadMLeaderStyle;
+using LibraryCad.StyleFunc.AcadTableStyle;
 using LibraryCad.StyleFunc.AcadTextStyle;
+using LibraryCad.Sub;
 using System;
 using System.Linq;
 using System.Windows.Forms;
@@ -40,7 +44,7 @@ namespace AcadProject.AcadManip.WorkWithForm.StyleForm
             Environment.SetEnvironmentVariable("MYDOCUMENTS", documents);
 
             var ofd = new Autodesk.AutoCAD.Windows.OpenFileDialog("Select a file using an OpenFileDialog", documents,
-                            "*",
+                            "dwt",
                             "File Date Test T22",
                             Autodesk.AutoCAD.Windows.OpenFileDialog.OpenFileDialogFlags.DefaultIsFolder |
                             Autodesk.AutoCAD.Windows.OpenFileDialog.OpenFileDialogFlags.ForceDefaultFolder // .AllowMultiple
@@ -51,15 +55,39 @@ namespace AcadProject.AcadManip.WorkWithForm.StyleForm
 
             fileName = ofd.Filename;
 
-            var styles = TextStyleFunc.FindAllTextStyle(fileName);
+            var openDb = SubFunc.GetDbByPath(fileName, ed);
 
-            dgvTextStyle.DataSource = styles.Select(x => new { TextStyle = x }).ToList();
+            var styleInfos = SubFunc.FindAllStyle(openDb);
+
+            dgvTextStyle.DataSource = styleInfos.TextStyles.Select(x => new { TextStyle = x }).ToList();
             dgvTextStyle.Show();
+            dgvDimensionStyle.DataSource = styleInfos.DimStyles.Select(x => new { DimStyle = x }).ToList();
+            dgvDimensionStyle.Show();
+            dgvTableStyle.DataSource = styleInfos.TableStyles.Select(x => new { TableStyle = x }).ToList();
+            dgvTableStyle.Show();
+            dgvMLeaderStyle.DataSource = styleInfos.MLeaderStyles.Select(x => new { MLeaderStyle = x }).ToList();
+            dgvMLeaderStyle.Show();
         }
 
         private void btnCreateStyle_Click(object sender, EventArgs e)
         {
             TextStyleFunc.GetStyleId(dgvTextStyle.SelectedCells[0].OwningRow.Cells["TextStyle"].Value.ToString(), doc, fileName);
+        }
+
+        private void btnCreateDimensionStyle_Click(object sender, EventArgs e)
+        {
+            DimStyleFunc.GetStyleId(dgvDimensionStyle.SelectedCells[0].OwningRow.Cells["DimStyle"].Value.ToString(), doc, fileName);
+        }
+
+        private void btnCreateMLeaderStyle_Click(object sender, EventArgs e)
+        {
+            MLeaderStyleFunc.GetStyleId(dgvMLeaderStyle.SelectedCells[0].OwningRow.Cells["MLeaderStyle"].Value.ToString(), doc, fileName);
+        }
+
+        private void btnCreateTableStyle_Click(object sender, EventArgs e)
+        {
+            TableStyleFunc.GetStyleId(dgvTableStyle.SelectedCells[0].OwningRow.Cells["TableStyle"].Value.ToString(), doc, fileName);
+
         }
     }
 }

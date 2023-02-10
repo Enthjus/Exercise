@@ -2,6 +2,7 @@
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
+using Autodesk.AutoCAD.Runtime;
 using LibraryCad.Models;
 using System;
 using System.Collections.Generic;
@@ -285,5 +286,118 @@ namespace LibraryCad.Sub
                 a * giaithua(a - 1);  // Đệ quy
         }
         #endregion
+
+        /// <summary>
+        /// Lấy database từ nguồn file truyền vào
+        /// </summary>
+        /// <param name="fileName">Đường dẫn file</param>
+        /// <param name="ed">Editor</param>
+        /// <returns>Database tìm được</returns>
+        public static Database GetDbByPath(string fileName, Editor ed)
+        {
+            try
+            {
+                Database openDb = new Database(false, true);
+                openDb.ReadDwgFile(fileName, System.IO.FileShare.ReadWrite, true, "");
+                return openDb;
+            }
+            catch (System.Exception ex)
+            {
+                ed.WriteMessage(ex.Message);
+                return null;
+            }
+        }
+
+        public static StyleInfo FindAllStyle(Database openDb)
+        {
+            try
+            {
+                using (openDb)
+                {
+                    StyleInfo styleInfo = new StyleInfo();
+                    List<String> textStyles = new List<String>();
+                    List<String> dimStyles = new List<String>();
+                    List<String> tableStyles = new List<String>();
+                    List<String> mleaderStyles = new List<String>();
+                    using (Transaction tr = openDb.TransactionManager.StartTransaction())
+                    {
+                        var textStyleTable = (TextStyleTable)tr.GetObject(openDb.TextStyleTableId, OpenMode.ForRead);
+
+                        foreach (ObjectId id in textStyleTable)
+                        {
+                            try
+                            {
+                                TextStyleTableRecord tableRecord = tr.GetObject(id, OpenMode.ForRead) as TextStyleTableRecord;
+                                if (tableRecord != null)
+                                {
+                                    textStyles.Add(tableRecord.Name);
+                                }
+                            }
+                            catch
+                            {
+                                continue;
+                            }
+                        }
+
+                        var dimStyleTable = (DimStyleTable)tr.GetObject(openDb.DimStyleTableId, OpenMode.ForRead);
+
+                        foreach (ObjectId id in dimStyleTable)
+                        {
+                            try
+                            {
+                                DimStyleTableRecord tableRecord = tr.GetObject(id, OpenMode.ForRead) as DimStyleTableRecord;
+                                if (tableRecord != null)
+                                {
+                                    dimStyles.Add(tableRecord.Name);
+                                }
+                            }
+                            catch
+                            {
+                                continue;
+                            }
+                        }
+
+                        DBDictionary tblStyleDic = (DBDictionary)tr.GetObject(openDb.TableStyleDictionaryId, OpenMode.ForRead);
+                        foreach (DBDictionaryEntry entry in tblStyleDic)
+                        {
+                            try
+                            {
+                                TableStyle tableStyle = (TableStyle)tr.GetObject(entry.Value, OpenMode.ForRead);
+                                tableStyles.Add(tableStyle.Name);
+                            }
+                            catch
+                            {
+                                continue;
+                            }
+                        }
+
+                        DBDictionary mleaderStyleDic = tr.GetObject(openDb.MLeaderStyleDictionaryId, OpenMode.ForRead) as DBDictionary;
+                        foreach (DBDictionaryEntry entry in mleaderStyleDic)
+                        {
+                            try
+                            {
+                                MLeaderStyle mleaderStyle = tr.GetObject(entry.Value, OpenMode.ForRead) as MLeaderStyle;
+                                mleaderStyles.Add(mleaderStyle.Name);
+                            }
+                            catch
+                            {
+                                continue;
+                            }
+                        }
+
+                        styleInfo.TextStyles = textStyles;
+                        styleInfo.DimStyles = dimStyles;
+                        styleInfo.TableStyles = tableStyles;
+                        styleInfo.MLeaderStyles = mleaderStyles;
+                        tr.Commit();
+                        return styleInfo;
+                    }
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }

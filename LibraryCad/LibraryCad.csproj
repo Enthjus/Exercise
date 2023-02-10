@@ -58,6 +58,7 @@
     <Compile Include="FileManip\File\FileFunc.cs" />
     <Compile Include="FileManip\Plot\PlotFunc.cs" />
     <Compile Include="Models\AppSetting.cs" />
+    <Compile Include="Models\StyleInfo.cs" />
     <Compile Include="ObjectsFunc\ArcObject\ArcFunc.cs" />
     <Compile Include="ObjectsFunc\BlockObject\BlockFunc.cs" />
     <Compile Include="ObjectsFunc\BlockObject\BlockNestedEntityHighlighter.cs" />

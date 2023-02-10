@@ -109,10 +109,9 @@ namespace LibraryCad.StyleFunc.AcadTextStyle
         /// </summary>
         /// <param name="styleName">Name of the style.</param>
         /// <returns>ObjectID of Textstyle, ObjectId.Null on error</returns>
-        public static ObjectId GetStyleId(String styleName, Document doc, string dwtPath)
+        public static ObjectId GetStyleId(String styleName, Document doc, string path)
         {
             ObjectId styleId = ObjectId.Null; ;
-            ObjectIdCollection ids = new ObjectIdCollection();
             Database db = doc.Database;
             using (Transaction acTr = db.TransactionManager.StartTransaction())
             {
@@ -125,7 +124,7 @@ namespace LibraryCad.StyleFunc.AcadTextStyle
                 }
                 acTr.Commit();
             }
-            if (GetStyleFromDWG(styleName, dwtPath, doc))
+            if (GetStyleFromDWG(styleName, path, doc))
             {
                 using (Transaction acTr = db.TransactionManager.StartTransaction())
                 {
@@ -154,10 +153,9 @@ namespace LibraryCad.StyleFunc.AcadTextStyle
         private static bool GetStyleFromDWG(string styleName, string path, Document doc)
         {
             Database db = doc.Database;
-            using (Database openDb = new Database(false, true))
+            using (Database openDb = new Database())
             {
-                openDb.ReadDwgFile(path, System.IO.FileShare.ReadWrite, true, "");
-
+                openDb.ReadDwgFile(path, System.IO.FileShare.Read, false, "");
                 ObjectIdCollection ids = new ObjectIdCollection();
                 using (Transaction tr = openDb.TransactionManager.StartTransaction())
                 {
@@ -186,13 +184,12 @@ namespace LibraryCad.StyleFunc.AcadTextStyle
             }
         }
 
-        public static List<String> FindAllTextStyle(string path)
+        public static List<String> FindAllTextStyle(Database openDb)
         {
             try
             {
-                using (Database openDb = new Database(false, true))
+                using (openDb)
                 {
-                    openDb.ReadDwgFile(path, System.IO.FileShare.ReadWrite, true, "");
                     List<String> styles = new List<String>();
                     using (Transaction tr = openDb.TransactionManager.StartTransaction())
                     {
