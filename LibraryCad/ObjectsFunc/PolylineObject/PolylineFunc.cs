@@ -1,9 +1,11 @@
 ﻿using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
+using Autodesk.AutoCAD.Geometry;
 using LibraryCad.Models;
 using LibraryCad.ObjectsFunc.LayerObject;
 using LibraryCad.Sub;
+using System;
 using System.Collections.Generic;
 
 namespace LibraryCad.ObjectsFunc.PolylineObject
@@ -144,6 +146,24 @@ namespace LibraryCad.ObjectsFunc.PolylineObject
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Chuyển line thành polyline
+        /// </summary>
+        /// <param name="curve">đường thẳng hoặc cong</param>
+        /// <returns>polyline</returns>
+        /// <exception cref="ArgumentException"></exception>
+        public static Polyline ConvertToPolyline(Curve curve)
+        {
+            if (!(curve is Line || curve is Arc))
+                throw new ArgumentException("requires a Line or Arc");
+            Polyline pline = new Polyline();
+            pline.TransformBy(curve.Ecs);
+            Point3d start = curve.StartPoint.TransformBy(pline.Ecs.Inverse());
+            pline.AddVertexAt(0, new Point2d(start.X, start.Y), 0, 0, 0);
+            pline.JoinEntity(curve);
+            return pline;
         }
     }
 }

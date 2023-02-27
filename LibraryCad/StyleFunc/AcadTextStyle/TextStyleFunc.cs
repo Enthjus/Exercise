@@ -12,10 +12,9 @@ namespace LibraryCad.StyleFunc.AcadTextStyle
 {
     public class TextStyleFunc
     {
-        public static void ChangeTextSyleInModelSpace(Document doc)
+        public static void ChangeTextSyleInModelSpace(Document doc, ObjectId styleId)
         {
             string oldstyle = "Standard";//<-- Case-sensitive for selection filter!
-            string newstyle = "Phuc";
             Editor ed = doc.Editor;
             Database db = doc.Database;
 
@@ -46,12 +45,13 @@ namespace LibraryCad.StyleFunc.AcadTextStyle
 
                         // get text style table
                         TextStyleTable tt = tr.GetObject(db.TextStyleTableId, OpenMode.ForRead) as TextStyleTable;
+                        TextStyleTableRecord tstr = tr.GetObject(styleId, OpenMode.ForRead) as TextStyleTableRecord;
                         // check if the new style does exist, if not then exit command
-                        if (!tt.Has(newstyle))
+                        if (!tt.Has(tstr.Name))
                         {
                             Application.ShowAlertDialog("One or both styles does not exist\nProgram exiting...");
                         }
-                        ObjectId newId = tt[newstyle];
+                        ObjectId newId = styleId;
                         //iterate through the selection set
                         foreach (ObjectId id in ids)
                         {
@@ -111,18 +111,18 @@ namespace LibraryCad.StyleFunc.AcadTextStyle
         /// <returns>ObjectID of Textstyle, ObjectId.Null on error</returns>
         public static ObjectId GetStyleId(String styleName, Document doc, string path)
         {
-            ObjectId styleId = ObjectId.Null; ;
+            ObjectId styleId = ObjectId.Null;
             Database db = doc.Database;
-            using (Transaction acTr = db.TransactionManager.StartTransaction())
+            using (Transaction tran = db.TransactionManager.StartTransaction())
             {
-                TextStyleTable styleTable = (TextStyleTable)acTr.GetObject(db.TextStyleTableId, OpenMode.ForRead);
+                TextStyleTable styleTable = (TextStyleTable)tran.GetObject(db.TextStyleTableId, OpenMode.ForRead);
                 if (styleTable.Has(styleName))
                 {
-                    styleId = acTr.GetObject(styleTable[styleName], OpenMode.ForRead).ObjectId;
-                    acTr.Commit();
+                    styleId = tran.GetObject(styleTable[styleName], OpenMode.ForRead).ObjectId;
+                    tran.Commit();
                     return styleId;
                 }
-                acTr.Commit();
+                tran.Commit();
             }
             if (GetStyleFromDWG(styleName, path, doc))
             {

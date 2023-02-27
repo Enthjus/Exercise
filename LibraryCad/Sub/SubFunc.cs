@@ -308,6 +308,11 @@ namespace LibraryCad.Sub
             }
         }
 
+        /// <summary>
+        /// Lấy style từ file dwt
+        /// </summary>
+        /// <param name="openDb">database</param>
+        /// <returns>list style</returns>
         public static StyleInfo FindAllStyle(Database openDb)
         {
             try
@@ -398,6 +403,43 @@ namespace LibraryCad.Sub
             {
                 return null;
             }
+        }
+
+        public static Point3d PolarPoint(Point3d basepoint, double angle, double distance)
+        {
+            return new Point3d(
+            basepoint.X + (distance * Math.Cos(angle)),
+            basepoint.Y + (distance * Math.Sin(angle)),
+            basepoint.Z);
+        }
+
+        public static double AngleFromX(Point3d pt1, Point3d pt2)
+        {
+            Plane ucsplane = new Plane(new Point3d(0, 0, 0), new Vector3d(0, 0, 1));
+
+            Vector3d vec = pt2 - pt1;
+
+            double ang = vec.AngleOnPlane(ucsplane);
+
+            return ang;
+        }
+
+        public static bool isLeft(Point3d spt, Point3d ept, Point3d apt)
+        {
+            bool result = false;
+
+            double Ans = ((ept.X - spt.X) * (apt.Y - spt.Y) -
+            (apt.X - spt.X) * (ept.Y - spt.Y));
+
+            if (Ans > 0)
+            {
+                result = true;
+            }
+            else
+            {
+                result = false;
+            }
+            return result;
         }
     }
 }

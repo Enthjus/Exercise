@@ -43,14 +43,9 @@ namespace AcadProject.AcadManip.WorkWithForm.StyleForm
             string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             Environment.SetEnvironmentVariable("MYDOCUMENTS", documents);
 
-            var ofd = new Autodesk.AutoCAD.Windows.OpenFileDialog("Select a file using an OpenFileDialog", documents,
-                            "dwt",
-                            "File Date Test T22",
-                            Autodesk.AutoCAD.Windows.OpenFileDialog.OpenFileDialogFlags.DefaultIsFolder |
-                            Autodesk.AutoCAD.Windows.OpenFileDialog.OpenFileDialogFlags.ForceDefaultFolder // .AllowMultiple
-                          );
+            var ofd = new Autodesk.AutoCAD.Windows.OpenFileDialog("Select a file using an OpenFileDialog", documents, "dwt", "File Date Test T22", Autodesk.AutoCAD.Windows.OpenFileDialog.OpenFileDialogFlags.DefaultIsFolder | Autodesk.AutoCAD.Windows.OpenFileDialog.OpenFileDialogFlags.ForceDefaultFolder  /*.AllowMultiple*/);
             DialogResult sdResult = ofd.ShowDialog();
-
+            
             if (sdResult != DialogResult.OK) return;
 
             fileName = ofd.Filename;
@@ -71,23 +66,26 @@ namespace AcadProject.AcadManip.WorkWithForm.StyleForm
 
         private void btnCreateStyle_Click(object sender, EventArgs e)
         {
-            TextStyleFunc.GetStyleId(dgvTextStyle.SelectedCells[0].OwningRow.Cells["TextStyle"].Value.ToString(), doc, fileName);
+            var styleId = TextStyleFunc.GetStyleId(dgvTextStyle.SelectedCells[0].OwningRow.Cells["TextStyle"].Value.ToString(), doc, fileName);
+            TextStyleFunc.ChangeTextSyleInModelSpace(doc, styleId);
         }
 
         private void btnCreateDimensionStyle_Click(object sender, EventArgs e)
         {
-            DimStyleFunc.GetStyleId(dgvDimensionStyle.SelectedCells[0].OwningRow.Cells["DimStyle"].Value.ToString(), doc, fileName);
+            var styleId = DimStyleFunc.GetStyleId(dgvDimensionStyle.SelectedCells[0].OwningRow.Cells["DimStyle"].Value.ToString(), doc, fileName);
+            DimStyleFunc.ChangeDimSyleInModelSpace(doc, styleId);
         }
 
         private void btnCreateMLeaderStyle_Click(object sender, EventArgs e)
         {
-            MLeaderStyleFunc.GetStyleId(dgvMLeaderStyle.SelectedCells[0].OwningRow.Cells["MLeaderStyle"].Value.ToString(), doc, fileName);
+            var styleId = MLeaderStyleFunc.GetStyleId(dgvMLeaderStyle.SelectedCells[0].OwningRow.Cells["MLeaderStyle"].Value.ToString(), doc, fileName);
+            MLeaderStyleFunc.ChangeMleaderStyleInModelSpace(doc, styleId);
         }
-
+        
         private void btnCreateTableStyle_Click(object sender, EventArgs e)
         {
-            TableStyleFunc.GetStyleId(dgvTableStyle.SelectedCells[0].OwningRow.Cells["TableStyle"].Value.ToString(), doc, fileName);
-
+            var styleId = TableStyleFunc.GetStyleId(dgvTableStyle.SelectedCells[0].OwningRow.Cells["TableStyle"].Value.ToString(), doc, fileName);
+            TableStyleFunc.ChangeTableSyleInModelSpace(doc, styleId);
         }
     }
 }

@@ -3,10 +3,6 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Runtime;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LibraryCad.StyleFunc.AcadTableStyle
 {
@@ -34,6 +30,72 @@ namespace LibraryCad.StyleFunc.AcadTableStyle
             }
         }
 
+        public static void ChangeTableSyleInModelSpace(Document doc, ObjectId styleId)
+        {
+            string oldstyle = "Standard";//<-- Case-sensitive for selection filter!
+            Editor ed = doc.Editor;
+            Database db = doc.Database;
+
+            // build selection filter
+            // to select all texts and mtexts in the Model space:
+            SelectionFilter sfilter = new SelectionFilter(new TypedValue[]
+            {
+                new TypedValue((int)DxfCode.Start, "ACAD_TABLE")
+            });
+
+            // request for objects to be selected all in the  model space
+            PromptSelectionResult res = ed.SelectAll(sfilter);
+            try
+            {
+                if (res.Status == PromptStatus.OK)
+                {
+                    ed.WriteMessage("\nSelected {0} objects", res.Value.Count);
+                    using (Transaction tr = doc.TransactionManager.StartTransaction())
+                    {
+                        ObjectId[] ids = res.Value.GetObjectIds();
+                        // get text style table
+                        DBDictionary dic = tr.GetObject(db.TableStyleDictionaryId, OpenMode.ForRead) as DBDictionary;
+                        // check if the new style does exist, if not then exit command
+                        if (!dic.Contains(styleId))
+                        {
+                            Application.ShowAlertDialog("One or both styles does not exist\nProgram exiting...");
+                        }
+                        ObjectId newId = styleId;
+                        //iterate through the selection set
+                        foreach (ObjectId id in ids)
+                        {
+                            if (id.IsValid && !id.IsErased)
+                            {
+                                Table table = tr.GetObject(id, OpenMode.ForRead, false) as Table;
+                                //if (ent.GetType() == typeof(Dimension))
+                                //{
+                                //cat entity as DBText
+                                //Dimension dim = ent as Dimension;
+
+                                if (table != null)
+                                {
+                                    table.UpgradeOpen();
+                                    table.TableStyle = newId;
+
+                                    //(in other version may be
+                                    // txt.TextStyle = newId;)
+
+                                    table.DowngradeOpen();
+                                }
+                                //}
+                            }
+                        }
+
+                        tr.Commit();
+                    }
+                }
+            }
+            catch (Autodesk.AutoCAD.Runtime.Exception ex)
+            {
+                ed.WriteMessage("\n" + ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace);
+            }
+        }
+
         /// <summary>
         /// Checks if the style definition is in the active drawing, if not, pull it from the template and add it
         /// </summary>
@@ -41,7 +103,7 @@ namespace LibraryCad.StyleFunc.AcadTableStyle
         /// <returns>ObjectID of Textstyle, ObjectId.Null on error</returns>
         public static ObjectId GetStyleId(String styleName, Document doc, string path)
         {
-            ObjectId styleId = ObjectId.Null; ;
+            ObjectId styleId = ObjectId.Null;
             Database db = doc.Database;
             using (Transaction acTr = db.TransactionManager.StartTransaction())
             {

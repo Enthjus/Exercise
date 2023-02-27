@@ -1,4 +1,3 @@
-D:\c#\ATC\AddinLearning\ExamProject\bin\Debug\start.scr
 D:\c#\ATC\AddinLearning\ExamProject\bin\Debug\ExamProject.dll
 D:\c#\ATC\AddinLearning\ExamProject\bin\Debug\ExamProject.pdb
 D:\c#\ATC\AddinLearning\ExamProject\bin\Debug\AcCoreMgd.dll

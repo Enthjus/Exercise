@@ -1,6 +1,7 @@
 ﻿using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
+using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using System;
 using System.Collections.Generic;
@@ -9,14 +10,15 @@ namespace LibraryCad.StyleFunc.AcadDimStyle
 {
     public class DimStyleFunc
     {
-        public static void ChangeDimStlye(Document doc)
+        public static void ChangeDimStlye(Document doc, ObjectId styleId)
         {
             Database db = doc.Database;
             Editor ed = doc.Editor;
             using (Transaction trx = db.TransactionManager.StartTransaction())
             {
-                DimStyleTable dimTbl = (DimStyleTable)trx.GetObject(db.DimStyleTableId, OpenMode.ForRead);
-                DimStyleTableRecord dimDtr = (DimStyleTableRecord)trx.GetObject(dimTbl["Phuc"], OpenMode.ForRead);
+                DimStyleTable dimTbl = trx.GetObject(db.DimStyleTableId, OpenMode.ForRead) as DimStyleTable;
+                DimStyleTableRecord dimDtr = trx.GetObject(styleId, OpenMode.ForRead) as DimStyleTableRecord;
+                if (dimDtr == null) return;
                 ObjectIdCollection ids = dimDtr.GetPersistentReactorIds();
                 foreach (ObjectId id in ids)
                 {
@@ -31,6 +33,73 @@ namespace LibraryCad.StyleFunc.AcadDimStyle
             }
         }
 
+        public static void ChangeDimSyleInModelSpace(Document doc, ObjectId styleId)
+        {
+            string oldstyle = "Standard";//<-- Case-sensitive for selection filter!
+            Editor ed = doc.Editor;
+            Database db = doc.Database;
+
+            // build selection filter
+            // to select all texts and mtexts in the Model space:
+            SelectionFilter sfilter = new SelectionFilter(new TypedValue[]
+            {
+                new TypedValue((int)DxfCode.Start, "DIMENSION")
+            });
+
+            // request for objects to be selected all in the  model space
+            PromptSelectionResult res = ed.SelectAll(sfilter);
+            try
+            {
+                if (res.Status == PromptStatus.OK)
+                {
+                    ed.WriteMessage("\nSelected {0} objects", res.Value.Count);
+                    using (Transaction tr = doc.TransactionManager.StartTransaction())
+                    {
+                        ObjectId[] ids = res.Value.GetObjectIds();
+                        // get text style table
+                        DimStyleTable dt = tr.GetObject(db.DimStyleTableId, OpenMode.ForRead) as DimStyleTable;
+                        DimStyleTableRecord dstr = tr.GetObject(styleId, OpenMode.ForRead) as DimStyleTableRecord;
+                        // check if the new style does exist, if not then exit command
+                        if (!dt.Has(dstr.Name))
+                        {
+                            Application.ShowAlertDialog("One or both styles does not exist\nProgram exiting...");
+                        }
+                        ObjectId newId = styleId;
+                        //iterate through the selection set
+                        foreach (ObjectId id in ids)
+                        {
+                            if (id.IsValid && !id.IsErased)
+                            {
+                                Entity ent = tr.GetObject(id, OpenMode.ForRead, false) as Entity;
+                                //if (ent.GetType() == typeof(Dimension))
+                                //{
+                                //cat entity as DBText
+                                Dimension dim = ent as Dimension;
+
+                                if (dim != null)
+                                {
+                                    dim.UpgradeOpen();
+                                    dim.DimensionStyle = newId;
+
+                                    //(in other version may be
+                                    // txt.TextStyle = newId;)
+
+                                    dim.DowngradeOpen();
+                                }
+                                //}
+                            }
+                        }
+
+                        tr.Commit();
+                    }
+                }
+            }
+            catch (Autodesk.AutoCAD.Runtime.Exception ex)
+            {
+                ed.WriteMessage("\n" + ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace);
+            }
+        }
+
         /// <summary>
         /// Checks if the style definition is in the active drawing, if not, pull it from the template and add it
         /// </summary>
@@ -38,7 +107,7 @@ namespace LibraryCad.StyleFunc.AcadDimStyle
         /// <returns>ObjectID of Textstyle, ObjectId.Null on error</returns>
         public static ObjectId GetStyleId(String styleName, Document doc, string path)
         {
-            ObjectId styleId = ObjectId.Null; ;
+            ObjectId styleId = ObjectId.Null;
             Database db = doc.Database;
             using (Transaction acTr = db.TransactionManager.StartTransaction())
             {

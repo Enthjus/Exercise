@@ -51,13 +51,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Examination\Tool1.cs" />
+    <Compile Include="Examination\Tool2.cs" />
+    <Compile Include="Examination\Tool3.cs" />
     <Compile Include="Init.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="start.scr">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LibraryCad\LibraryCad.csproj">

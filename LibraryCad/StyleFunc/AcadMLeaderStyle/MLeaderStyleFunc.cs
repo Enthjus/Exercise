@@ -32,6 +32,57 @@ namespace LibraryCad.StyleFunc.AcadMLeaderStyle
             }
         }
 
+        public static void ChangeMleaderStyleInModelSpace(Document doc, ObjectId styleId)
+        {
+            Database db = doc.Database;
+            Editor ed = doc.Editor;
+
+            SelectionFilter sf = new SelectionFilter(new TypedValue[]
+            {
+                new TypedValue((int)DxfCode.Start, "MULTILEADER")
+            });
+
+            PromptSelectionResult res = ed.SelectAll(sf);
+            try
+            {
+                if(res.Status == PromptStatus.OK)
+                {
+                    ed.WriteMessage("\nSelected {0} objects", res.Value.Count);
+                    using (doc.LockDocument())
+                    {
+                        using (Transaction trans = db.TransactionManager.StartTransaction())
+                        {
+                            ObjectId[] ids = res.Value.GetObjectIds();
+                            DBDictionary dic = trans.GetObject(db.MLeaderStyleDictionaryId, OpenMode.ForRead) as DBDictionary;
+                            if (!dic.Contains(styleId))
+                            {
+                                Application.ShowAlertDialog("One or both styles does not exist\nProgram exiting...");
+                            }
+                            ObjectId newId = styleId;
+                            foreach(ObjectId id in ids)
+                            {
+                                if(id.IsValid && !id.IsErased)
+                                {
+                                    MLeader mLeader = trans.GetObject(id, OpenMode.ForRead, false) as MLeader;
+                                    if(mLeader != null)
+                                    {
+                                        mLeader.UpgradeOpen();
+                                        mLeader.MLeaderStyle = styleId;
+                                        mLeader.DowngradeOpen();
+                                    }
+                                }
+                            }
+                            trans.Commit();
+                        }
+                    }
+                }
+            }
+            catch (Autodesk.AutoCAD.Runtime.Exception ex)
+            {
+                ed.WriteMessage("\n" + ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace);
+            }
+        }
+
         /// <summary>
         /// Checks if the style definition is in the active drawing, if not, pull it from the template and add it
         /// </summary>
@@ -39,7 +90,7 @@ namespace LibraryCad.StyleFunc.AcadMLeaderStyle
         /// <returns>ObjectID of Textstyle, ObjectId.Null on error</returns>
         public static ObjectId GetStyleId(String styleName, Document doc, string path)
         {
-            ObjectId styleId = ObjectId.Null; ;
+            ObjectId styleId = ObjectId.Null;
             Database db = doc.Database;
             using (Transaction acTr = db.TransactionManager.StartTransaction())
             {
