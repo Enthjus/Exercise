@@ -26,6 +26,7 @@ namespace ExamProject.Examination
                 filter[0] = new TypedValue(0, "Line");
                 SelectionFilter sf = new SelectionFilter(filter);
                 var res1 = SubFunc.GetListSelection(doc, "\nSelect lines: ", sf);
+                List<ObjectId> deleteId = new List<ObjectId>();
                 if (res1 == null) return;
                 foreach (ObjectId id in res1)
                 {
@@ -46,7 +47,7 @@ namespace ExamProject.Examination
                         if (psr.Status == PromptStatus.OK)
                         {
                             Point3dCollection intersectPts = new Point3dCollection();
-                            foreach (ObjectId leaderId in psr.Value.GetObjectIds())
+                            foreach (ObjectId leaderId in res1)
                             {
                                 Entity entity = (Entity)tr.GetObject(leaderId, OpenMode.ForRead);
                                 if (entity.ObjectId != line.ObjectId)
@@ -55,7 +56,7 @@ namespace ExamProject.Examination
                                 }
                             }
                             if (intersectPts.Count == 0) continue;
-                            if (intersectPts.Count == 1)
+                            else if (intersectPts.Count == 1)
                             {
                                 Line line1 = new Line(intersectPts[0], line.StartPoint);
                                 Line line2 = new Line(intersectPts[0], line.EndPoint);
@@ -76,28 +77,58 @@ namespace ExamProject.Examination
                                     continue;
                                  }
                             }
-                            List<double> pars = new List<double>();
-                            foreach (Point3d pt in intersectPts)
+                            else if(intersectPts.Count == 2)
                             {
-                                pars.Add(line.GetParameterAtPoint(pt));
-                            }
-                            DBObjectCollection objs = line.GetSplitCurves(new DoubleCollection(pars.ToArray()));
-                            foreach (Line ll in objs)
-                            {
-                                for (int j = 0; j < intersectPts.Count - 1; j++)
+                                deleteId.Add(id);
+                                Line l1;
+                                Line l2;
+                                if (new Line(line.StartPoint, intersectPts[0]).Length < new Line(line.StartPoint, intersectPts[1]).Length)
                                 {
-                                    if ((ll.StartPoint != intersectPts[j] && ll.StartPoint != intersectPts[j + 1]) ^ (ll.EndPoint != intersectPts[j] && ll.EndPoint != intersectPts[j + 1]))
-                                    {
-                                        btr.AppendEntity(ll);
-                                        tr.AddNewlyCreatedDBObject(ll, true);
-                                    }
+                                    l1 = new Line(line.StartPoint, intersectPts[0]);
+                                    l2 = new Line(line.EndPoint, intersectPts[1]);
                                 }
+                                else
+                                {
+                                    l1 = new Line(line.StartPoint, intersectPts[1]);
+                                    l2 = new Line(line.EndPoint, intersectPts[0]);
+                                }
+                                btr.AppendEntity(l1);
+                                tr.AddNewlyCreatedDBObject(l1, true);
+                                btr.AppendEntity(l2);
+                                tr.AddNewlyCreatedDBObject(l2, true);
+                                //List<double> pars = new List<double>();
+                                //foreach (Point3d pt in intersectPts)
+                                //{
+                                //    pars.Add(line.GetParameterAtPoint(pt));
+                                //}
+                                //DBObjectCollection objs = line.GetSplitCurves(new DoubleCollection(pars.ToArray()));
+                                //foreach (Line ll in objs)
+                                //{
+                                //    for (int j = 0; j < intersectPts.Count - 1; j++)
+                                //    {
+                                //        if ((ll.StartPoint != intersectPts[j] && ll.StartPoint != intersectPts[j + 1]) ^ (ll.EndPoint != intersectPts[j] && ll.EndPoint != intersectPts[j + 1]))
+                                //        {
+                                //            btr.AppendEntity(ll);
+                                //            tr.AddNewlyCreatedDBObject(ll, true);
+                                //        }
+                                //    }
+                                //}
+                                //line.UpgradeOpen();
+                                //line.Erase();
                             }
-                            line.UpgradeOpen();
-                            line.Erase();
                         }
                         tr.Commit();
                     }
+                }
+                if (deleteId.Count <= 0) continue;
+                using(Transaction tran = db.TransactionManager.StartTransaction())
+                {
+                    foreach(var id in deleteId)
+                    {
+                        var line = tran.GetObject(id, OpenMode.ForWrite) as Line;
+                        line.Erase();
+                    }
+                    tran.Commit();
                 }
             }
         }
