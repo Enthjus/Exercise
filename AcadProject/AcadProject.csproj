@@ -93,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AcadDrawManip\AcadLayout\WorkWithLayout.cs" />
+    <Compile Include="AcadDrawManip\AcadPlotting\MultiSheetsPdf.cs" />
     <Compile Include="AcadDrawManip\AcadPlotting\PlottingApplication.cs" />
     <Compile Include="AcadDrawManip\AcadTemplate\WorkWithTemplate.cs" />
     <Compile Include="AcadJigs\PolylineJigging\SlopeCommand.cs" />

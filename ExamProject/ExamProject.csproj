@@ -54,6 +54,7 @@
     <Compile Include="Examination\Tool2.cs" />
     <Compile Include="Examination\Tool3.cs" />
     <Compile Include="Examination\Tool4.cs" />
+    <Compile Include="Examination\Tool5.cs" />
     <Compile Include="Init.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

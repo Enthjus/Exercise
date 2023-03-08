@@ -442,5 +442,11 @@ namespace LibraryCad.Sub
             return result;
         }
 
+        public static double GetRotation(Vector3d vector, Vector3d normal)
+        {
+            var plane = new Plane(Point3d.Origin, normal);
+            var ocsXAxis = Vector3d.XAxis.TransformBy(Matrix3d.PlaneToWorld(plane));
+            return ocsXAxis.GetAngleTo(vector.ProjectTo(normal, normal), normal);
+        }
     }
 }
