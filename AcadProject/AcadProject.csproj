@@ -95,7 +95,9 @@
     <Compile Include="AcadDrawManip\AcadLayout\WorkWithLayout.cs" />
     <Compile Include="AcadDrawManip\AcadPlotting\MultiSheetsPdf.cs" />
     <Compile Include="AcadDrawManip\AcadPlotting\PlottingApplication.cs" />
+    <Compile Include="AcadDrawManip\AcadPlotting\Publish.cs" />
     <Compile Include="AcadDrawManip\AcadTemplate\WorkWithTemplate.cs" />
+    <Compile Include="AcadJigs\BlockJigging\BlockJig.cs" />
     <Compile Include="AcadJigs\PolylineJigging\SlopeCommand.cs" />
     <Compile Include="AcadManip\WorkWithForm\AcadObject\BlockForm\GetBlock.cs">
       <SubType>Form</SubType>

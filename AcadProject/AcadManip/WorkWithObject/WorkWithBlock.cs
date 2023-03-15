@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace AcadProject.AcadManip.WorkWithObject
 {
-    public class WorkWithBlock
+    public class WorkWithBlock 
     {
         private static Document doc = DocumentManager.doc;
 

@@ -137,28 +137,67 @@ namespace AcadProject.AcadDrawManip.AcadPlotting
 
                     PlotEngine pe =
 
-                      PlotFactory.CreatePublishEngine();
+            PlotFactory.CreatePublishEngine();
 
                     using (pe)
 
                     {
 
+                        // Collect all the paperspace layouts
+
+                        // for plotting
+
+                        ObjectIdCollection layoutsToPlot =
+
+                          new ObjectIdCollection();
+
+                        foreach (ObjectId btrId in bt)
+
+                        {
+
+                            BlockTableRecord btr =
+
+                              (BlockTableRecord)tr.GetObject(
+
+                                btrId,
+
+                                OpenMode.ForRead
+
+                              );
+
+                            if (btr.IsLayout &&
+
+                                btr.Name.ToUpper() !=
+
+                                  BlockTableRecord.ModelSpace.ToUpper())
+
+                            {
+
+                                layoutsToPlot.Add(btrId);
+
+                            }
+
+                        }
+
                         // Create a Progress Dialog to provide info
 
                         // and allow thej user to cancel
 
-
                         PlotProgressDialog ppd =
 
-                          new PlotProgressDialog(false, 1, true);
+                          new PlotProgressDialog(
+
+                            false,
+
+                            layoutsToPlot.Count,
+
+                            true
+
+                          );
 
                         using (ppd)
 
                         {
-
-                            ObjectIdCollection layoutsToPlot =
-
-                              new ObjectIdCollection();
 
 
                             foreach (ObjectId btrId in bt)
@@ -271,7 +310,7 @@ namespace AcadProject.AcadDrawManip.AcadPlotting
 
                                   ps,
 
-                                  "DWG To PDF.pc3",
+                                  "DWFx ePlot (XPS Compatible).pc3",
 
                                   "ANSI_A_(8.50_x_11.00_Inches)"
 
@@ -380,7 +419,7 @@ namespace AcadProject.AcadDrawManip.AcadPlotting
 
                                       true, // Let's plot to file
 
-                                      "D:\\MyPlot\\pppp"
+                                      "c:\\test-multi-sheet"
 
                                     );
 
